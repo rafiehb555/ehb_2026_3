@@ -41,6 +41,8 @@ import dmoControlRouter from './routes/dmoControl.js'; // DMO Control Center
 import metricsRouter, { trackRequest } from './middleware/metrics.js'; // Prometheus metrics
 import webhooksRouter from './routes/webhooks.js'; // Payment webhooks
 import founderConsoleRouter from './routes/founderConsole.js'; // Founder control panel
+import financeRouter from './routes/finance.js'; // Finance — earnings, tax, FX, reports
+import stlCalculatorRouter from './routes/stlCalculator.js'; // Public STL calculator
 import {
   apiLimiter, sanitizeInputs, deviceFingerprint, securityHeaders, webhookReplayGuard,
 } from './middleware/security.js';
@@ -103,6 +105,8 @@ app.use('/api/dmo/control', dmoControlRouter); // DMO Control Center (admin only
 app.use('/api', metricsRouter); // /api/metrics for Prometheus
 app.use('/api/webhooks', webhooksRouter); // Payment provider webhooks
 app.use('/api/founder', founderConsoleRouter); // Founder Control Panel (FOUNDER role only)
+app.use('/api/finance', financeRouter);        // Finance dept — earnings + tax + FX
+app.use('/api/stl', stlCalculatorRouter);      // STL Calculator (public preview tool)
 
 // 404
 app.use((req, res) => {

@@ -20,13 +20,24 @@
 
 ### Hard Numbers
 - 17 internal departments
-- 38 industries (16 Tier-1 + 16 Tier-2 + 6 Tier-3)
+- **37 industries** (15 Tier-1 + 16 Tier-2 + 6 Tier-3) — SOT merged into ITS on 2026-04-30
 - 17 countries (5 Phase 1 + 6 Phase 2 + 6 Phase 3)
 - 5-tier franchise (Country → Master → Corporate → Sub → Micro)
-- STL ladder L1-L10
+- EHB STL ladder L1-L10
 - Revenue split 70/10/10/10
 - Franchise split 40/15/25/15/5
-- 227 documentation files
+- 230+ documentation files
+
+### Naming (locked 2026-04-30)
+- **PSS** = Personal Security Score (was: Proof & Security System)
+- **CRB** = Certification, Refill & Background (was: Central Record Blockchain)
+- **STL** = EHB STL = EHB System Trust Level
+- **DMO** = Digital Management Office (was: Decentralized)
+- **JPS** = Jobs Platform & Skills (was: Job Profile & Skill)
+- **EHB Dev AI** = AI department official name
+- **Seller** = user-type that operates on top of GoSellr (GSM)
+- **HMS** = Hotel Management Services (machinery moved into ITS)
+- **ITS** = Information Technology Services (absorbed ex-SOT)
 
 ### Founder Communication Style
 - Roman Urdu + English bilingual
@@ -44,6 +55,7 @@
 | 1 | `CLAUDE.md` (root) | Hard rules + STL formula + commit format |
 | 2 | `ehb-info/_settings/REGISTRY.json` | Topic → file lookup |
 | 3 | `ehb-info/_settings/SOURCE-OF-TRUTH.md` | Who owns which topic |
+| 3a | `ehb-info/0-index/DEPARTMENT-AUDIT-2026.md` ⭐ | Department status (88% complete) |
 | 4 | `ehb-info/_settings/EHB-CORE-ENGINE.md` | Single AI/Wallet/Chain pattern |
 | 5 | `ehb-info/0-index/MASTER-DASHBOARD.md` | Current state snapshot |
 | 6 | `ehb-info/5-specs/FLOW-SCHEMA-V2.json` | All technical constants |
@@ -85,12 +97,14 @@
 - `ehb-info/5-economy/SLASHING-RULES.md`
 
 ### User Flows
-- `ehb-info/4-flows/USER-FLOWS-COMPLETE.md`
+- `ehb-info/4-flows/USER-FLOWS-COMPLETE.md` — 9 role flows narrative
+- `ehb-info/4-flows/USER-STORIES.md` ⭐ — 60 formal user stories with acceptance criteria
 - `ehb-info/4-flows/EHB-USER-TYPES.md`
 - `ehb-info/4-flows/ORDER-FLOW.md`
 - `ehb-info/4-flows/DISPUTE-FLOW.md`
 - `ehb-info/4-flows/ESCROW-FLOW.md`
 - `ehb-info/4-flows/REFUND-FLOW.md`
+- `ehb-info/4-flows/INDUSTRY-DEPARTMENT-MATRIX.md` ⭐ — 38 × 17 grid (how each industry uses each dept)
 
 ### JPS / Affiliate
 - `ehb-info/3-departments/JPS.md`
@@ -99,7 +113,9 @@
 - `ehb-info/14-growth/REFERRAL-PROGRAM.md`
 
 ### UI System
-- `ehb-info/15-ui-system/PAGES-LIST.md`
+- `ehb-info/15-ui-system/PAGES-LIST.md` — 80+ pages
+- `ehb-info/15-ui-system/PAGE-DATA-MAP.md` ⭐ — page-by-page data spec
+- `ehb-info/15-ui-system/UIUX-DESIGN-SYSTEM.md` ⭐ — colors, typography, components
 - `ehb-info/15-ui-system/UI-RULES.md`
 - `ehb-info/15-ui-system/COMPONENT-LIBRARY.md`
 

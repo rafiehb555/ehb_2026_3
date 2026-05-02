@@ -1,0 +1,19 @@
+{
+  "code": "DE", "name": "Germany", "phase": 3, "status": "planned",
+  "currency": { "code": "EUR", "symbol": "€", "minor_units": 2, "fx_to_usd": 1.08 },
+  "languages": ["de", "en"], "timezone": "Europe/Berlin", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "card"], "local": ["sepa", "giropay", "klarna"],
+    "wallet": ["apple_pay", "google_pay", "paypal"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "Onfido_Veriff", "min_pss_for_transactions": 3, "id_documents_accepted": ["EU_ID", "Passport"] },
+  "compliance": { "regulator_payments": "BaFin", "regulator_data": "EU_GDPR_BDSG", "vat_pct_standard": 19, "vat_pct_reduced": 7, "amlcft_required": true, "consumer_cooling_off_days": 14 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 250000 },
+    "master": { "max": 16, "capital_lock_ehbgc": 50000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 15000 },
+    "sub": { "L8": 250, "L9": 500, "L10": 250 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "BaFin_authorisation" }, "WMS": { "additional_license_required": "Ärztekammer" } },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true }
+}

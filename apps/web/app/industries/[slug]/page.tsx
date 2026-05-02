@@ -170,14 +170,53 @@ export default function IndustryDetailPage() {
   const industry = slug ? getIndustry(slug) : null;
   if (!industry) return notFound();
 
-  const content = CONTENT_BY_SLUG[slug || ''] || {
-    whatItIs: `${industry.name} — full content coming in ${industry.phase === 1 ? 'Phase 1 expansion' : 'a future phase'}.`,
-    services: [],
-    crbExams: [],
-    pssGate: 'Standard PSS L3+ for buyers, L4+ for providers.',
-    benefits: { user: [], provider: [], platform: [] },
-    stats: [],
+  // Fallback generator for industries without custom content yet — produces
+  // a reasonable default page using industry metadata.
+  const defaultContent: IndustryContent = {
+    whatItIs: `${industry.name} (${industry.code}) — ${industry.tagline}. EHB-verified providers, escrow-protected payments, STL trust scoring across all listings. Phase ${industry.phase} industry.`,
+    services: [
+      { name: `Browse ${industry.name}`, desc: 'Discover verified providers + listings', minStl: 1, icon: industry.icon },
+      { name: 'Verified provider matching', desc: 'STL + CRB + PSS-screened providers only', minStl: 3, icon: '🛡️' },
+      { name: 'Escrow-protected booking', desc: 'Payment held until delivery confirmed', minStl: 2, icon: '💰' },
+      { name: 'AI-powered recommendations', desc: 'Personalized suggestions based on STL chain', minStl: 1, icon: '🤖' },
+      { name: 'Dispute resolution (DMO)', desc: 'Independent governance + arbitration', minStl: 1, icon: '⚖️' },
+    ],
+    crbExams: [
+      `${industry.code} core knowledge exam`,
+      `${industry.code} practical assessment`,
+      `${industry.code} compliance + ethics module`,
+    ],
+    pssGate: industry.phase === 1
+      ? 'PSS L3+ for buyers, L4+ for providers (industry-standard verification).'
+      : 'Standard PSS L3+ for buyers, L4+ for providers.',
+    benefits: {
+      user: [
+        'Trust-verified providers (STL chain visible)',
+        'Escrow-protected payments',
+        'Polkadot-anchored audit trail',
+        'AI-assisted decision support',
+      ],
+      provider: [
+        '70% revenue share (industry standard)',
+        'STL boost on quality completion',
+        'Cross-industry credibility',
+        'EHB-wide referral exposure',
+      ],
+      platform: [
+        '10% commission (split 5-tier franchise)',
+        'CRB exam + refill revenue',
+        'Industry-wide quality + trust data',
+      ],
+    },
+    stats: [
+      { label: 'Phase', value: `Phase ${industry.phase}` },
+      { label: 'Pillar', value: industry.pillar },
+      { label: 'Status', value: industry.status.toUpperCase() },
+      { label: 'Parent dept', value: industry.parentDept },
+    ],
   };
+
+  const content = CONTENT_BY_SLUG[slug || ''] || defaultContent;
 
   return (
     <main className="min-h-screen">

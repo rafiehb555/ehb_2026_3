@@ -1,0 +1,20 @@
+{
+  "code": "IN", "name": "India", "phase": 3, "status": "planned",
+  "currency": { "code": "INR", "symbol": "₹", "minor_units": 2, "fx_to_usd": 0.012 },
+  "languages": ["en", "hi"], "timezone": "Asia/Kolkata", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "razorpay"], "local": ["upi", "razorpay", "paytm", "phonepe"],
+    "wallet": ["paytm", "phonepe", "google_pay_india", "amazon_pay"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "Aadhaar_eKYC", "min_pss_for_transactions": 3, "id_documents_accepted": ["Aadhaar", "PAN", "Passport"] },
+  "compliance": { "regulator_payments": "RBI", "regulator_data": "DPDP_Act_2023", "gst_pct": 18, "amlcft_required": true, "consumer_cooling_off_days": 7 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 200000 },
+    "master": { "max": 28, "capital_lock_ehbgc": 50000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 15000 },
+    "sub": { "L8": 1500, "L9": 3000, "L10": 1500 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "RBI_PA_PG" }, "WMS": { "additional_license_required": "MCI_state_council" } },
+  "shipping": { "domestic_carriers": ["IndiaPost", "BlueDart", "Delhivery"], "international_carriers": ["DHL", "FedEx"] },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true }
+}

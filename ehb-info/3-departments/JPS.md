@@ -1,6 +1,8 @@
-# JPS — Job Profile & Skill System
+# JPS — Jobs Platform & Skills
 
-**Status:** Canonical spec (v1.0) · 2026-04-18
+> **Renamed 2026-04-30 by founder:** "Job Profile & Skill System" → **"Jobs Platform & Skills"** (more product-feel; "Platform" = clear destination for users + employers).
+
+**Status:** Canonical spec (v1.1) · Renamed 2026-04-30
 **Related:** PSS.md v3.0 (identity), CRB.md (exams/certifications), STL.md v1.1 (trust scoring), DMO.md v1.3 (governance)
 
 ---

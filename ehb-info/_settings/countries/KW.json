@@ -1,0 +1,19 @@
+{
+  "code": "KW", "name": "Kuwait", "phase": 2, "status": "planned",
+  "currency": { "code": "KWD", "symbol": "د.ك", "minor_units": 3, "fx_to_usd": 3.247 },
+  "languages": ["ar", "en"], "timezone": "Asia/Kuwait", "rtl": true,
+  "payment_methods": {
+    "primary": ["stripe", "knet"], "local": ["knet"],
+    "wallet": ["apple_pay", "google_pay"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "PACI", "min_pss_for_transactions": 3, "id_documents_accepted": ["Kuwait_Civil_ID", "Passport"] },
+  "compliance": { "regulator_payments": "CBK", "regulator_data": "DPPL", "vat_pct": 0, "amlcft_required": true, "consumer_cooling_off_days": 7 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 6, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 4, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 40, "L9": 80, "L10": 40 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "CBK_fintech" } },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": false }
+}

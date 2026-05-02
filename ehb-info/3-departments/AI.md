@@ -1,6 +1,8 @@
-# AI Department — Intelligent Advisory System
+# EHB Dev AI — Intelligent Advisory System (single brain)
 
-> **Version:** 1.0  
+> **Renamed 2026-04-30 by founder:** Department officially called **"EHB Dev AI"** (the single AI brain serving all 38 industries via config).
+
+> **Version:** 1.1  
 > **Created:** 2026-04-12  
 > **Build status:** ~40% complete
 

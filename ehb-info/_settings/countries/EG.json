@@ -1,0 +1,20 @@
+{
+  "code": "EG", "name": "Egypt", "phase": 2, "status": "planned",
+  "currency": { "code": "EGP", "symbol": "ج.م", "minor_units": 2, "fx_to_usd": 0.0203 },
+  "languages": ["ar", "en"], "timezone": "Africa/Cairo", "rtl": true,
+  "payment_methods": {
+    "primary": ["stripe", "fawry"],
+    "local": ["fawry", "vodafone_cash", "instapay"],
+    "wallet": ["instapay", "vodafone_cash"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "NID_Egypt", "min_pss_for_transactions": 3, "id_documents_accepted": ["National_ID", "Passport"] },
+  "compliance": { "regulator_payments": "CBE", "regulator_data": "DPL_151_2020", "vat_pct": 14, "amlcft_required": true, "consumer_cooling_off_days": 14 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 27, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 200, "L9": 400, "L10": 200 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "CBE_fintech" } },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": false }
+}

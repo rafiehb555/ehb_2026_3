@@ -1,0 +1,19 @@
+{
+  "code": "OM", "name": "Oman", "phase": 2, "status": "planned",
+  "currency": { "code": "OMR", "symbol": "ر.ع", "minor_units": 3, "fx_to_usd": 2.6 },
+  "languages": ["ar", "en"], "timezone": "Asia/Muscat", "rtl": true,
+  "payment_methods": {
+    "primary": ["stripe", "thawani"], "local": ["thawani", "omanpay"],
+    "wallet": ["apple_pay"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "ROP", "min_pss_for_transactions": 3, "id_documents_accepted": ["Oman_Civil_ID", "Passport"] },
+  "compliance": { "regulator_payments": "CBO", "regulator_data": "PDPL_Oman", "vat_pct": 5, "amlcft_required": true, "consumer_cooling_off_days": 7 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 5, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 4, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 30, "L9": 60, "L10": 30 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "CBO_fintech" } },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": false }
+}

@@ -1,7 +1,9 @@
 # Seller — EHB Marketplace Seller System
 
-**Status:** Canonical spec (v1.0) · 2026-04-19
-**Related:** `Commission.md` · `GoSellr.md` · `STL.md` · `DMO.md` · `CRB.md`
+> **Founder clarification 2026-04-30:** The **Seller system operates on top of GoSellr (GSM)** — Seller is the user-type/role layer, GoSellr is the marketplace product. A "Seller" lists products/services within GSM. Same relationship: User → Seller → GSM industry → STL gate → DMO oversight.
+
+**Status:** Canonical spec (v1.1) · 2026-04-30
+**Related:** `Commission.md` · `GoSellr.md` (parent) · `STL.md` · `DMO.md` · `CRB.md`
 
 ---
 

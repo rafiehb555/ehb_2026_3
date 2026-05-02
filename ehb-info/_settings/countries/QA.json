@@ -1,0 +1,37 @@
+{
+  "code": "QA",
+  "name": "Qatar",
+  "phase": 2,
+  "status": "planned",
+  "currency": { "code": "QAR", "symbol": "ر.ق", "minor_units": 2, "fx_to_usd": 0.275 },
+  "languages": ["ar", "en"],
+  "timezone": "Asia/Qatar",
+  "rtl": true,
+  "payment_methods": {
+    "primary": ["stripe", "qpay"],
+    "local": ["qpay", "naps"],
+    "wallet": ["apple_pay", "google_pay"],
+    "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "MOI_Qatar", "min_pss_for_transactions": 3, "id_documents_accepted": ["Qatar_ID", "Passport"] },
+  "compliance": {
+    "regulator_payments": "QCB",
+    "regulator_data": "DPL_Qatar",
+    "vat_pct": 0,
+    "amlcft_required": true,
+    "consumer_cooling_off_days": 7
+  },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 5, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 4, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 30, "L9": 60, "L10": 30 },
+    "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "QCB_fintech" },
+    "WMS": { "additional_license_required": "MOH_Qatar" }
+  },
+  "shipping": { "domestic_carriers": ["QPost", "Aramex_QA"], "international_carriers": ["DHL", "FedEx"] },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": false }
+}

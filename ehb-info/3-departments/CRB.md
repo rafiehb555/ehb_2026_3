@@ -1,6 +1,8 @@
-# CRB — Central Record Blockchain
+# CRB — Certification, Refill & Background
 
-**Status:** Canonical spec (v2.0) · Renamed 2026-04-19 per founder confirmation
+> **Renamed 2026-04-30 by founder:** "Central Record Blockchain" → **"Certification, Refill & Background"** (action-clear name describing what CRB actually does: certifications + refills + background checks). Acronym preserved.
+
+**Status:** Canonical spec (v2.1) · Renamed 2026-04-30 per founder confirmation
 **Related:** `STL.md §3` (input) · `DMO.md §22.12` (Batch-1 CRB prompt) · `EHB-MASTER-INFO.md §4.2`
 
 ---

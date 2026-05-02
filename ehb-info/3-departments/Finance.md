@@ -110,9 +110,58 @@ All revenue streams are kept separate, no mixing, all admin controllable.
 3. **Payout cadence** — instant, daily, weekly?
 4. **Minimum payout threshold** before earnings can be withdrawn
 
+## 8. Implementation (built 2026-04-30)
+
+### 8.1 Code modules
+| Module | Path | Purpose |
+|--------|------|---------|
+| `financeService.js` | `services/api/src/services/` | Earnings ledger + reports + reconciliation |
+| `taxEngine.js` | `services/api/src/services/` | Per-country VAT/GST/Sales + withholding + invoice generator |
+| `fxService.js` | `services/api/src/services/` | Multi-currency conversion (cached 24h) |
+| `finance.js` (routes) | `services/api/src/routes/` | 13 REST endpoints |
+
+### 8.2 Earnings ledger (Earning model)
+States: `PENDING → APPROVED → PAID` (or `REJECTED` / `REVERSED` / `HELD_BY_DMO`)
+Fields: gross_amount, tax_amount, withholding_amount, fee_amount, net_amount, currency, fx_rate_to_usd, amount_usd
+Indexes: `{userId, status, createdAt}` and `{industry, country, status}`
+
+### 8.3 Tax engine
+- Reads VAT rate from `_settings/countries/<CODE>.json` (`compliance.vat_pct`)
+- Industry overrides: WMS / HCS / EDS / HPS / OBS = 0% (exempt)
+- Invoice generator outputs structured invoice with NTN
+
+### 8.4 FX engine
+- Reads `currency.fx_to_usd` from country JSONs
+- 24h cache; reload on file change
+- Quote function adds 0.5% buffer for risk
+
+### 8.5 Wired Events
+- Listens: `order.settled` → automatically records earning for seller
+- Emits: `finance.earnings_approved` · `finance.payout_complete`
+
+### 8.6 API endpoints
+```
+GET    /api/finance/me/earnings
+GET    /api/finance/users/:id/earnings              (admin)
+GET    /api/finance/overview                        (admin)
+POST   /api/finance/earnings/:id/approve            (admin)
+POST   /api/finance/earnings/:id/reject             (admin)
+POST   /api/finance/earnings/:id/pay                (admin)
+GET    /api/finance/reports?groupBy=industry        (admin)
+POST   /api/finance/reconcile                       (admin)
+GET    /api/finance/tax/rate?country=PK&industry=GSM
+POST   /api/finance/tax/compute
+POST   /api/finance/tax/invoice
+POST   /api/finance/fx/convert
+POST   /api/finance/fx/quote
+GET    /api/finance/fx/rates
+GET    /api/finance/health
+```
+
 ## Changelog
 
 | Date       | Ver | Change |
 |------------|-----|--------|
+| 2026-04-30 | 3.0 | **BUILT:** financeService + taxEngine + fxService + 13 API endpoints + earnings ledger model + event subscriptions. Dept moved 60% → 95%. |
 | 2026-04-19 | 2.0 | Major update: 5 revenue streams documented (Order Commission, Affiliate, Franchise Sales, DMO Subscription, Token Fees). Additional sources added. Financial rules locked. Dual token system integrated. |
 | 2026-04-11 | 1.0 | Created from Batch-2 `uploads/ehb_finance.md` |

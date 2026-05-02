@@ -1,0 +1,49 @@
+{
+  "code": "PK", "name": "Pakistan", "phase": 1, "status": "active",
+  "currency": { "code": "PKR", "symbol": "₨", "minor_units": 0, "fx_to_usd": 0.0036 },
+  "languages": ["ur", "en"], "timezone": "Asia/Karachi", "rtl": true,
+  "payment_methods": {
+    "primary": ["jazzcash", "stripe"],
+    "local": ["jazzcash", "easypaisa", "hbl_konnect", "ubl_omni", "raast"],
+    "wallet": ["jazzcash", "easypaisa", "apple_pay", "google_pay"],
+    "bank_transfer": ["IBAN", "raast"],
+    "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "NADRA_Verisys", "secondary_partners": ["FBR_NTN"], "min_pss_for_transactions": 3, "id_documents_accepted": ["CNIC", "Passport"] },
+  "compliance": {
+    "regulator_payments": "SBP",
+    "regulator_data": "PDPA_Pakistan",
+    "regulator_kyc": "NADRA",
+    "gst_pct_range": "13-17",
+    "withholding_tax_pct": 1,
+    "amlcft_required": true,
+    "consumer_cooling_off_days": 7
+  },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 8, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 200, "L9": 400, "L10": 200, "capital_lock_ehbgc_by_level": { "L1": 0, "L8": 2000, "L9": 4000, "L10": 10000 } },
+    "micro": { "max": "unlimited", "capital_lock_ehbgc": 0 }
+  },
+  "industry_restrictions": {
+    "WMS": { "additional_license_required": "PMC_PMDC" },
+    "OLS": { "additional_license_required": "Pakistan_Bar_Council" },
+    "FIN": { "additional_license_required": "SBP_fintech" },
+    "EDS": { "additional_license_required": "HEC" }
+  },
+  "shipping": {
+    "domestic_carriers": ["TCS", "Leopards", "M_P_Express"],
+    "international_carriers": ["DHL", "FedEx", "TCS_International"]
+  },
+  "launch_checklist": {
+    "legal_entity_formed": false,
+    "payment_partner_signed": false,
+    "kyc_partner_signed": false,
+    "country_franchise_appointed": false,
+    "first_master_franchise_appointed": false,
+    "industry_licenses_obtained": ["pending"],
+    "tos_translated": true,
+    "support_team_local": false
+  }
+}

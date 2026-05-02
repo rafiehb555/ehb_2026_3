@@ -101,12 +101,31 @@ export async function subscribe(eventName, handler) {
  * Call `wireDefaultSubscriptions()` once at server startup.
  */
 export async function wireDefaultSubscriptions() {
-  // order.settled → trigger STL recompute for both buyer + seller
+  // order.settled → trigger STL recompute for both buyer + seller + record finance earnings
   await subscribe('order.settled', async (payload) => {
     // Lazy import to avoid circular
     const { recomputeUserStl } = await import('./stlServiceWrapper.js').catch(() => ({}));
     if (recomputeUserStl && payload.buyerId) recomputeUserStl(payload.buyerId);
     if (recomputeUserStl && payload.sellerId) recomputeUserStl(payload.sellerId);
+
+    // P7: record finance earnings for seller (and rider/franchise tiers if present)
+    const { recordEarning } = await import('./financeService.js').catch(() => ({}));
+    if (recordEarning && payload.sellerId && payload.amount) {
+      try {
+        const sellerShare = payload.settlement?.seller || payload.amount * 0.7;
+        await recordEarning({
+          userId: payload.sellerId,
+          orderId: payload.orderId,
+          industry: payload.industry || 'GSM',
+          country: payload.country || 'PK',
+          grossAmount: sellerShare,
+          currency: payload.currency || 'USD',
+          type: 'ORDER_SHARE',
+        });
+      } catch (e) {
+        console.warn('[eventBus] recordEarning failed:', e.message);
+      }
+    }
   });
 
   // complaint.filed → enqueue auto-decision evaluation

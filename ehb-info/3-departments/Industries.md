@@ -22,26 +22,27 @@ No industry is a silo. Every industry reuses the same plumbing. DMO mode determi
 
 ---
 
-## 2. Tier 1: Core Industries (16) — Phase 1 Launch
+## 2. Tier 1: Core Industries (15) — Phase 1 Launch
+
+> **2026-04-30 update:** SOT (Services of Technology) merged into **ITS (Information Technology Services)**. HMS renamed from "Human Machinery Solutions" → **"Hotel Management Services"** (machinery services moved into ITS umbrella). Total Tier-1 = 15 (was 16).
 
 | # | Code | Full Name | Icon | Description | Min STL | DMO Mode | Accent |
 |---|------|-----------|------|-------------|---------|----------|--------|
-| 1 | GSM | GoSellr Management System | 🛒 | Main e-commerce + services marketplace | L1 | FAST | #7B6EF6 |
-| 2 | WMS | World Medical Services | 🏥 | Healthcare + telemedicine + AI diagnosis | L4 | CRITICAL | #2BBFA0 |
+| 1 | GSM | GoSellr Marketplace | 🛒 | Main e-commerce + services marketplace | L1 | FAST | #7B6EF6 |
+| 2 | WMS | Wellness & Medical Services | 🏥 | Healthcare + telemedicine + AI diagnosis | L4 | CRITICAL | #2BBFA0 |
 | 3 | HPS | Human Performance Solution | 🎓 | Courses, certifications, exams, skill tracking | L1 | BALANCED | #A098F8 |
 | 4 | OBS | Online Book Store | 📚 | Books + digital learning content | L1 | BALANCED | #F0A030 |
-| 5 | OLS | Online Law Services | ⚖️ | Legal consultation, case handling, contracts | L3 | CRITICAL | #F05858 |
+| 5 | OLS | Online Legal Services | ⚖️ | Legal consultation, case handling, contracts | L3 | CRITICAL | #F05858 |
 | 6 | LDS | Logistics & Delivery Services | 🚚 | Delivery + rider management | L1 | BALANCED | #38C878 |
 | 7 | AGTS | Advanced Global Travel Services | ✈️ | Tickets, hotels, travel packages, visas | L1 | BALANCED | #2BBFA0 |
-| 8 | HMS | Human Machinery Solutions | 🔧 | Machinery services, repair, maintenance | L2 | BALANCED | #7B6EF6 |
-| 9 | ITS | Industrial Technology Services | 🏭 | Industrial solutions, automation, IoT | L2 | BALANCED | #A098F8 |
-| 10 | SOT | Services of Technology | 💻 | Web + app dev, AI services, consulting | L1 | BALANCED | #7B6EF6 |
-| 11 | ERS | EHB Real Estate Services | 🏠 | Property buy/sell, rental, valuation | L2 | STRICT | #A098F8 |
-| 12 | EFS | EHB Financial Services | 💳 | Payments, financial tools, investments | L3 | CRITICAL | #F05858 |
-| 13 | EPS | EHB Professional Services | 👔 | Freelancers, consultants, contractors | L1 | BALANCED | #38C878 |
-| 14 | EAS | EHB Agriculture Services | 🌾 | Farming solutions, equipment, supplies | L1 | BALANCED | #38C878 |
-| 15 | ELS | EHB Local Services | 🏪 | Local services marketplace, handymen, tutors | L1 | FAST | #F0A030 |
-| 16 | EHB_TUBE | EHB Media Platform | 🎥 | Verified video sharing, content creators | L1 | BALANCED | #2BBFA0 |
+| 8 | HMS | **Hotel Management Services** ⭐ | 🏨 | Stays, hospitality, events, bookings | L2 | BALANCED | #7B6EF6 |
+| 9 | ITS | **Information Technology Services** ⭐ | 💻 | Web/mobile/AI dev + cloud + cybersec + industrial automation + IoT + robotics + IT consulting (absorbed ex-SOT) | L2 | BALANCED | #A098F8 |
+| 10 | ERS | EHB Real Estate Services | 🏠 | Property buy/sell, rental, valuation | L2 | STRICT | #A098F8 |
+| 11 | EFS | EHB Financial Services | 💳 | Payments, financial tools, investments | L3 | CRITICAL | #F05858 |
+| 12 | EPS | EHB Professional Services | 👔 | Freelancers, consultants, contractors | L1 | BALANCED | #38C878 |
+| 13 | EAS | EHB Agriculture Services | 🌾 | Farming solutions, equipment, supplies | L1 | BALANCED | #38C878 |
+| 14 | ELS | EHB Local Services | 🏪 | Local services marketplace, handymen, tutors | L1 | FAST | #F0A030 |
+| 15 | EHB_TUBE | EHB Media Platform | 🎥 | Verified video sharing, content creators | L1 | BALANCED | #2BBFA0 |
 
 ---
 

@@ -1,0 +1,31 @@
+{
+  "code": "US", "name": "United States", "phase": 3, "status": "planned",
+  "currency": { "code": "USD", "symbol": "$", "minor_units": 2, "fx_to_usd": 1.0 },
+  "languages": ["en", "es"], "timezone": "America/New_York", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "card"], "local": ["ach", "zelle"],
+    "wallet": ["apple_pay", "google_pay", "paypal", "venmo"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "Plaid_Persona", "min_pss_for_transactions": 3, "id_documents_accepted": ["Passport", "Driving_License", "SSN_for_taxes"] },
+  "compliance": {
+    "regulator_payments": "FinCEN_state_MTLs",
+    "regulator_data": "CCPA_state_laws",
+    "sales_tax_pct_avg": 7,
+    "amlcft_required": true,
+    "consumer_cooling_off_days": 0,
+    "state_money_transmitter_licenses_required": 49
+  },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 500000 },
+    "master": { "max": 50, "capital_lock_ehbgc": 75000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 20000 },
+    "sub": { "L8": 1000, "L9": 2000, "L10": 1000 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "state_money_transmitter_licenses" },
+    "WMS": { "additional_license_required": "state_medical_board_HIPAA" },
+    "OLS": { "additional_license_required": "state_bar_association" },
+    "INS": { "additional_license_required": "state_insurance_regulator" }
+  },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true, "us_states_licensed_count": 0 }
+}

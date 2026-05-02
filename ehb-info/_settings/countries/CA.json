@@ -1,0 +1,19 @@
+{
+  "code": "CA", "name": "Canada", "phase": 3, "status": "planned",
+  "currency": { "code": "CAD", "symbol": "C$", "minor_units": 2, "fx_to_usd": 0.74 },
+  "languages": ["en", "fr"], "timezone": "America/Toronto", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "card"], "local": ["interac_etransfer"],
+    "wallet": ["apple_pay", "google_pay", "paypal"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "SIN_commercial", "min_pss_for_transactions": 3, "id_documents_accepted": ["Passport", "Driving_License"] },
+  "compliance": { "regulator_payments": "FINTRAC", "regulator_data": "PIPEDA_Quebec_Law_25", "gst_hst_pct_range": "5-15", "amlcft_required": true, "consumer_cooling_off_days": 10 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 300000 },
+    "master": { "max": 13, "capital_lock_ehbgc": 50000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 15000 },
+    "sub": { "L8": 200, "L9": 400, "L10": 200 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "MSB_provincial" }, "INS": { "additional_license_required": "OSFI_provincial" } },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true }
+}

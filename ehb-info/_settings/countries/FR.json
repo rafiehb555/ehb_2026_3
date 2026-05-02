@@ -1,0 +1,19 @@
+{
+  "code": "FR", "name": "France", "phase": 3, "status": "planned",
+  "currency": { "code": "EUR", "symbol": "€", "minor_units": 2, "fx_to_usd": 1.08 },
+  "languages": ["fr", "en"], "timezone": "Europe/Paris", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "card"], "local": ["sepa", "carte_bancaire"],
+    "wallet": ["apple_pay", "google_pay", "paypal"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "Onfido_Veriff", "min_pss_for_transactions": 3, "id_documents_accepted": ["EU_ID", "Passport"] },
+  "compliance": { "regulator_payments": "ACPR", "regulator_data": "EU_GDPR_LIL", "tva_pct": 20, "amlcft_required": true, "consumer_cooling_off_days": 14 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 250000 },
+    "master": { "max": 13, "capital_lock_ehbgc": 50000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 15000 },
+    "sub": { "L8": 200, "L9": 400, "L10": 200 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "ACPR_authorisation" }, "WMS": { "additional_license_required": "Conseil_de_l_Ordre" } },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true }
+}

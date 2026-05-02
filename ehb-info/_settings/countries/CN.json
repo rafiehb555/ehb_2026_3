@@ -1,0 +1,31 @@
+{
+  "code": "CN", "name": "China", "phase": 3, "status": "planned",
+  "currency": { "code": "CNY", "symbol": "¥", "minor_units": 2, "fx_to_usd": 0.139 },
+  "languages": ["zh-CN", "en"], "timezone": "Asia/Shanghai", "rtl": false,
+  "payment_methods": {
+    "primary": ["alipay", "wechat_pay"], "local": ["alipay", "wechat_pay", "unionpay"],
+    "wallet": ["alipay", "wechat_pay"], "ehbgc_supported": false,
+    "_note": "Crypto/EHBGC heavily restricted in CN"
+  },
+  "kyc": { "primary_partner": "RealName_System", "min_pss_for_transactions": 4, "id_documents_accepted": ["PRC_ID", "Passport"] },
+  "compliance": {
+    "regulator_payments": "PBoC",
+    "regulator_data": "PIPL_CSL_DSL",
+    "vat_pct": 13,
+    "amlcft_required": true,
+    "data_residency": "China_required",
+    "icp_filing_required": true,
+    "local_entity_required": true
+  },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 1000000 },
+    "master": { "max": 30, "capital_lock_ehbgc": 100000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 25000 },
+    "sub": { "L8": 1000, "L9": 2000, "L10": 1000 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "PBoC_license_extremely_restrictive" },
+    "EHB_TUBE": { "additional_license_required": "ICP_filing_NRTA" }
+  },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true, "icp_obtained": false }
+}

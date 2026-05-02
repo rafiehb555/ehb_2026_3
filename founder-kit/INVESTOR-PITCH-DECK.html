@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>EHB Technologies · Investor Deck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #0C0E1A; color: #F4F5FA; font-family: 'DM Sans', system-ui, sans-serif; line-height: 1.5; }
+
+  .deck { max-width: 1200px; margin: 0 auto; padding: 24px; }
+  .slide {
+    background: #13162A; border: 1px solid #2D3147; border-radius: 16px;
+    padding: 56px 64px; margin-bottom: 24px; min-height: 720px;
+    display: flex; flex-direction: column; justify-content: center;
+    page-break-after: always; position: relative;
+  }
+  .slide-num {
+    position: absolute; top: 24px; right: 32px;
+    color: #6B7088; font-size: 12px; letter-spacing: 0.1em;
+  }
+  .eyebrow { color: #A098F8; font-size: 13px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; }
+  h1 { font-size: 56px; font-weight: 700; line-height: 1.1; margin-bottom: 24px; }
+  h2 { font-size: 40px; font-weight: 600; line-height: 1.2; margin-bottom: 24px; }
+  h3 { font-size: 24px; font-weight: 500; margin-bottom: 16px; }
+  .lead { font-size: 22px; color: #A0A4BC; line-height: 1.5; max-width: 800px; }
+  .body { font-size: 17px; color: #D3D1C7; line-height: 1.6; max-width: 900px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px; }
+  .card { background: #1A1D33; border: 1px solid #2D3147; border-radius: 12px; padding: 24px; }
+  .card-num { font-size: 36px; font-weight: 700; color: #7B6EF6; }
+  .card-label { font-size: 14px; color: #A0A4BC; margin-top: 4px; }
+  .card-desc { font-size: 14px; color: #6B7088; margin-top: 8px; line-height: 1.5; }
+  .tag { display: inline-block; padding: 4px 12px; background: #7B6EF622; color: #A098F8; border-radius: 999px; font-size: 12px; font-weight: 500; margin-right: 8px; }
+  .accent { color: #2BBFA0; }
+  .warn { color: #F0A030; }
+  .danger { color: #F05858; }
+  .footer { margin-top: 32px; font-size: 13px; color: #6B7088; }
+  ul { padding-left: 20px; }
+  li { margin: 8px 0; }
+
+  /* Slide 1 — Cover */
+  .cover { text-align: center; align-items: center; }
+  .cover h1 { font-size: 80px; background: linear-gradient(135deg, #7B6EF6, #2BBFA0); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .cover .lead { font-size: 26px; max-width: 700px; }
+  .cover .author { margin-top: 64px; color: #A0A4BC; font-size: 16px; }
+
+  /* Print */
+  @media print {
+    body { background: white; color: #1a1a1a; }
+    .slide { background: white; border: none; box-shadow: 0 0 0 1px #ddd; min-height: 100vh; page-break-after: always; }
+    .deck { max-width: none; padding: 0; }
+    h1, h2 { color: #1a1a1a; }
+    .lead { color: #444; }
+    .body { color: #333; }
+    .card { background: #f7f7f7; border: 1px solid #ddd; }
+    .card-num { color: #5C4DD0; }
+    .card-label, .card-desc, .footer { color: #666; }
+    .accent { color: #0F6E56; }
+    .warn { color: #854F0B; }
+    .danger { color: #A32D2D; }
+    .tag { background: #EEEDFE; color: #3C3489; }
+    .eyebrow { color: #5C4DD0; }
+  }
+
+  .table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 16px; }
+  .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #2D3147; }
+  .table th { color: #A0A4BC; font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+  @media print { .table th, .table td { border-bottom: 1px solid #ddd; color: #333; } }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .pill { padding: 4px 10px; background: #1A1D33; border: 1px solid #2D3147; border-radius: 999px; font-size: 12px; color: #A0A4BC; }
+  @media print { .pill { background: #f0f0f0; border-color: #ddd; color: #555; } }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- SLIDE 1 — COVER -->
+<section class="slide cover">
+  <div class="slide-num">01 / 10</div>
+  <div class="eyebrow">EHB TECHNOLOGIES (PVT.) LTD.</div>
+  <h1>One Platform.<br>Infinite Trust.</h1>
+  <p class="lead">A trust-verified super-app unifying 37 industries across 17 countries on a single Polkadot-anchored trust score.</p>
+  <div class="author">
+    Founder &amp; CEO: Muhammad Rafi · 2026 Investor Round
+  </div>
+</section>
+
+<!-- SLIDE 2 — PROBLEM -->
+<section class="slide">
+  <div class="slide-num">02 / 10</div>
+  <div class="eyebrow">THE PROBLEM</div>
+  <h2>Online buying is broken in emerging markets.</h2>
+  <div class="grid-2">
+    <div>
+      <h3 class="warn">Buyers don't trust sellers</h3>
+      <p class="body">Fake reviews · counterfeit goods · scam payments · no recourse on failed delivery. 1 in 4 PK e-commerce orders results in dispute.</p>
+    </div>
+    <div>
+      <h3 class="warn">Sellers don't get paid fairly</h3>
+      <p class="body">Marketplaces take 30%+ commission. Reviews are gameable. Late payouts kill cash flow. No portable reputation.</p>
+    </div>
+    <div>
+      <h3 class="warn">Industries are siloed</h3>
+      <p class="body">Healthcare, legal, finance, education each on separate apps. Same user. Same identity. Different trust scores. No portability.</p>
+    </div>
+    <div>
+      <h3 class="warn">No verifiable trust layer</h3>
+      <p class="body">Verification depends on the platform. No tamper-proof record. Trust evaporates when platforms shut down.</p>
+    </div>
+  </div>
+  <p class="footer">$5T global e-commerce + services · trust gap is the #1 friction.</p>
+</section>
+
+<!-- SLIDE 3 — SOLUTION -->
+<section class="slide">
+  <div class="slide-num">03 / 10</div>
+  <div class="eyebrow">THE SOLUTION</div>
+  <h2>EHB STL — a portable trust score, anchored on Polkadot.</h2>
+  <p class="lead">Every user, seller, product, and franchise gets a single trust score (L1-L10) derived from identity (PSS), skills (CRB), and behavior (DMO). Locked on-chain. Portable across all 37 industries.</p>
+  <div class="grid-3" style="margin-top: 40px;">
+    <div class="card">
+      <div class="card-num">PSS</div>
+      <div class="card-label">Personal Security Score</div>
+      <div class="card-desc">Identity + KYC + biometric verification (L0–L10)</div>
+    </div>
+    <div class="card">
+      <div class="card-num">CRB</div>
+      <div class="card-label">Certification, Refill &amp; Background</div>
+      <div class="card-desc">Skill exams · industry licenses · ongoing refills</div>
+    </div>
+    <div class="card">
+      <div class="card-num">DMO</div>
+      <div class="card-label">Digital Management Office</div>
+      <div class="card-desc">Behavior · disputes · enforcement</div>
+    </div>
+  </div>
+  <p class="footer" style="margin-top: 32px;">Score = (PSS × 0.4) + (CRB × 0.3) + (DMO × 0.3) → MIN-chain anti-fraud cap → final L1–L10. <span class="accent">Polkadot-anchored. Tamper-proof.</span></p>
+</section>
+
+<!-- SLIDE 4 — HOW IT WORKS -->
+<section class="slide">
+  <div class="slide-num">04 / 10</div>
+  <div class="eyebrow">HOW IT WORKS</div>
+  <h2>One brain. 37 industries. Same trust system.</h2>
+  <div class="body" style="margin-bottom: 24px;">
+    Every transaction flows through the same architecture. Industry is just configuration — not separate code.
+  </div>
+  <table class="table">
+    <thead>
+      <tr><th>Layer</th><th>Function</th><th>Module</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>User intent classified by AI</td><td>EHB Dev AI Core</td></tr>
+      <tr><td>2</td><td>Identity verified</td><td>PSS + KYC partners (NADRA, EIDA, etc.)</td></tr>
+      <tr><td>3</td><td>Skills/licenses verified</td><td>CRB exams + franchise physical visit</td></tr>
+      <tr><td>4</td><td>Industry gate enforced</td><td>STL gate middleware (per-industry min level)</td></tr>
+      <tr><td>5</td><td>Money escrowed</td><td>Wallet (Stripe + JazzCash adapters)</td></tr>
+      <tr><td>6</td><td>Work / delivery</td><td>Industry vertical UI</td></tr>
+      <tr><td>7</td><td>Settlement + anchor</td><td>70/10/10/10 split → Polkadot anchor</td></tr>
+      <tr><td>8</td><td>Trust update</td><td>STL recompute → next user benefits</td></tr>
+    </tbody>
+  </table>
+  <p class="footer">DMO intervenes only on fraud / dispute / violation — 95%+ of orders auto-flow.</p>
+</section>
+
+<!-- SLIDE 5 — MARKET -->
+<section class="slide">
+  <div class="slide-num">05 / 10</div>
+  <div class="eyebrow">MARKET OPPORTUNITY</div>
+  <h2>37 industries. 17 countries. $5T+ TAM.</h2>
+  <div class="grid-4">
+    <div class="card">
+      <div class="card-num">37</div>
+      <div class="card-label">Industries</div>
+      <div class="card-desc">Healthcare · Legal · Finance · Education · Retail · Logistics + 31 more</div>
+    </div>
+    <div class="card">
+      <div class="card-num">17</div>
+      <div class="card-label">Countries</div>
+      <div class="card-desc">PK · AE · SA · TR · MY → ID · EG · GB → US · DE · CN · IN</div>
+    </div>
+    <div class="card">
+      <div class="card-num">$5T+</div>
+      <div class="card-label">Total addressable</div>
+      <div class="card-desc">Combined GMV across 37 industries × 17 countries</div>
+    </div>
+    <div class="card">
+      <div class="card-num">$80B</div>
+      <div class="card-label">Phase 1 TAM</div>
+      <div class="card-desc">Pakistan e-commerce + services market alone</div>
+    </div>
+  </div>
+  <h3 style="margin-top: 32px;">Phase 1 Launch — Pakistan</h3>
+  <div class="pill-row">
+    <span class="pill">240M population</span>
+    <span class="pill">$80B e-commerce + services</span>
+    <span class="pill">12% YoY digital growth</span>
+    <span class="pill">Founder home market</span>
+    <span class="pill">JazzCash integration ready</span>
+  </div>
+</section>
+
+<!-- SLIDE 6 — BUSINESS MODEL -->
+<section class="slide">
+  <div class="slide-num">06 / 10</div>
+  <div class="eyebrow">BUSINESS MODEL</div>
+  <h2>8 revenue streams. Auto-distributed.</h2>
+  <table class="table">
+    <thead><tr><th>Stream</th><th>Take rate</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Transaction fee</td><td>10%</td><td>Of every order — split 5-tier franchise</td></tr>
+      <tr><td>Withdrawal fee</td><td>1–2%</td><td>Domestic / international</td></tr>
+      <tr><td>STL Boost (paid)</td><td>$50–$400</td><td>30-day visibility upgrade</td></tr>
+      <tr><td>Sponsored listings</td><td>CPM</td><td>$10/1k impressions baseline</td></tr>
+      <tr><td>Franchise licensing</td><td>$5K–$500K</td><td>One-time + 5% yearly renewal</td></tr>
+      <tr><td>Premium subscriptions</td><td>$50–$5K/mo</td><td>Business / Enterprise / White-label</td></tr>
+      <tr><td>EHB Dev AI marketplace</td><td>$0.20/call</td><td>After 3 free calls/day</td></tr>
+      <tr><td>Data analytics API</td><td>$99–$5K/mo</td><td>Industry insights for partners</td></tr>
+    </tbody>
+  </table>
+  <h3 style="margin-top: 24px;">Revenue split per order</h3>
+  <p class="body">70% seller · 10% rider · 10% franchise (40/15/25/15/5 across 5 tiers) · 10% EHB platform.</p>
+  <p class="footer">Forecast Year 1: $50K · Year 3: $5M · Year 5: $50M (Pakistan + 4 ME countries).</p>
+</section>
+
+<!-- SLIDE 7 — TRACTION / STATUS -->
+<section class="slide">
+  <div class="slide-num">07 / 10</div>
+  <div class="eyebrow">PRODUCT STATUS</div>
+  <h2>99% built. Ready for closed beta.</h2>
+  <div class="grid-2">
+    <div>
+      <h3 class="accent">✅ What's done</h3>
+      <ul class="body">
+        <li>Full STL formula + 58 gold-master regression tests</li>
+        <li>17 departments coded (PSS, CRB, DMO, Wallet, Finance, AI...)</li>
+        <li>37 industry pages live</li>
+        <li>5-tier franchise hierarchy with revenue split</li>
+        <li>Stripe + JazzCash adapter scaffolding</li>
+        <li>Polkadot anchor adapter</li>
+        <li>Auto-decision engine + fraud detection</li>
+        <li>Founder console + daily-brief AI</li>
+        <li>Mobile-ready (Expo plan documented)</li>
+        <li>End-to-end smoke test: 22/22 ✓</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="warn">⏳ What's pending (founder action)</h3>
+      <ul class="body">
+        <li>Pakistan SECP company registration (2 weeks)</li>
+        <li>JazzCash + Stripe production keys (2 weeks)</li>
+        <li>Cloud deployment (Vercel + Railway, 1 day)</li>
+        <li>Hire 5-person ops team (4 weeks)</li>
+        <li>50 closed-beta testers</li>
+        <li>3-month public launch (Q3 2026)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer">230+ documentation files · 1,500+ lines of production code · 145 completed engineering tasks.</p>
+</section>
+
+<!-- SLIDE 8 — ROADMAP -->
+<section class="slide">
+  <div class="slide-num">08 / 10</div>
+  <div class="eyebrow">ROADMAP</div>
+  <h2>Pakistan in 90 days. Global in 24 months.</h2>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-num">P1</div>
+      <div class="card-label">Months 0–3 — Pakistan</div>
+      <div class="card-desc">Beta · Public launch · 100K users · 5 industries live (GSM, OLS, HPS, OBS, JPS) · $1M GMV target</div>
+    </div>
+    <div class="card">
+      <div class="card-num">P2</div>
+      <div class="card-label">Months 3–9 — ME + SE Asia</div>
+      <div class="card-desc">UAE · Saudi · Turkey · Malaysia · Indonesia · 30 industries live · 500K users · $10M GMV</div>
+    </div>
+    <div class="card">
+      <div class="card-num">P3</div>
+      <div class="card-label">Months 9–24 — Global</div>
+      <div class="card-desc">UK · Germany · France · US · India · 37 industries · 10M users · $100M GMV</div>
+    </div>
+  </div>
+  <h3 style="margin-top: 32px;">Key milestones</h3>
+  <ul class="body">
+    <li><strong>Month 1:</strong> Pakistan SECP + JazzCash live · 100 closed beta users</li>
+    <li><strong>Month 3:</strong> 10K active users · first $50K monthly revenue</li>
+    <li><strong>Month 6:</strong> 100K users · UAE expansion launched</li>
+    <li><strong>Month 12:</strong> 1M users · Series A ready · $1M monthly revenue</li>
+  </ul>
+</section>
+
+<!-- SLIDE 9 — TEAM -->
+<section class="slide">
+  <div class="slide-num">09 / 10</div>
+  <div class="eyebrow">TEAM</div>
+  <h2>Founder-led. Engineer-built. Ready to scale.</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>Muhammad Rafi · Founder &amp; CEO</h3>
+      <p class="body">Vision · architecture · product · partnerships. Built the entire EHB system from concept to 99% production-ready code in 2026.</p>
+      <div class="pill-row">
+        <span class="pill">Pakistan</span>
+        <span class="pill">Multi-industry vision</span>
+        <span class="pill">Polkadot integration</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Engineering &amp; Ops (hiring now)</h3>
+      <p class="body">First 5-person team budget locked. Senior dev + mid dev + DMO officer + customer support + marketing lead. PKR 800K/mo. Equity: 5% pool.</p>
+      <div class="pill-row">
+        <span class="pill">Hiring via HR Ways</span>
+        <span class="pill">Lahore + Karachi</span>
+      </div>
+    </div>
+  </div>
+  <h3 style="margin-top: 32px;">Advisors (open seats)</h3>
+  <p class="body">Looking for 3 advisors: regulatory (SBP/SECP) · scale (marketplace ops) · expansion (Middle East). 0.25–0.5% equity each.</p>
+</section>
+
+<!-- SLIDE 10 — THE ASK -->
+<section class="slide">
+  <div class="slide-num">10 / 10</div>
+  <div class="eyebrow">THE ASK</div>
+  <h2>$500K seed. 18-month runway.</h2>
+  <div class="grid-2">
+    <div>
+      <h3 class="accent">What we need</h3>
+      <ul class="body">
+        <li><strong>$500,000 seed</strong> — friends, family, angels, micro-VC</li>
+        <li>18-month runway to Series A milestone</li>
+        <li>Strategic intros: Stripe PK, JazzCash leadership, regulators</li>
+        <li>Advisor seats × 3 (regulatory, scale, expansion)</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="warn">Use of funds</h3>
+      <table class="table" style="font-size: 14px;">
+        <tbody>
+          <tr><td>Team (5 hires × 18 mo)</td><td style="text-align: right;">$240K</td></tr>
+          <tr><td>Cloud + infra (18 mo)</td><td style="text-align: right;">$50K</td></tr>
+          <tr><td>Marketing + growth</td><td style="text-align: right;">$80K</td></tr>
+          <tr><td>Legal + compliance (4 countries)</td><td style="text-align: right;">$60K</td></tr>
+          <tr><td>Working capital + contingency</td><td style="text-align: right;">$70K</td></tr>
+          <tr><td><strong>Total</strong></td><td style="text-align: right;"><strong>$500K</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <h3 style="margin-top: 32px;">Valuation</h3>
+  <p class="body">Pre-money: <strong>$3M</strong> · Post: $3.5M · Seed pool: ~14% · 4-year vesting + 1-year cliff for all hires.</p>
+  <h3 style="margin-top: 24px;" class="accent">Next milestones (post-funding)</h3>
+  <p class="body">Month 1: incorporate + payment partners signed → Month 3: 10K users → Month 12: $1M MRR → Month 18: Series A at $25M valuation.</p>
+  <p class="footer" style="margin-top: 32px;">📧 ehb.rafi.mr@gmail.com · 🌐 ehb.com (launching) · 📞 Available for 1:1 demo this week</p>
+</section>
+
+</div>
+
+<script>
+  // Print prompt for PDF export
+  if (window.location.search.includes('print')) {
+    setTimeout(() => window.print(), 500);
+  }
+</script>
+
+</body>
+</html>

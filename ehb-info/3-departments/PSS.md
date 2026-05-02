@@ -1,6 +1,8 @@
-# PSS — Proof & Security System
+# PSS — Personal Security Score
 
-**Status:** Canonical spec (v3.0) · Comprehensive rewrite with 10-level ladder, 9 user types, L0 pre-level, 9-step verification flow, EHB responsibility %, token lock mechanics · 2026-04-18
+> **Renamed 2026-04-30 by founder:** "Proof & Security System" → **"Personal Security Score"** (parallel to STL — both end in "Score" for user-facing clarity). Acronym preserved.
+
+**Status:** Canonical spec (v3.1) · Renamed 2026-04-30 · v3.0 ladder + flows preserved
 
 **Related:** `STL.md` (composite formula), `CRB.md` (certification ladder), `DMO.md` (governance), `EHB-PSS-MASTER-PLAN.md` (implementation detail)
 

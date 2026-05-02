@@ -1,4 +1,6 @@
-# DMO — Decentralized Management Office
+# DMO — Digital Management Office
+
+> **Renamed 2026-04-30 by founder:** "Decentralized Management Office" → **"Digital Management Office"** (clearer for users; architecture remains decentralized internally).
 
 **Department:** DMO
 **Role in EHB:** The governance brain of the entire platform — 7 engines, decision core, dashboard

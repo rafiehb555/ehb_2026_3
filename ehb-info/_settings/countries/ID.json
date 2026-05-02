@@ -1,0 +1,21 @@
+{
+  "code": "ID", "name": "Indonesia", "phase": 2, "status": "planned",
+  "currency": { "code": "IDR", "symbol": "Rp", "minor_units": 0, "fx_to_usd": 0.0000632 },
+  "languages": ["id", "en"], "timezone": "Asia/Jakarta", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "midtrans"],
+    "local": ["midtrans", "ovo", "gopay", "dana"],
+    "wallet": ["ovo", "gopay", "shopeepay"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "Dukcapil", "min_pss_for_transactions": 3, "id_documents_accepted": ["KTP", "Passport"] },
+  "compliance": { "regulator_payments": "OJK", "regulator_data": "PDP_Law_2022", "ppn_pct": 11, "amlcft_required": true, "consumer_cooling_off_days": 7 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 34, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 500, "L9": 1000, "L10": 500 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": { "FIN": { "additional_license_required": "OJK_fintech" }, "WMS": { "additional_license_required": "BPOM" } },
+  "shipping": { "domestic_carriers": ["JNE", "Pos_Indonesia", "JNT"], "international_carriers": ["DHL", "FedEx"] },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": false }
+}

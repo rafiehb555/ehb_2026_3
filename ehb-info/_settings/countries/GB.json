@@ -1,0 +1,25 @@
+{
+  "code": "GB", "name": "United Kingdom", "phase": 2, "status": "planned",
+  "currency": { "code": "GBP", "symbol": "£", "minor_units": 2, "fx_to_usd": 1.27 },
+  "languages": ["en"], "timezone": "Europe/London", "rtl": false,
+  "payment_methods": {
+    "primary": ["stripe", "card"],
+    "local": ["faster_payments", "open_banking"],
+    "wallet": ["apple_pay", "google_pay", "paypal"], "ehbgc_supported": true
+  },
+  "kyc": { "primary_partner": "Onfido", "min_pss_for_transactions": 3, "id_documents_accepted": ["UK_Passport", "Driving_License", "EU_ID"] },
+  "compliance": { "regulator_payments": "FCA", "regulator_data": "UK_GDPR_DPA_2018", "vat_pct": 20, "amlcft_required": true, "consumer_cooling_off_days": 14 },
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 200000 },
+    "master": { "max": 12, "capital_lock_ehbgc": 50000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 15000 },
+    "sub": { "L8": 100, "L9": 200, "L10": 100 }, "micro": { "max": "unlimited" }
+  },
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "FCA_authorisation" },
+    "WMS": { "additional_license_required": "GMC_CQC" },
+    "OLS": { "additional_license_required": "SRA" }
+  },
+  "shipping": { "domestic_carriers": ["Royal_Mail", "DHL_UK", "DPD"], "international_carriers": ["DHL", "FedEx", "UPS"] },
+  "launch_checklist": { "legal_entity_formed": false, "payment_partner_signed": false, "kyc_partner_signed": false, "tos_translated": true }
+}
