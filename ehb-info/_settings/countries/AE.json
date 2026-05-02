@@ -1,0 +1,71 @@
+{
+  "code": "AE",
+  "name": "United Arab Emirates",
+  "phase": 1,
+  "status": "active",
+
+  "currency": { "code": "AED", "symbol": "د.إ", "minor_units": 2, "fx_to_usd": 0.272 },
+  "default_currency_display": "AED",
+  "languages": ["ar", "en"],
+  "timezone": "Asia/Dubai",
+  "rtl": true,
+
+  "payment_methods": {
+    "primary": ["stripe", "card"],
+    "local": ["network_international", "telr"],
+    "wallet": ["apple_pay", "google_pay", "samsung_pay"],
+    "bank_transfer": ["IBAN"],
+    "ehbgc_supported": true
+  },
+
+  "kyc": {
+    "primary_partner": "EIDA",
+    "secondary_partners": ["UAEPass"],
+    "min_pss_for_transactions": 3,
+    "id_documents_accepted": ["Emirates_ID", "Passport"]
+  },
+
+  "compliance": {
+    "regulator_payments": "CB-UAE",
+    "regulator_data": "UAE_PDPL",
+    "regulator_kyc": "EIDA",
+    "vat_pct": 5,
+    "corporate_tax_pct": 9,
+    "amlcft_required": true,
+    "data_residency": "UAE_or_GCC",
+    "consumer_cooling_off_days": 14
+  },
+
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 7, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 60, "L9": 100, "L10": 50, "capital_lock_ehbgc_by_level": { "L1": 0, "L8": 2000, "L9": 4000, "L10": 10000 } },
+    "micro": { "max": "unlimited", "capital_lock_ehbgc": 0 }
+  },
+
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "CB-UAE_fintech" },
+    "WMS": { "additional_license_required": "DOH_or_MOH" },
+    "OLS": { "additional_license_required": "UAE_Bar" },
+    "INS": { "additional_license_required": "Insurance_Authority" },
+    "RES": { "additional_license_required": "RERA" }
+  },
+
+  "shipping": {
+    "domestic_carriers": ["EmiratesPost", "Aramex", "DHL_UAE"],
+    "international_carriers": ["DHL", "FedEx", "UPS"],
+    "free_zone_handling": ["JAFZA", "DAFZA", "RAKEZ"]
+  },
+
+  "launch_checklist": {
+    "legal_entity_formed": true,
+    "payment_partner_signed": false,
+    "kyc_partner_signed": false,
+    "country_franchise_appointed": false,
+    "first_master_franchise_appointed": false,
+    "industry_licenses_obtained": ["pending"],
+    "tos_translated": true,
+    "support_team_local": false
+  }
+}

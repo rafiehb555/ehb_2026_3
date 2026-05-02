@@ -1,0 +1,17 @@
+{
+  "title": "EHB · Payments",
+  "uid": "ehb-payments",
+  "tags": ["ehb", "payments"],
+  "schemaVersion": 39,
+  "panels": [
+    { "title": "Escrow Locked (USD)", "type": "stat", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_escrow_locked_usd" }] },
+    { "title": "Escrow Released (24h)", "type": "stat", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "increase(ehb_escrow_released_total[24h])" }] },
+    { "title": "Refund Rate %", "type": "stat", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "rate(ehb_escrow_refunded_total[24h]) / rate(ehb_escrow_released_total[24h]) * 100" }] },
+    { "title": "Failure Rate %", "type": "stat", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "rate(ehb_payment_failures_total[1h]) / rate(ehb_payment_attempts_total[1h]) * 100" }], "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 5 }] } },
+    { "title": "Payments by Provider", "type": "graph", "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "rate(ehb_payment_attempts_total[5m])", "legendFormat": "{{provider}}" }] },
+    { "title": "Failures by Provider", "type": "graph", "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "rate(ehb_payment_failures_total[5m])", "legendFormat": "{{provider}}" }] },
+    { "title": "Escrow Hold Time (avg)", "type": "graph", "gridPos": { "x": 0, "y": 12, "w": 24, "h": 6 }, "targets": [{ "expr": "rate(ehb_escrow_hold_seconds_sum[5m]) / rate(ehb_escrow_hold_seconds_count[5m])" }] }
+  ],
+  "time": { "from": "now-24h", "to": "now" },
+  "refresh": "1m"
+}

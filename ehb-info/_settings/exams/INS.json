@@ -1,0 +1,28 @@
+{
+  "industry": "INS",
+  "name": "Insurance Services",
+  "version": "1.0",
+  "passing_criteria": { "theory_min_pct": 70, "practical_min_pct": 75, "overall_min_pct": 75 },
+  "validity_months": 12,
+
+  "theory_mcqs": [
+    { "id": "INS-T-001", "stem": "Indemnity principle in insurance means:", "options": ["Profit on claim", "Restore insured to pre-loss state", "Penalty payment", "Premium return"], "answer_index": 1, "category": "principles", "difficulty": "L3" },
+    { "id": "INS-T-002", "stem": "Subrogation allows insurer to:", "options": ["Cancel policy", "Pursue 3rd party who caused loss after paying claim", "Charge extra premium", "Deny claim"], "answer_index": 1, "category": "principles", "difficulty": "L4" },
+    { "id": "INS-T-003", "stem": "Material non-disclosure can:", "options": ["Increase coverage", "Void policy from inception", "Be ignored", "Reduce premium"], "answer_index": 1, "category": "underwriting", "difficulty": "L4" },
+    { "id": "INS-T-004", "stem": "Fortuity in insurance means:", "options": ["Loss must be accidental, not certain", "Loss must be planned", "Loss must be small", "Loss must be in writing"], "answer_index": 0, "category": "principles", "difficulty": "L3" },
+    { "id": "INS-T-005", "stem": "First step in claims process:", "options": ["Pay immediately", "FNOL — first notification of loss", "Litigation", "Cancel policy"], "answer_index": 1, "category": "claims", "difficulty": "L2" },
+    { "id": "INS-T-006", "stem": "Co-insurance clause requires insured to:", "options": ["Insure to full value or share loss", "Pay double premium", "Have multiple policies", "Get free coverage"], "answer_index": 0, "category": "policy", "difficulty": "L4" },
+    { "id": "INS-T-007", "stem": "Suspicious claim indicators include:", "options": ["Receipts provided", "Late reporting + inconsistent stories + multiple recent policies", "Police report", "Hospital admission"], "answer_index": 1, "category": "fraud", "difficulty": "L5" },
+    { "id": "INS-T-008", "stem": "Reinsurance is:", "options": ["Re-issue policy", "Insurer transferring risk to another insurer", "Premium refund", "Customer's second policy"], "answer_index": 1, "category": "industry", "difficulty": "L5" },
+    { "id": "INS-T-009", "stem": "Loss ratio = ?", "options": ["Premiums / Claims", "Claims paid / Premiums earned", "Profit / Loss", "Claims / Customers"], "answer_index": 1, "category": "metrics", "difficulty": "L4" },
+    { "id": "INS-T-010", "stem": "An exclusion clause typically:", "options": ["Adds coverage", "Removes specific risks from coverage", "Doubles premium", "Voids policy"], "answer_index": 1, "category": "policy", "difficulty": "L3" }
+  ],
+
+  "practical_tasks": [
+    { "id": "INS-P-001", "title": "Claim investigation report", "scenario": "Investigate a $20K auto claim with conflicting witness statements. Submit investigation report with recommendation.", "deliverables": ["Investigation timeline", "Evidence assessment", "Recommendation memo"], "evaluation_rubric": [{"criterion":"Evidence handling","weight":35},{"criterion":"Reasoning","weight":30},{"criterion":"Recommendation quality","weight":25},{"criterion":"Compliance","weight":10}], "time_limit_hours": 4, "min_pass_score": 80 },
+    { "id": "INS-P-002", "title": "Underwrite a complex case", "scenario": "Property insurance for a 50-year-old commercial building with unique risks. Decide acceptance/rejection/conditions.", "deliverables": ["Risk assessment", "Premium calculation", "Conditions list"], "evaluation_rubric": [{"criterion":"Risk identification","weight":35},{"criterion":"Pricing accuracy","weight":35},{"criterion":"Conditions","weight":30}], "time_limit_hours": 3, "min_pass_score": 80 },
+    { "id": "INS-P-003", "title": "Policy comparison advisory", "scenario": "Client has 3 policy quotes. Compare and recommend best fit for their family situation.", "deliverables": ["Comparison matrix", "Recommendation memo", "Risk disclosures"], "evaluation_rubric": [{"criterion":"Coverage analysis","weight":40},{"criterion":"Recommendation","weight":35},{"criterion":"Disclosure","weight":25}], "time_limit_hours": 2, "min_pass_score": 75 },
+    { "id": "INS-P-004", "title": "Fraud detection case", "scenario": "Review 10 claims; identify suspicious patterns, document fraud indicators.", "deliverables": ["Per-claim assessment", "Fraud indicators report", "Action recommendations"], "evaluation_rubric": [{"criterion":"Fraud identification","weight":50},{"criterion":"Documentation","weight":25},{"criterion":"Actions","weight":25}], "time_limit_hours": 3, "min_pass_score": 85 },
+    { "id": "INS-P-005", "title": "Claims communication", "scenario": "Communicate complex claim denial to a customer in a clear, empathetic way. Live video.", "deliverables": ["Recorded session", "Written denial letter", "Reflection note"], "evaluation_rubric": [{"criterion":"Empathy","weight":30},{"criterion":"Clarity","weight":35},{"criterion":"Documentation","weight":35}], "time_limit_hours": 1, "min_pass_score": 75 }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "industry": "OLS",
+  "name": "Online Law Services",
+  "version": "1.0",
+  "passing_criteria": { "theory_min_pct": 70, "practical_min_pct": 75, "overall_min_pct": 75 },
+  "validity_months": 12,
+  "crb_level_per_score": {
+    "L1": [60, 70], "L2": [70, 75], "L3": [75, 80], "L4": [80, 85], "L5": [85, 90],
+    "L6": [90, 92], "L7": [92, 95], "L8": [95, 97], "L9": [97, 99], "L10": [99, 100]
+  },
+
+  "theory_mcqs": [
+    { "id": "OLS-T-001", "stem": "What is the doctrine of stare decisis?", "options": ["Verbal contracts only", "Court binds itself by past decisions", "Punitive damages", "Reverse jurisdiction"], "answer_index": 1, "category": "principles", "difficulty": "L3" },
+    { "id": "OLS-T-002", "stem": "An offer becomes a contract when:", "options": ["Made", "Considered", "Accepted unequivocally with consideration", "Posted online"], "answer_index": 2, "category": "contracts", "difficulty": "L3" },
+    { "id": "OLS-T-003", "stem": "Limitation period for filing a typical civil tort claim in PK?", "options": ["1 year", "3 years", "12 years", "20 years"], "answer_index": 1, "category": "civil_law_pk", "difficulty": "L4" },
+    { "id": "OLS-T-004", "stem": "Burden of proof in criminal cases:", "options": ["Preponderance of evidence", "Beyond reasonable doubt", "Balance of probabilities", "Clear and convincing"], "answer_index": 1, "category": "criminal_law", "difficulty": "L2" },
+    { "id": "OLS-T-005", "stem": "Attorney-client privilege does NOT cover:", "options": ["Past wrongdoing disclosed in confidence", "Future planned crime", "Strategic discussions", "Settlement negotiations"], "answer_index": 1, "category": "ethics", "difficulty": "L4" },
+    { "id": "OLS-T-006", "stem": "A contract may be rescinded for:", "options": ["Buyer's mood", "Material misrepresentation", "Slight error", "Late delivery by 1 day"], "answer_index": 1, "category": "contracts", "difficulty": "L4" },
+    { "id": "OLS-T-007", "stem": "Force majeure clauses require:", "options": ["Verbal mention", "Specific listed events + impossibility/frustration of purpose", "All possible events listed", "Court approval"], "answer_index": 1, "category": "contracts", "difficulty": "L5" },
+    { "id": "OLS-T-008", "stem": "Conflict of interest in legal practice means:", "options": ["Two clients with opposing positions", "Two cases at once", "Clients in different industries", "International clients"], "answer_index": 0, "category": "ethics", "difficulty": "L3" },
+    { "id": "OLS-T-009", "stem": "A will must typically have:", "options": ["Verbal record only", "Testator signature + 2 witnesses", "Court certificate at signing", "Notary only"], "answer_index": 1, "category": "wills", "difficulty": "L4" },
+    { "id": "OLS-T-010", "stem": "GDPR/PDPL principles include:", "options": ["Data maximisation", "Purpose limitation", "Indefinite retention", "No consent needed"], "answer_index": 1, "category": "data_law", "difficulty": "L5" }
+  ],
+
+  "practical_tasks": [
+    {
+      "id": "OLS-P-001",
+      "title": "Draft a service agreement",
+      "scenario": "Two parties want a consulting agreement (3 months, $5K). Draft a complete legally-sound contract including IP, confidentiality, termination, and dispute resolution.",
+      "deliverables": ["Draft agreement (PDF)", "Clause-by-clause justification memo"],
+      "evaluation_rubric": [
+        { "criterion": "Coverage of essential clauses", "weight": 30 },
+        { "criterion": "Legal soundness", "weight": 30 },
+        { "criterion": "Clarity & enforceability", "weight": 25 },
+        { "criterion": "Justification quality", "weight": 15 }
+      ],
+      "time_limit_hours": 4, "min_pass_score": 75
+    },
+    {
+      "id": "OLS-P-002",
+      "title": "Legal opinion memo",
+      "scenario": "Client asks: can their employer enforce a 5-year non-compete in PK?",
+      "deliverables": ["Memo (3-5 pages)", "Citations to case law / statute", "Client-friendly summary"],
+      "evaluation_rubric": [
+        { "criterion": "Legal accuracy", "weight": 40 },
+        { "criterion": "Citation quality", "weight": 25 },
+        { "criterion": "Client communication", "weight": 20 },
+        { "criterion": "Risk assessment", "weight": 15 }
+      ],
+      "time_limit_hours": 3, "min_pass_score": 80
+    },
+    {
+      "id": "OLS-P-003",
+      "title": "Court filing simulation",
+      "scenario": "Prepare an e-filing for a small claims case. Include all required forms and supporting docs.",
+      "deliverables": ["Complete filing package", "Filing checklist", "Notice of hearing draft"],
+      "evaluation_rubric": [
+        { "criterion": "Form completeness", "weight": 35 },
+        { "criterion": "Document accuracy", "weight": 30 },
+        { "criterion": "Procedural compliance", "weight": 25 },
+        { "criterion": "Deadline awareness", "weight": 10 }
+      ],
+      "time_limit_hours": 2, "min_pass_score": 80
+    },
+    {
+      "id": "OLS-P-004",
+      "title": "Client interview (video)",
+      "scenario": "Conduct mock client interview for a divorce case. Establish rapport, gather facts, identify legal issues, advise on next steps.",
+      "deliverables": ["Recorded session", "Intake summary", "Action plan"],
+      "evaluation_rubric": [
+        { "criterion": "Rapport & empathy", "weight": 25 },
+        { "criterion": "Fact gathering", "weight": 30 },
+        { "criterion": "Issue identification", "weight": 25 },
+        { "criterion": "Plan clarity", "weight": 20 }
+      ],
+      "time_limit_hours": 1, "min_pass_score": 75
+    },
+    {
+      "id": "OLS-P-005",
+      "title": "Compliance review",
+      "scenario": "Review a startup's TOS for a Pakistan + UAE launch. Flag issues, suggest revisions.",
+      "deliverables": ["Annotated TOS", "Issues table", "Revised version"],
+      "evaluation_rubric": [
+        { "criterion": "Issue identification", "weight": 35 },
+        { "criterion": "Cross-jurisdictional awareness", "weight": 30 },
+        { "criterion": "Revision quality", "weight": 25 },
+        { "criterion": "Documentation", "weight": 10 }
+      ],
+      "time_limit_hours": 4, "min_pass_score": 80
+    }
+  ]
+}

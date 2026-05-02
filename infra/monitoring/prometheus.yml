@@ -1,0 +1,51 @@
+# EHB · Prometheus scrape config
+# Place this on the Prometheus server (or include in docker-compose)
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: ehb-prod
+    region: pk-primary
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+rule_files:
+  - 'alerts.yml'
+
+scrape_configs:
+  - job_name: 'ehb-api'
+    metrics_path: /api/metrics
+    static_configs:
+      - targets: ['api:5000']
+        labels:
+          service: api
+
+  - job_name: 'ehb-ai'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['ai:8080']
+        labels:
+          service: ai
+
+  - job_name: 'ehb-web'
+    metrics_path: /api/metrics
+    static_configs:
+      - targets: ['web:3000']
+        labels:
+          service: web
+
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['mongodb-exporter:9216']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']

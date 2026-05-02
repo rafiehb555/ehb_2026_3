@@ -1,0 +1,20 @@
+{
+  "name": "@ehb/ai",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "typecheck": "echo 'JS service — no typecheck'",
+    "lint": "echo 'lint stub' && exit 0",
+    "clean": "rm -rf node_modules .turbo"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "openai": "^4.52.0"
+  }
+}

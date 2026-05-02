@@ -1,0 +1,62 @@
+{
+  "code": "TR",
+  "name": "Türkiye",
+  "phase": 1,
+  "status": "active",
+
+  "currency": { "code": "TRY", "symbol": "₺", "minor_units": 2, "fx_to_usd": 0.031 },
+  "languages": ["tr", "en"],
+  "timezone": "Europe/Istanbul",
+  "rtl": false,
+
+  "payment_methods": {
+    "primary": ["stripe", "iyzico"],
+    "local": ["iyzico", "papara", "param"],
+    "wallet": ["bkm_express", "apple_pay", "google_pay"],
+    "bank_transfer": ["IBAN_FAST"],
+    "ehbgc_supported": true
+  },
+
+  "kyc": {
+    "primary_partner": "E-Devlet",
+    "min_pss_for_transactions": 3,
+    "id_documents_accepted": ["TC_Kimlik", "Passport"]
+  },
+
+  "compliance": {
+    "regulator_payments": "BDDK",
+    "regulator_data": "KVKK",
+    "regulator_kyc": "E-Devlet",
+    "vat_pct": 18,
+    "kdv_pct": 18,
+    "amlcft_required": true,
+    "data_residency": "Turkey_required_for_certain_data",
+    "consumer_cooling_off_days": 14
+  },
+
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 81, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 800, "L9": 1500, "L10": 700 },
+    "micro": { "max": "unlimited" }
+  },
+
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "BDDK_fintech" },
+    "WMS": { "additional_license_required": "TDB" },
+    "OLS": { "additional_license_required": "TBB" }
+  },
+
+  "shipping": {
+    "domestic_carriers": ["PTT", "Yurtici", "MNG"],
+    "international_carriers": ["DHL", "FedEx", "UPS"]
+  },
+
+  "launch_checklist": {
+    "legal_entity_formed": false,
+    "payment_partner_signed": false,
+    "kyc_partner_signed": false,
+    "tos_translated": true
+  }
+}

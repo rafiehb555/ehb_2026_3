@@ -1,0 +1,273 @@
+{
+  "$schema": "EHB Info Registry v1.1",
+  "purpose": "Machine-readable index of all ehb-info canonical files. AI uses this to find authoritative source for any topic + auto-discover related files + propagate updates to dependent code.",
+  "last_updated": "2026-04-30",
+  "version": "1.1",
+  "totals": { "files": 227, "structure_completion": "100%" },
+  "recent_additions_2026_04_30": [
+    "6-audits: SECURITY-AUDIT, PERFORMANCE-AUDIT, ACCESSIBILITY-AUDIT, COMPLIANCE-AUDIT, CODE-QUALITY-AUDIT, THREAT-MODEL",
+    "9-legal: REFUND-POLICY, COOKIE-POLICY, COPYRIGHT, COUNTRY-SPECIFIC-LAWS, AML-POLICY, DATA-RETENTION",
+    "12-operations: ONCALL, INCIDENT-RESPONSE, DEPLOYMENT, BACKUP-DR, RUNBOOKS, MONITORING, DISASTER-RECOVERY",
+    "13-analytics: STL-ANALYTICS, FRANCHISE-ANALYTICS, INDUSTRY-METRICS, DMO-METRICS, KPI-DEFINITIONS",
+    "10-ai-system: AI-PROMPTS, AI-MODELS, AI-COSTS, AI-SAFETY, AI-PROMPT-TEMPLATES",
+    "14-growth: BRANDING, COMMUNITY, REFERRAL-PROGRAM, ASO, CONTENT-STRATEGY",
+    "8-trust-system: REVIEW-WEIGHTS, CRB-METHODOLOGY, PSS-METHODOLOGY, REPUTATION-RECOVERY",
+    "5-specs: API-CHANGELOG, ERROR-CODES-CATALOG, WEBHOOK-SPEC, I18N-LOCALIZATION",
+    "1-master: SCALABILITY-PLAN",
+    "root: DEVELOPER-GUIDE, TESTING-STRATEGY, RELEASE-NOTES, START-HERE"
+  ],
+
+  "folder_map": {
+    "0-index": "Navigation, source registry, communication rules, content map, master dashboard",
+    "1-master": "Top-level vision, master plan, founder playbook, business model, success metrics, risk register, mission, value-prop",
+    "2-phases": "Phase plans (Phase-1, Phase-2, system phases, DMO phases), support, moderation, escalation",
+    "3-departments": "Per-department canonical specs (PSS, CRB, STL, DMO, Wallet, Industries, Franchise dept, etc.)",
+    "4-flows": "User flows, user types, ecosystem maps, admin panel data, roles+permissions, KYC/KYB, reputation, industry mapping/flows/rules/multipliers, order/payment/dispute/refund/escrow flows",
+    "5-economy": "Tokenomics, lock logic, slashing rules, reward yield, treasury system",
+    "5-specs": "Technical specs (API, DB schema, build blueprint, auth, dashboards, panels, notifications)",
+    "6-audits": "Analysis files, gap audits, improvement plans, locked decisions",
+    "7-affiliate": "Affiliate-specific bundle (checklists, runbooks)",
+    "8-prototypes": "HTML mockups and visual prototypes",
+    "8-trust-system": "Verification, rating, penalty system, badges",
+    "9-archive": "Deprecated / superseded files (read-only)",
+    "9-legal": "Terms of service, privacy policy, KYC laws, financial compliance",
+    "10-ai-system": "AI engines: recommendation, fraud detection, smart matching",
+    "11-franchise": "Full franchise system: model, types, onboarding, requirements, roles, earnings, STL, verification, territory, penalty, dashboard",
+    "12-operations": "Operations: customer support, escalation, moderation, SLAs",
+    "13-analytics": "Analytics: user, revenue, fraud",
+    "14-growth": "Growth: marketing, SEO, partnerships",
+    "_settings": "Auto-discovery config (you are here)"
+  },
+
+  "topics": {
+    "STL": {
+      "owner": "3-departments/STL.md",
+      "version": "1.1",
+      "related_specs": ["1-master/EHB-MASTER-INFO.md#4.3", "6-audits/EHB-STL-AUDIT-AND-IMPROVEMENTS.md"],
+      "related_flows": ["4-flows/USER-FLOWS-COMPLETE.md", "4-flows/EHB-USER-TYPES.md"],
+      "code_files": [
+        "services/api/src/services/stlService.js",
+        "services/api/src/services/stlService.test.js",
+        "apps/web/lib/stl/levels.ts",
+        "apps/web/components/ui/stl-badge.tsx",
+        "apps/web/app/stl/page.tsx",
+        "apps/web/app/dmo/stl/page.tsx"
+      ],
+      "tests": "npm run test:stl (58 must pass)",
+      "topics": ["formula", "ladder", "MIN-chain", "source-caps", "entity-types", "refill"]
+    },
+    "PSS": {
+      "owner": "3-departments/PSS.md",
+      "version": "2.0",
+      "related_specs": ["5-specs/EHB-PSS-MASTER-PLAN.md", "1-master/EHB-MASTER-INFO.md#4.1"],
+      "code_files": [
+        "services/api/src/services/pssService.js",
+        "services/api/src/adapters/pss/",
+        "apps/web/app/pss/page.tsx",
+        "apps/web/app/dmo/pss/page.tsx"
+      ],
+      "topics": ["identity", "KYC", "liveness", "AML", "verification-levels", "L0-L10"]
+    },
+    "CRB": {
+      "owner": "3-departments/CRB.md",
+      "version": "2.0",
+      "related_specs": ["1-master/EHB-MASTER-INFO.md#4.2"],
+      "code_files": [
+        "services/api/src/services/crbService.js",
+        "apps/web/app/crb/exams/",
+        "apps/web/app/dmo/crb/page.tsx"
+      ],
+      "topics": ["certification", "exams", "refill-cadence", "verification", "multimedia-proof"]
+    },
+    "DMO": {
+      "owner": "3-departments/DMO.md",
+      "version": "1.4",
+      "related_specs": ["2-phases/DMO-DEVELOPMENT-PHASES.md", "2-phases/EHB-DMO-DASHBOARD-PLAN.md"],
+      "code_files": [
+        "services/api/src/routes/dmoRoutes.js",
+        "apps/web/app/dmo/"
+      ],
+      "topics": ["governance", "approval", "behavior", "complaints", "up-guard", "modes"]
+    },
+    "Industries": {
+      "owner": "3-departments/Industries.md",
+      "version": "2.0",
+      "count": 38,
+      "sub_specs_folder": "3-departments/industries/",
+      "sub_specs_count": 38,
+      "template": "3-departments/industries/_TEMPLATE.md",
+      "related_flows": ["4-flows/EHB-DEPARTMENTS-MAP.md", "4-flows/INDUSTRY-MAPPING.md", "4-flows/INDUSTRY-FLOWS.md", "4-flows/INDUSTRY-RULES.md", "4-flows/INDUSTRY-STL-MULTIPLIER.md"],
+      "franchise_map": "11-franchise/EHB-INDUSTRY-FRANCHISE-MAP.md",
+      "deprecated_old": "9-archive/EHB-INDUSTRIES-MAP-v1-DEPRECATED.md",
+      "code_files": ["apps/web/app/industries/"],
+      "topics": ["GSM", "WMS", "HPS", "OBS", "OLS", "LDS", "AGTS", "HMS", "ITS", "SOT", "ERS", "EFS", "EPS", "EAS", "ELS", "EHB_TUBE", "RES", "FBS", "ATS", "CNS", "BCS", "FWS", "MAS", "GES", "EHB_MUSIC", "PTS", "WES", "FIN", "TCS", "MFS", "EDS", "GSS", "INS", "LSM", "HCS", "SCS", "RRS", "CMS"]
+    },
+    "DMO_Dashboard": {
+      "owner": "3-departments/DMO/DMO-DASHBOARD.md",
+      "rule": "Single dashboard engine · role-based access · NO duplicate panels",
+      "topics": ["dashboard", "rbac", "control-hierarchy", "override"]
+    },
+    "Wallet": {
+      "owner": "3-departments/Wallet.md",
+      "related_specs": ["3-departments/Token.md", "3-departments/Finance.md", "3-departments/Commission.md"],
+      "code_files": [
+        "services/api/src/services/walletService.js",
+        "services/api/src/adapters/payment/",
+        "apps/web/app/wallet/"
+      ],
+      "topics": ["EHBGC", "lock", "burn", "yield", "escrow", "PPP"]
+    },
+    "Lock": {
+      "owner": "6-audits/EHB-STL-AUDIT-AND-IMPROVEMENTS.md#16",
+      "version": "1.4",
+      "status": "10 rules locked, 3 details pending",
+      "related": ["3-departments/STL.md", "3-departments/Wallet.md", "3-departments/Token.md"],
+      "topics": ["entity-lock", "escrow", "slashing", "premature-unlock", "pooling", "insurance", "yield"]
+    },
+    "Franchise": {
+      "owner": "3-departments/Franchise.md",
+      "version": "2.0",
+      "system_folder": "11-franchise/",
+      "system_files": [
+        "11-franchise/EHB-FRANCHISE-MODEL.md",
+        "11-franchise/COUNTRY-FRANCHISE-LIST.md",
+        "11-franchise/EHB-INDUSTRY-FRANCHISE-MAP.md",
+        "11-franchise/MICRO-FRANCHISE.md",
+        "11-franchise/FRANCHISE-MODEL.md",
+        "11-franchise/FRANCHISE-TYPES.md",
+        "11-franchise/FRANCHISE-ONBOARDING.md",
+        "11-franchise/FRANCHISE-REQUIREMENTS.md",
+        "11-franchise/FRANCHISE-ROLES.md",
+        "11-franchise/FRANCHISE-EARNINGS.md",
+        "11-franchise/FRANCHISE-STL.md",
+        "11-franchise/FRANCHISE-VERIFICATION.md",
+        "11-franchise/FRANCHISE-TERRITORY.md",
+        "11-franchise/FRANCHISE-PENALTY.md",
+        "11-franchise/FRANCHISE-DASHBOARD.md"
+      ],
+      "tier_count": 5,
+      "tiers": ["Micro", "Sub", "Corporate", "Master", "Country"],
+      "country_count": 17,
+      "phase_split": {
+        "phase_1": ["PK", "AE", "SA", "TR", "MY"],
+        "phase_2": ["QA", "KW", "OM", "ID", "EG", "GB"],
+        "phase_3": ["US", "CA", "DE", "FR", "CN", "IN"]
+      },
+      "code_files": ["services/api/src/services/franchiseService.js", "apps/web/app/franchise/"],
+      "topics": ["sub-tiers", "master", "country", "corporate", "ROI", "refill", "territory", "verification", "vouching"]
+    },
+    "Operations": {
+      "owner": "12-operations/",
+      "files": [
+        "12-operations/SUPPORT.md",
+        "12-operations/ESCALATION.md",
+        "12-operations/MODERATION.md",
+        "12-operations/SLA.md"
+      ],
+      "topics": ["support", "escalation", "moderation", "sla"]
+    },
+    "Analytics": {
+      "owner": "13-analytics/",
+      "files": [
+        "13-analytics/USER-ANALYTICS.md",
+        "13-analytics/REVENUE-ANALYTICS.md",
+        "13-analytics/FRAUD-ANALYTICS.md"
+      ],
+      "topics": ["user-analytics", "revenue-analytics", "fraud-analytics"]
+    },
+    "Growth": {
+      "owner": "14-growth/",
+      "files": [
+        "14-growth/MARKETING.md",
+        "14-growth/SEO.md",
+        "14-growth/PARTNERSHIPS.md"
+      ],
+      "topics": ["marketing", "seo", "partnerships"]
+    },
+    "UISystem": {
+      "owner": "15-ui-system/",
+      "files": [
+        "15-ui-system/PAGES-LIST.md",
+        "15-ui-system/PAGE-TOOLS-MAP.md",
+        "15-ui-system/PAGE-SETTINGS.md",
+        "15-ui-system/FEATURE-FLAGS.md",
+        "15-ui-system/COMPONENT-LIBRARY.md",
+        "15-ui-system/UI-RULES.md",
+        "15-ui-system/ACTION-MAP.md",
+        "15-ui-system/STATE.md"
+      ],
+      "auto_gen_from": "4-flows/",
+      "topics": ["pages", "tools-per-page", "page-settings", "feature-flags", "components", "ui-rules", "actions", "state"]
+    },
+    "Affiliate": {
+      "owner": "3-departments/Affiliate.md",
+      "support_bundle": "7-affiliate/",
+      "code_files": ["services/api/src/services/affiliateService.js", "apps/web/app/affiliate/"],
+      "topics": ["referrals", "commission", "tier-bonus"]
+    },
+    "GoSellr": {
+      "owner": "3-departments/GoSellr.md",
+      "code_files": ["services/api/src/services/gosellrService.js", "apps/web/app/gosellr/"],
+      "topics": ["marketplace", "orders", "complaints", "rider"]
+    },
+    "AI": {
+      "owner": "3-departments/AI.md",
+      "code_files": ["services/ai/", "apps/web/app/ai-marketplace/"],
+      "topics": ["modules", "marketplace", "STL-gating", "confidence-score"]
+    },
+    "Blockchain": {
+      "owner": "3-departments/Blockchain.md",
+      "code_files": ["services/api/src/services/blockchainService.js"],
+      "topics": ["polkadot", "anchoring", "audit-trail"]
+    },
+    "JPS": {
+      "owner": "3-departments/JPS.md",
+      "code_files": ["apps/web/app/jobs/"],
+      "topics": ["jobs", "skills", "contracts", "matching"]
+    },
+    "UserTypes": {
+      "owner": "4-flows/EHB-USER-TYPES.md",
+      "version": "1.0",
+      "count": 10,
+      "topics": ["Buyer", "Seller", "ServiceProvider", "Rider", "Inspector", "Franchisee", "Employer", "JobSeeker", "ProductionCo", "Admin"]
+    },
+    "Phases": {
+      "phase_1": {
+        "owner": "2-phases/EHB-PHASE-1-DMO-FRANCHISE-AI.md",
+        "industries": ["GSM", "WMS", "HPS", "OBS", "OLS", "LDS"]
+      },
+      "phase_2": {
+        "owner": "2-phases/EHB-PHASE-2-PLAN.md"
+      },
+      "system_phases": "2-phases/EHB-MASTER-SYSTEM-PHASES.md",
+      "dmo_phases": "2-phases/DMO-DEVELOPMENT-PHASES.md"
+    }
+  },
+
+  "claude_rules": {
+    "must_read_first": [
+      "0-index/CLAUDE-FOUNDER-COMMUNICATION-RULES.md",
+      "1-master/EHB-PROJECT-WITH-CLAUDE-PLAYBOOK.md",
+      "_settings/EHB-CORE-ENGINE.md",
+      "_settings/SOURCE-OF-TRUTH.md",
+      "_settings/AUTO-DISTRIBUTION-RULES.md"
+    ],
+    "vision": "1-master/EHB-MASTER-INFO.md",
+    "core_architecture": "_settings/EHB-CORE-ENGINE.md",
+    "anti_duplication_rules": "_settings/EHB-CORE-ENGINE.md#7-anti-duplication-rules-hard",
+    "topic_ownership": "_settings/SOURCE-OF-TRUTH.md",
+    "auto_distribution": "_settings/AUTO-DISTRIBUTION-RULES.md",
+    "data_flow_map": "_settings/DATA-FLOW.md",
+    "rules_vs_config": "_settings/RULES-VS-CONFIG.md",
+    "current_state": "ehb-status.json (workspace root)",
+    "behavior": [
+      "1. Search SOURCE-OF-TRUTH.md for topic owner before writing",
+      "2. If owner exists: update OWNER file, others REFERENCE only",
+      "3. If owner doesn't exist: add to SOURCE-OF-TRUTH first, then create",
+      "4. NEVER write same logic in 2 files",
+      "5. Use AUTO-DISTRIBUTION-RULES.md for routing new content",
+      "6. Separate RULE (architectural) from CONFIG (admin-tunable)",
+      "7. Update REGISTRY.json + MASTER-DASHBOARD on major change"
+    ]
+  }
+}

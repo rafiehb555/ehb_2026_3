@@ -1,0 +1,58 @@
+{
+  "_purpose": "Cloudflare configuration for EHB CDN + edge caching",
+  "_apply_via": "Cloudflare API or dashboard import",
+
+  "zone": "ehb.com",
+
+  "page_rules": [
+    {
+      "url": "ehb.com/static/*",
+      "actions": { "cache_level": "cache_everything", "edge_cache_ttl": 2592000, "browser_cache_ttl": 86400 }
+    },
+    {
+      "url": "ehb.com/_next/image*",
+      "actions": { "cache_level": "cache_everything", "edge_cache_ttl": 604800 }
+    },
+    {
+      "url": "ehb.com/api/*",
+      "actions": { "cache_level": "bypass", "security_level": "high" }
+    },
+    {
+      "url": "ehb.com/api/webhooks/*",
+      "actions": { "cache_level": "bypass", "ssl": "strict" }
+    }
+  ],
+
+  "firewall_rules": [
+    { "description": "Block known bots", "expression": "(cf.client.bot)", "action": "challenge" },
+    { "description": "Block sanctions countries", "expression": "(ip.geoip.country in {\"IR\" \"KP\" \"SY\"})", "action": "block" },
+    { "description": "Rate limit auth", "expression": "(http.request.uri.path matches \"^/api/auth/login\")", "action": "rate_limit", "limit": { "requests": 5, "period": "15m" } }
+  ],
+
+  "ssl": { "mode": "strict", "min_version": "1.3" },
+
+  "security": {
+    "always_use_https": true,
+    "automatic_https_rewrites": true,
+    "opportunistic_encryption": true,
+    "tls_1_3": "on",
+    "automatic_https": true
+  },
+
+  "speed": {
+    "auto_minify": { "html": true, "css": true, "js": true },
+    "brotli": true,
+    "early_hints": true,
+    "rocket_loader": "off",
+    "polish": "lossy"
+  },
+
+  "argo": { "smart_routing": true, "tiered_caching": true },
+
+  "workers": [
+    {
+      "name": "ehb-edge-router",
+      "purpose": "Route requests to nearest healthy region (Asia / ME / EU)"
+    }
+  ]
+}

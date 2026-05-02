@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHB Ecosystem — Complete Architecture & Flow Document</title>
+<style>
+  :root {
+    --ehb-blue: #1a3a6b;
+    --ehb-gold: #c9a227;
+    --ehb-teal: #0d7377;
+    --ehb-dark: #0f1923;
+    --ehb-surface: #1c2b3a;
+    --ehb-surface2: #243447;
+    --ehb-border: #2e4562;
+    --text-primary: #e8f0f8;
+    --text-secondary: #8ba4be;
+    --text-muted: #546e8a;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --pink: #ec4899;
+    --orange: #f97316;
+    --indigo: #6366f1;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--ehb-dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    background: linear-gradient(135deg, #0a1628 0%, #1a3a6b 50%, #0d5c63 100%);
+    border-bottom: 2px solid var(--ehb-gold);
+    padding: 48px 60px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,162,39,0.12) 0%, transparent 70%);
+  }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ehb-gold);
+    margin-bottom: 10px;
+  }
+  .doc-header h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .doc-header h1 span { color: var(--ehb-gold); }
+  .header-subtitle {
+    font-size: 15px;
+    color: #9bbdd4;
+    max-width: 640px;
+    margin-bottom: 28px;
+  }
+  .header-meta {
+    display: flex; gap: 24px; flex-wrap: wrap;
+  }
+  .meta-chip {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    color: #b0cce0;
+  }
+  .meta-chip strong { color: #fff; }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--ehb-surface);
+    border: 1px solid var(--ehb-border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin: 32px 60px;
+  }
+  .toc h2 { font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ehb-gold); margin-bottom: 16px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 4px; }
+  .toc a {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text-secondary); text-decoration: none;
+    font-size: 13px; padding: 5px 8px; border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .toc a:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+  .toc-num { font-size: 11px; color: var(--text-muted); min-width: 22px; }
+
+  /* ── Main Layout ── */
+  .content { padding: 0 60px 80px; max-width: 1400px; margin: 0 auto; }
+
+  /* ── Section ── */
+  .section { margin-top: 56px; }
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ehb-border);
+  }
+  .section-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 26px; font-weight: 700; }
+  .section-header .section-num {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-muted); display: block; margin-bottom: 2px;
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--ehb-surface);
+    border: 1px solid var(--ehb-border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .card-title {
+    font-size: 14px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ehb-gold);
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  /* ── Platform Cards ── */
+  .platform-card {
+    background: var(--ehb-surface);
+    border: 1px solid var(--ehb-border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .platform-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .platform-card:hover { border-color: rgba(255,255,255,0.2); }
+  .platform-card .p-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .platform-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .platform-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .platform-card .p-badge {
+    display: inline-block; margin-top: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 4px; padding: 2px 8px;
+    font-size: 11px; color: var(--text-muted);
+  }
+  .acc-green::before { background: var(--green); }
+  .acc-blue::before { background: #3b82f6; }
+  .acc-purple::before { background: var(--purple); }
+  .acc-amber::before { background: var(--amber); }
+  .acc-teal::before { background: var(--ehb-teal); }
+  .acc-pink::before { background: var(--pink); }
+  .acc-orange::before { background: var(--orange); }
+  .acc-indigo::before { background: var(--indigo); }
+  .acc-cyan::before { background: var(--cyan); }
+  .acc-green .p-tag { color: var(--green); }
+  .acc-blue .p-tag { color: #3b82f6; }
+  .acc-purple .p-tag { color: var(--purple); }
+  .acc-amber .p-tag { color: var(--amber); }
+  .acc-teal .p-tag { color: var(--ehb-teal); }
+  .acc-pink .p-tag { color: var(--pink); }
+  .acc-orange .p-tag { color: var(--orange); }
+  .acc-indigo .p-tag { color: var(--indigo); }
+  .acc-cyan .p-tag { color: var(--cyan); }
+
+  /* ── Flow Steps ── */
+  .flow-steps { position: relative; }
+  .flow-step {
+    display: flex; gap: 20px;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .step-left { display: flex; flex-direction: column; align-items: center; }
+  .step-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--ehb-surface2);
+    border: 2px solid var(--ehb-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
+    position: relative; z-index: 1;
+  }
+  .step-line {
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--ehb-border), transparent);
+    margin: 4px 0;
+    min-height: 32px;
+  }
+  .flow-step:last-child .step-line { display: none; }
+  .step-body { padding-top: 6px; padding-bottom: 24px; flex: 1; }
+  .step-body h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .step-body p, .step-body li { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .step-body ul { padding-left: 18px; }
+  .step-event {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(13, 115, 119, 0.2);
+    border: 1px solid rgba(13, 115, 119, 0.4);
+    border-radius: 5px; padding: 2px 10px;
+    font-size: 11px; font-family: 'Courier New', monospace;
+    color: #5dd6db; margin-top: 8px; margin-right: 6px;
+    display: inline-block;
+  }
+  .step-emit::before { content: '⚡ '; }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: #0a1520;
+    border: 1px solid #1e3048;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: #a8c8e8;
+    overflow-x: auto;
+    margin-top: 10px;
+    line-height: 1.7;
+  }
+  .code-block .kw { color: #569cd6; }
+  .code-block .str { color: #ce9178; }
+  .code-block .num { color: #b5cea8; }
+  .code-block .cmt { color: #546878; font-style: italic; }
+  .code-block .fn { color: #dcdcaa; }
+  .code-block .cls { color: #4ec9b0; }
+  .code-block .evt { color: #5dd6db; }
+
+  /* ── Route cards ── */
+  .route-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .route-card {
+    background: var(--ehb-surface);
+    border-radius: 10px;
+    padding: 20px;
+    border-top: 3px solid transparent;
+  }
+  .route-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+  .route-card p { font-size: 12px; color: var(--text-secondary); }
+  .route-card .threshold {
+    font-size: 22px; font-weight: 800;
+    margin: 10px 0 6px;
+  }
+  .route-auto { border-top-color: var(--green); }
+  .route-auto .threshold { color: var(--green); }
+  .route-franchise { border-top-color: var(--amber); }
+  .route-franchise .threshold { color: var(--amber); }
+  .route-crb { border-top-color: var(--purple); }
+  .route-crb .threshold { color: var(--purple); }
+  .route-reject { border-top-color: var(--red); }
+  .route-reject .threshold { color: var(--red); }
+
+  /* ── STL Level table ── */
+  table.sq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.sq-table th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--ehb-surface2);
+    border-bottom: 2px solid var(--ehb-border);
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  table.sq-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(46,69,98,0.5);
+    vertical-align: middle;
+    color: var(--text-secondary);
+  }
+  table.sq-table tr:last-child td { border-bottom: none; }
+  table.sq-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .sq-level-badge {
+    display: inline-block;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-size: 13px; font-weight: 800;
+    text-align: center; line-height: 32px;
+    color: #fff;
+  }
+
+  /* ── Architecture diagram ── */
+  .arch-diagram {
+    background: var(--ehb-surface);
+    border: 1px solid var(--ehb-border);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+  }
+  .arch-row { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; margin: 8px 0; }
+  .arch-box {
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 13px; font-weight: 600;
+    border: 1px solid;
+  }
+  .arch-arrow { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
+  .arch-central {
+    background: linear-gradient(135deg, #0d3f67, #0d5c63);
+    border: 2px solid var(--ehb-teal);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px; font-weight: 800;
+  }
+
+  /* ── Event chain ── */
+  .event-chain {
+    display: flex; align-items: flex-start; gap: 0;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .event-node {
+    background: var(--ehb-surface2);
+    border: 1px solid var(--ehb-border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    text-align: center;
+    min-width: 130px;
+  }
+  .event-node .en-label { font-size: 10px; color: var(--text-muted); margin-bottom: 3px; }
+  .event-node .en-val { font-weight: 700; }
+  .event-arrow { color: var(--text-muted); padding: 0 4px; align-self: center; font-size: 16px; }
+
+  /* ── Status pill ── */
+  .status-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .pill-pending { background: rgba(245,158,11,0.15); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+  .pill-approved { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+  .pill-rejected { background: rgba(239,68,68,0.12); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+  .pill-franchise { background: rgba(168,85,247,0.12); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+  .pill-crb { background: rgba(99,102,241,0.12); color: var(--indigo); border: 1px solid rgba(99,102,241,0.3); }
+
+  /* ── Info row ── */
+  .info-row {
+    display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0;
+  }
+  .info-item {
+    background: var(--ehb-surface2);
+    border: 1px solid var(--ehb-border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    flex: 1; min-width: 160px;
+  }
+  .info-item .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+  .info-item .val { font-size: 15px; font-weight: 700; }
+
+  /* ── Webhook diagram ── */
+  .webhook-flow {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr 40px 1fr;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+  }
+  .wh-box {
+    background: var(--ehb-surface2);
+    border: 1px solid var(--ehb-border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px; text-align: center;
+  }
+  .wh-box .wh-title { font-weight: 700; margin-bottom: 4px; }
+  .wh-box .wh-sub { font-size: 11px; color: var(--text-muted); }
+  .wh-arrow { text-align: center; font-size: 22px; color: var(--text-muted); }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  .callout-info { background: rgba(6,182,212,0.08); border-left: 3px solid var(--cyan); }
+  .callout-warn { background: rgba(245,158,11,0.08); border-left: 3px solid var(--amber); }
+  .callout-green { background: rgba(34,197,94,0.08); border-left: 3px solid var(--green); }
+  .callout p { color: var(--text-secondary); }
+  .callout strong { color: var(--text-primary); }
+
+  /* ── Rule priority table ── */
+  .rule-table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  .rule-table th {
+    background: var(--ehb-surface2);
+    padding: 9px 14px;
+    text-align: left;
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--ehb-border);
+  }
+  .rule-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(46,69,98,0.4);
+    vertical-align: middle;
+  }
+  .rule-table tr:last-child td { border-bottom: none; }
+
+  /* ── Divider ── */
+  hr.divider { border: none; border-top: 1px solid var(--ehb-border); margin: 40px 0; }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 60px;
+    padding: 24px 60px;
+    border-top: 1px solid var(--ehb-border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--text-muted);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .doc-header, .content { padding-left: 20px; padding-right: 20px; }
+    .toc { margin-left: 20px; margin-right: 20px; }
+    .grid-2, .grid-3, .grid-4, .route-grid, .webhook-flow { grid-template-columns: 1fr; }
+    .doc-footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════════════ -->
+<header class="doc-header">
+  <div class="header-eyebrow">Architecture & Flow Reference</div>
+  <h1><span>EHB</span> Ecosystem — Complete Flow Document</h1>
+  <p class="header-subtitle">
+    How the EHB umbrella infrastructure operates, how PSS drives the STL verification engine,
+    and how all sub-platforms (GoSellr, OLS, HPS, etc.) connect into the ecosystem — based on the actual implemented codebase.
+  </p>
+  <div class="header-meta">
+    <div class="meta-chip"><strong>Stack:</strong> NestJS · MongoDB · Next.js · Bull/Redis · Railway · Vercel</div>
+    <div class="meta-chip"><strong>Architecture:</strong> PSS-First · Event-Driven · Pull Fallback</div>
+    <div class="meta-chip"><strong>Verification:</strong> 10 STL Levels · Rule Engine · Franchise/CRB Review</div>
+    <div class="meta-chip"><strong>Date:</strong> April 2026</div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════
+     TABLE OF CONTENTS
+═══════════════════════════════════════════════════════════════ -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <div class="toc-grid">
+    <a href="#s1"><span class="toc-num">1</span> EHB Umbrella Overview</a>
+    <a href="#s2"><span class="toc-num">2</span> EHB Sub-Platforms (8)</a>
+    <a href="#s3"><span class="toc-num">3</span> PSS — Central Hub</a>
+    <a href="#s4"><span class="toc-num">4</span> STL Levels Explained</a>
+    <a href="#s5"><span class="toc-num">5</span> Complete STL Flow (9 Steps)</a>
+    <a href="#s6"><span class="toc-num">6</span> Rule Engine — 4 Routing Paths</a>
+    <a href="#s7"><span class="toc-num">7</span> Franchise Review Path</a>
+    <a href="#s8"><span class="toc-num">8</span> CRB Review & Override Path</a>
+    <a href="#s9"><span class="toc-num">9</span> Webhook Delivery System</a>
+    <a href="#s10"><span class="toc-num">10</span> GoSellr — Platform Integration Example</a>
+    <a href="#s11"><span class="toc-num">11</span> Architecture Rules</a>
+    <a href="#s12"><span class="toc-num">12</span> Deployment Model</a>
+  </div>
+</nav>
+
+<main class="content">
+
+<!-- ══════════════════════════════════════════════════════════════
+     1. EHB UMBRELLA OVERVIEW
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(201,162,39,0.15);">🏛️</div>
+    <div>
+      <span class="section-num">Section 01</span>
+      <h2>EHB Umbrella Overview</h2>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>What is EHB?</div>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.7;">
+        <strong style="color:var(--text-primary)">EHB (Education Health Business)</strong> is a centralized multi-industry trust infrastructure.
+        It does not itself sell products or services — it acts as an <em>umbrella authority</em> that verifies, certifies, and enables
+        8 specialized sub-platforms operating under its governance.
+      </p>
+      <p style="font-size:14px; color:var(--text-secondary); line-height:1.7; margin-top:12px;">
+        Every entity operating within any EHB sub-platform — whether a seller listing products, a job seeker posting a profile,
+        or a service provider offering consultancy — must earn an STL (Standard Quality) level from PSS before becoming
+        visible or active on that platform.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Umbrella Architecture</div>
+      <div class="arch-diagram" style="padding:20px;">
+        <div class="arch-row">
+          <div class="arch-box" style="background:rgba(201,162,39,0.1);border-color:var(--ehb-gold);color:var(--ehb-gold); font-size:16px; padding:12px 32px; font-weight:800;">
+            🏛️ EHB Umbrella
+          </div>
+        </div>
+        <div class="arch-arrow" style="font-size:12px; color:var(--text-muted); margin:4px 0;">Routes all verification through</div>
+        <div class="arch-row">
+          <div class="arch-central">🔐 PSS — Personal Security System</div>
+        </div>
+        <div class="arch-arrow" style="font-size:12px; color:var(--text-muted); margin:4px 0;">Issues STL Certificates to</div>
+        <div class="arch-row" style="gap:8px; justify-content:center; flex-wrap:wrap;">
+          <div class="arch-box" style="background:rgba(34,197,94,0.1);border-color:var(--green);color:var(--green); font-size:12px; padding:6px 12px;">GoSellr</div>
+          <div class="arch-box" style="background:rgba(59,130,246,0.1);border-color:#3b82f6;color:#3b82f6; font-size:12px; padding:6px 12px;">OLS</div>
+          <div class="arch-box" style="background:rgba(168,85,247,0.1);border-color:var(--purple);color:var(--purple); font-size:12px; padding:6px 12px;">JPS</div>
+          <div class="arch-box" style="background:rgba(245,158,11,0.1);border-color:var(--amber);color:var(--amber); font-size:12px; padding:6px 12px;">HPS</div>
+          <div class="arch-box" style="background:rgba(13,115,119,0.2);border-color:var(--ehb-teal);color:#5dd6db; font-size:12px; padding:6px 12px;">WMS+</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-info" style="margin-top:16px;">
+    <p><strong>Core Principle:</strong> No sub-platform communicates directly with another. All inter-platform trust flows through PSS.
+    A seller verified on GoSellr cannot be automatically trusted on OLS — each entity must earn its STL level per-platform.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     2. SUB-PLATFORMS
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(59,130,246,0.15);">🏢</div>
+    <div>
+      <span class="section-num">Section 02</span>
+      <h2>EHB Sub-Platforms (8)</h2>
+    </div>
+  </div>
+
+  <div class="grid-4">
+    <div class="platform-card acc-green">
+      <div class="p-tag">E-Commerce</div>
+      <h3>GoSellr</h3>
+      <p>B2C marketplace where verified sellers list products. Products must reach SQ1+ to appear to buyers.</p>
+      <span class="p-badge">Port 3001</span>
+    </div>
+    <div class="platform-card acc-blue">
+      <div class="p-tag">Education</div>
+      <h3>OLS</h3>
+      <p>Online Learning System. Instructors earn STL levels before courses become purchasable.</p>
+      <span class="p-badge">Port 3002</span>
+    </div>
+    <div class="platform-card acc-purple">
+      <div class="p-tag">Employment</div>
+      <h3>JPS</h3>
+      <p>Job Placement System. Employers and candidates verified by PSS before matching.</p>
+      <span class="p-badge">Port 3003</span>
+    </div>
+    <div class="platform-card acc-amber">
+      <div class="p-tag">Healthcare</div>
+      <h3>HPS</h3>
+      <p>Health Platform System. Medical providers require elevated STL levels (SQ5+) due to sector risk.</p>
+      <span class="p-badge">Port 3004</span>
+    </div>
+    <div class="platform-card acc-teal">
+      <div class="p-tag">Waste Mgmt</div>
+      <h3>WMS</h3>
+      <p>Waste Management System. Recyclers and collectors verified for environmental compliance.</p>
+      <span class="p-badge">Port 3005</span>
+    </div>
+    <div class="platform-card acc-pink">
+      <div class="p-tag">Franchise</div>
+      <h3>EHB Franchise</h3>
+      <p>Territory-based franchise review layer. Handles geo-specific STL escalations from PSS rule engine.</p>
+      <span class="p-badge">Port 3010</span>
+    </div>
+    <div class="platform-card acc-indigo">
+      <div class="p-tag">Regulatory</div>
+      <h3>CRB</h3>
+      <p>Central Record Blockchain. Independent oversight body for borderline or high-stakes STL decisions.</p>
+      <span class="p-badge">Port 3011</span>
+    </div>
+    <div class="platform-card acc-cyan">
+      <div class="p-tag">Core</div>
+      <h3>PSS</h3>
+      <p>Personal Security System. Central verification engine for all other platforms. Issues STL Certificates.</p>
+      <span class="p-badge">Port 3000</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     3. PSS — CENTRAL HUB
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(13,115,119,0.2);">🔐</div>
+    <div>
+      <span class="section-num">Section 03</span>
+      <h2>PSS — Personal Security System (Central Hub)</h2>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:#5dd6db;"></span>PSS Internal Modules</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="info-item">
+          <div class="lbl">STL Engine</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Orchestrates the full 9-step verification flow. Manages <code style="color:#5dd6db; font-size:12px;">STLRequest</code> documents.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Rule Engine</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Loads platform rules, evaluates scores, routes to auto_approve / franchise / crb / reject.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Criteria Service</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Retrieves criteria sets per entity type, evaluates each criterion, returns a scored <code style="color:#5dd6db; font-size:12px;">EvaluationResult</code>.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Franchise Module</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Handles area-based review requests. Sends requests to EHB Franchise, processes approve/reject/escalate decisions.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">CRB Module</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Independent review body. Accepts overrides from CRB officers on completed or pending decisions.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Webhook Module</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Bull queue-based HMAC-signed push delivery. Sends <code style="color:#5dd6db; font-size:12px;">sq.decision</code> events to platform callbacks.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:#5dd6db;"></span>PSS MongoDB Collections</div>
+      <table class="sq-table">
+        <thead>
+          <tr><th>Collection</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code style="color:#5dd6db;">stl_requests</code></td><td>One document per STL evaluation. Tracks full lifecycle.</td></tr>
+          <tr><td><code style="color:#5dd6db;">criteria_sets</code></td><td>Per-platform, per-entity-type evaluation criteria.</td></tr>
+          <tr><td><code style="color:#5dd6db;">rules</code></td><td>Platform rule definitions with thresholds and routing actions.</td></tr>
+          <tr><td><code style="color:#5dd6db;">franchise_reviews</code></td><td>Pending/completed franchise area reviews.</td></tr>
+          <tr><td><code style="color:#5dd6db;">edr_reviews</code></td><td>CRB independent review cases.</td></tr>
+          <tr><td><code style="color:#5dd6db;">platforms</code></td><td>Registered sub-platforms with webhook URLs and secrets.</td></tr>
+          <tr><td><code style="color:#5dd6db;">webhook_logs</code></td><td>Delivery attempts, statuses, response codes.</td></tr>
+          <tr><td><code style="color:#5dd6db;">audit_logs</code></td><td>Immutable audit trail for every state change.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info" style="margin-top:16px;">
+        <p><strong>Event Bus:</strong> PSS uses <strong>NestJS EventEmitter2</strong> for internal events. All major state transitions emit typed events caught by the relevant service listeners. No synchronous coupling between modules.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     4. STL LEVELS
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(201,162,39,0.15);">🏅</div>
+    <div>
+      <span class="section-num">Section 04</span>
+      <h2>STL Levels — Standard Quality Certification</h2>
+    </div>
+  </div>
+
+  <div class="callout callout-warn" style="margin-bottom:20px;">
+    <p><strong>Important:</strong> STL levels are assigned per-entity (per product, per business, per service listing), NOT per user account. The same seller can have an SQ10 product and a "not_submitted" product simultaneously.</p>
+  </div>
+
+  <div class="card">
+    <table class="sq-table">
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>Badge Label</th>
+          <th>Meaning</th>
+          <th>Typical Path</th>
+          <th>Entity Visibility</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="sq-level-badge" style="background:#6b7280;">1</span></td>
+          <td><strong>SQ1</strong> — Basic Verified</td>
+          <td>Minimal criteria met: title, description, price, images, category all present</td>
+          <td>Auto-approve (score ≥ threshold)</td>
+          <td style="color:var(--green);">✓ Visible to buyers</td>
+        </tr>
+        <tr>
+          <td><span class="sq-level-badge" style="background:#3b82f6;">2</span></td>
+          <td><strong>SQ2</strong> — Compliance Verified</td>
+          <td>Documentation and compliance fields verified</td>
+          <td>Auto-approve or Franchise review</td>
+          <td style="color:var(--green);">✓ Visible</td>
+        </tr>
+        <tr>
+          <td><span class="sq-level-badge" style="background:#8b5cf6;">3</span></td>
+          <td><strong>SQ3</strong> — Financially Verified</td>
+          <td>Financial records and business registration validated</td>
+          <td>Franchise or CRB review</td>
+          <td style="color:var(--green);">✓ Visible + Trust badge</td>
+        </tr>
+        <tr>
+          <td><span class="sq-level-badge" style="background:#0d7377;">5</span></td>
+          <td><strong>SQ5</strong> — Professional Verified</td>
+          <td>Professional certifications, sector-specific compliance met</td>
+          <td>CRB review (high-stakes sectors)</td>
+          <td style="color:var(--green);">✓ Premium visibility</td>
+        </tr>
+        <tr>
+          <td><span class="sq-level-badge" style="background:#f59e0b;">7</span></td>
+          <td><strong>SQ7</strong> — Expert Verified</td>
+          <td>Expert-level audit passed. Typically requires physical inspection evidence</td>
+          <td>CRB review + Franchise endorsement</td>
+          <td style="color:var(--green);">✓ Expert badge</td>
+        </tr>
+        <tr>
+          <td><span class="sq-level-badge" style="background:linear-gradient(135deg,#c9a227,#f59e0b);">10</span></td>
+          <td><strong>SQ10</strong> — Elite Certified</td>
+          <td>Highest certification. Full audit trail, all criteria at maximum score</td>
+          <td>CRB full review + Franchise + PSS admin</td>
+          <td style="color:var(--green);">✓ Elite badge + Promoted</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     5. COMPLETE STL FLOW
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(6,182,212,0.15);">⚙️</div>
+    <div>
+      <span class="section-num">Section 05</span>
+      <h2>Complete STL Flow — 9 Steps</h2>
+    </div>
+  </div>
+
+  <div class="callout callout-info" style="margin-bottom:24px;">
+    <p>The STL flow is fully event-driven. Each step completes then emits an internal NestJS EventEmitter2 event to trigger the next step. This means the flow is <strong>non-blocking and resilient</strong> — if a downstream step fails, the STLRequest document preserves state and the flow can resume.</p>
+  </div>
+
+  <div class="flow-steps">
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(34,197,94,0.1);border-color:var(--green);color:var(--green);">1</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Platform Submits Entity for STL</h4>
+        <p>A sub-platform (e.g. GoSellr) calls <code style="color:#5dd6db;">POST /api/sq/submit</code> on PSS with the entity's data, entity type (<code>product</code>, <code>service</code>, <code>profile</code>), seller ID, and platform ID.</p>
+        <div class="code-block"><span class="cmt">// GoSellr → PSS via PssClientService</span>
+POST /api/sq/submit
+{
+  entity_id: <span class="str">"6642f..."</span>,
+  entity_type: <span class="str">"product"</span>,
+  platform_id: <span class="str">"gosellr"</span>,
+  user_id: <span class="str">"seller_abc"</span>,
+  entity_data: { title, description, price, category, images, stock, area: <span class="str">"lahore"</span> }
+}</div>
+        <p style="margin-top:10px;">PSS creates a new <code style="color:#5dd6db;">STLRequest</code> document with status <code>pending</code> and returns a <code>stl_request_id</code>. GoSellr stores this on the product document.</p>
+        <span class="step-event step-emit">sq.submitted</span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(6,182,212,0.1);border-color:var(--cyan);color:var(--cyan);">2</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Entity Classification</h4>
+        <p>PSS's STL Engine classifies the entity based on its <code>entity_type</code> and the submitting platform. This determines which <strong>criteria set</strong> and <strong>rule set</strong> to apply.</p>
+        <p style="margin-top:8px;">Classification maps: <code>gosellr + product</code> → criteria_set ID <code>gosellr_product_v1</code>. Different platforms can have different stringency thresholds for the same entity type.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(99,102,241,0.1);border-color:var(--indigo);color:var(--indigo);">3</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Load Criteria Set</h4>
+        <p>The <strong>Criteria Service</strong> fetches the applicable criteria set from MongoDB. Each criterion has a weight (0–100), a validation rule (type checks, regex, length), and a required flag.</p>
+        <div class="code-block"><span class="cmt">// Example criteria set for gosellr product</span>
+[
+  { key: <span class="str">'title'</span>,       weight: <span class="num">15</span>, required: <span class="kw">true</span>,  rule: <span class="str">'non_empty'</span> },
+  { key: <span class="str">'description'</span>,  weight: <span class="num">20</span>, required: <span class="kw">true</span>,  rule: <span class="str">'min_length:20'</span> },
+  { key: <span class="str">'price'</span>,        weight: <span class="num">15</span>, required: <span class="kw">true</span>,  rule: <span class="str">'min:1'</span> },
+  { key: <span class="str">'images'</span>,       weight: <span class="num">25</span>, required: <span class="kw">true</span>,  rule: <span class="str">'array_min:1'</span> },
+  { key: <span class="str">'category'</span>,     weight: <span class="num">15</span>, required: <span class="kw">true</span>,  rule: <span class="str">'non_empty'</span> },
+  { key: <span class="str">'stock'</span>,        weight: <span class="num">10</span>, required: <span class="kw">false</span>, rule: <span class="str">'min:0'</span> },
+]</div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(168,85,247,0.1);border-color:var(--purple);color:var(--purple);">4</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Evaluate Criteria</h4>
+        <p>The Criteria Service runs each criterion against the submitted <code>entity_data</code>. It produces an <code>EvaluationResult</code> — a per-criterion pass/fail breakdown with the total <strong>stl_score</strong> (0–100%).</p>
+        <div class="info-row">
+          <div class="info-item">
+            <div class="lbl">Score Formula</div>
+            <div class="val" style="font-size:12px; color:var(--text-secondary);">sum(passed criteria weights) / sum(all criteria weights) × 100</div>
+          </div>
+          <div class="info-item">
+            <div class="lbl">Required Criterion Failure</div>
+            <div class="val" style="font-size:12px; color:var(--red);">Forces score = 0 (auto-reject path)</div>
+          </div>
+        </div>
+        <span class="step-event step-emit">sq.scored</span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(245,158,11,0.1);border-color:var(--amber);color:var(--amber);">5</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Rule Engine Evaluates Rules</h4>
+        <p>The <strong>Rule Engine</strong> listens to the <code>sq.scored</code> event. It loads all active rules for the platform, sorts them by <code>priority</code> (ascending, first-match-wins), and tests each rule's <code>condition</code> against the <code>stl_score</code>.</p>
+        <div class="code-block"><span class="cmt">// Rule Engine — evaluateRules()</span>
+<span class="kw">const</span> sortedRules = rules.<span class="fn">sort</span>((a, b) => a.priority - b.priority);
+<span class="kw">for</span> (<span class="kw">const</span> rule <span class="kw">of</span> sortedRules) {
+  <span class="kw">if</span> (<span class="fn">evaluateCondition</span>(rule.condition, score)) {
+    <span class="kw">return</span> rule.action; <span class="cmt">// first match wins</span>
+  }
+}
+<span class="kw">return</span> <span class="str">'reject'</span>; <span class="cmt">// fallback</span></div>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(239,68,68,0.1);border-color:var(--red);color:var(--red);">6</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Route to Action</h4>
+        <p>The Rule Engine executes one of four actions based on the matched rule. See <a href="#s6" style="color:var(--cyan);">Section 6</a> for full routing detail.</p>
+        <div class="event-chain">
+          <div class="event-node"><div class="en-label">Path A</div><div class="en-val" style="color:var(--green);">auto_approve</div></div>
+          <div class="event-arrow">→</div>
+          <div class="event-node"><div class="en-label">Emits</div><div class="en-val" style="color:#5dd6db; font-size:11px;">sq.decision (approved)</div></div>
+        </div>
+        <div class="event-chain">
+          <div class="event-node"><div class="en-label">Path B</div><div class="en-val" style="color:var(--amber);">franchise</div></div>
+          <div class="event-arrow">→</div>
+          <div class="event-node"><div class="en-label">Emits</div><div class="en-val" style="color:#5dd6db; font-size:11px;">franchise.review_requested</div></div>
+        </div>
+        <div class="event-chain">
+          <div class="event-node"><div class="en-label">Path C</div><div class="en-val" style="color:var(--purple);">crb</div></div>
+          <div class="event-arrow">→</div>
+          <div class="event-node"><div class="en-label">Emits</div><div class="en-val" style="color:#5dd6db; font-size:11px;">crb.review_requested</div></div>
+        </div>
+        <div class="event-chain">
+          <div class="event-node"><div class="en-label">Path D</div><div class="en-val" style="color:var(--red);">reject</div></div>
+          <div class="event-arrow">→</div>
+          <div class="event-node"><div class="en-label">Emits</div><div class="en-val" style="color:#5dd6db; font-size:11px;">sq.decision (rejected)</div></div>
+        </div>
+        <span class="step-event">sq.routed</span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(249,115,22,0.1);border-color:var(--orange);color:var(--orange);">7</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Review (if routed to Franchise or CRB)</h4>
+        <p>If the rule engine routes to a human review path, the STLRequest document is updated to <code>pending_franchise</code> or <code>pending_edr</code>. A review record is created in the respective collection. A webhook event is pushed to the sub-platform immediately so the seller sees their updated status.</p>
+        <p style="margin-top:8px;">The franchise or CRB reviewer then calls <code>POST /api/franchise/reviews/:id/decision</code> or <code>POST /api/crb/reviews/:id/decision</code> to submit approve/reject/escalate.</p>
+        <span class="step-event">franchise.decision / crb.decision</span>
+        <span class="step-event step-emit">sq.decision</span>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(201,162,39,0.15);border-color:var(--ehb-gold);color:var(--ehb-gold);">8</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Assign STL Level & Finalize</h4>
+        <p>When a positive decision is reached (approve path or franchise/CRB approval), PSS's STL Engine calls <code>finalizeApproval()</code>. It maps the score and platform config to the appropriate STL Level (1, 2, 3, 5, 7, or 10) and updates the <code>STLRequest</code> to status <code>approved</code> with the assigned <code>stl_level</code>.</p>
+        <p style="margin-top:8px;">For rejections, <code>finalizeRejection()</code> is called — sets status <code>rejected</code>, records the <code>rejection_reason</code>, and sets <code>can_resubmit: true</code> so the seller can fix and resubmit.</p>
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="step-left">
+        <div class="step-num" style="background:rgba(34,197,94,0.1);border-color:var(--green);color:var(--green);">9</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step-body">
+        <h4>Deliver Decision via Webhook</h4>
+        <p>PSS's Webhook Module picks up the <code>sq.decision</code> event. It queues an HMAC-SHA256-signed HTTP POST to the sub-platform's registered callback URL via <strong>Bull + Redis</strong>.</p>
+        <p style="margin-top:8px;">The sub-platform (e.g. GoSellr) receives the webhook and its webhook handler calls <code>ProductsService.updateSqFromWebhook()</code> to update the product document's <code>stl_status</code>, <code>stl_level</code>, and <code>stl_badge_label</code>.</p>
+        <div class="callout callout-warn" style="margin-top:12px;">
+          <p><strong>Fallback:</strong> If Redis is down, the webhook cannot be queued. Sellers can click "Refresh Status" to trigger a pull-based sync — GoSellr calls PSS's <code>GET /api/sq/:entityId/status</code> and writes the result back to the local product document.</p>
+        </div>
+        <span class="step-event step-emit">webhook.delivered / webhook.failed</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     6. RULE ENGINE
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(99,102,241,0.15);">⚖️</div>
+    <div>
+      <span class="section-num">Section 06</span>
+      <h2>Rule Engine — 4 Routing Paths</h2>
+    </div>
+  </div>
+
+  <div class="route-grid">
+    <div class="route-card route-auto">
+      <h4>Path A: Auto-Approve</h4>
+      <div class="threshold">≥ 80%</div>
+      <p>Score meets or exceeds platform threshold. PSS directly assigns STL level and fires webhook. No human review needed. Fastest path — seller sees "Approved" within seconds.</p>
+    </div>
+    <div class="route-card route-franchise">
+      <h4>Path B: Franchise Review</h4>
+      <div class="threshold">60–79%</div>
+      <p>Score is in the "borderline" range for the area. The submission is forwarded to the area's EHB Franchise holder for manual review. Sub-platform receives <code>pending_franchise</code> status.</p>
+    </div>
+    <div class="route-card route-crb">
+      <h4>Path C: CRB Review</h4>
+      <div class="threshold">40–59%</div>
+      <p>Score is too low for franchise but not an outright reject. Escalated to the Ethics Decision Review body for independent oversight. Sub-platform receives <code>pending_edr</code> status.</p>
+    </div>
+    <div class="route-card route-reject">
+      <h4>Path D: Auto-Reject</h4>
+      <div class="threshold">< 40%</div>
+      <p>Score is below the minimum threshold, or a required criterion failed (forcing score = 0). Entity is rejected immediately with a <code>rejection_reason</code>. Seller can fix and resubmit.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title"><span class="dot" style="background:var(--indigo);"></span>Rule Priority System</div>
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">Rules are evaluated in ascending priority order (lower number = higher priority). The <strong>first rule that matches wins</strong> — no further rules are checked. Platform admins can configure rules per entity type.</p>
+    <table class="rule-table">
+      <thead>
+        <tr>
+          <th>Priority</th>
+          <th>Rule Name</th>
+          <th>Condition</th>
+          <th>Action</th>
+          <th>STL Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Elite Auto-Approve</td>
+          <td>score ≥ 95</td>
+          <td><span class="status-pill pill-approved">auto_approve</span></td>
+          <td>SQ10</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>High Auto-Approve</td>
+          <td>score ≥ 80</td>
+          <td><span class="status-pill pill-approved">auto_approve</span></td>
+          <td>SQ3–SQ7</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Franchise Review Band</td>
+          <td>score ≥ 60</td>
+          <td><span class="status-pill pill-franchise">franchise</span></td>
+          <td>TBD by reviewer</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>CRB Review Band</td>
+          <td>score ≥ 40</td>
+          <td><span class="status-pill pill-crb">crb</span></td>
+          <td>TBD by reviewer</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Auto-Reject</td>
+          <td>score < 40</td>
+          <td><span class="status-pill pill-rejected">reject</span></td>
+          <td>None</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     7. FRANCHISE REVIEW
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(245,158,11,0.15);">🏪</div>
+    <div>
+      <span class="section-num">Section 07</span>
+      <h2>Franchise Review Path</h2>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--amber);color:var(--amber);">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>Rule Engine Routes to Franchise</h4>
+            <p>Score is in 60–79% band. Rule Engine calls <code>forwardToReview('franchise')</code>. PSS emits <code>franchise.review_requested</code> internally.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--amber);color:var(--amber);">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>Franchise Record Created</h4>
+            <p>PSS Franchise Service creates a <code>franchise_reviews</code> document. The record includes the entity data, STL score, area identifier (e.g. <code>lahore</code>), and the reviewer's assignment.</p>
+            <p style="margin-top:8px;">Sub-platform receives <code>sq.forwarded_franchise</code> webhook → product status → <code>pending_franchise</code>.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--amber);color:var(--amber);">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>Franchise Holder Reviews</h4>
+            <p>The EHB Franchise operator for that area reviews the entity against local standards. They can inspect all submitted entity data including the criteria breakdown.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--amber);color:var(--amber);">4</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>Franchise Submits Decision</h4>
+            <p>Three outcomes available:</p>
+            <ul>
+              <li><span class="status-pill pill-approved" style="font-size:10px;">Approve</span> — assigns STL level, triggers <code>sq.decision (approved)</code> webhook</li>
+              <li><span class="status-pill pill-rejected" style="font-size:10px;">Reject</span> — records reason, triggers <code>sq.decision (rejected)</code> webhook</li>
+              <li><span class="status-pill pill-crb" style="font-size:10px;">Escalate to CRB</span> — franchise cannot decide → forwarded to CRB</li>
+            </ul>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--amber);color:var(--amber);">5</div>
+          </div>
+          <div class="step-body">
+            <h4>Webhook Delivered to Sub-Platform</h4>
+            <p>Bull queue delivers the final decision. Sub-platform updates its local entity status from <code>pending_franchise</code> to <code>approved</code> or <code>rejected</code>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--amber);"></span>Auto-Creation of Franchise Records</div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:16px;">
+        PSS can automatically create a franchise holder record for a new area when an entity from that area first hits the franchise routing path — if no franchise holder exists yet. This prevents the review from being stuck indefinitely.
+      </p>
+      <div class="callout callout-warn">
+        <p><strong>Area-Based Routing:</strong> The <code>area</code> field submitted with the entity data (e.g. <code>"lahore"</code>) determines which franchise holder receives the review. If no franchise holder is registered for that area, PSS queues it under a "default" regional franchise pool.</p>
+      </div>
+      <div class="code-block" style="margin-top:16px;"><span class="cmt">// Franchise Service — submitDecision()</span>
+<span class="kw">async</span> <span class="fn">submitDecision</span>(reviewId, dto) {
+  <span class="kw">if</span> (dto.decision === <span class="str">'approve'</span>) {
+    <span class="kw">await</span> <span class="kw">this</span>.sqEngine.<span class="fn">finalizeApproval</span>(request, dto.stl_level);
+  } <span class="kw">else if</span> (dto.decision === <span class="str">'reject'</span>) {
+    <span class="kw">await</span> <span class="kw">this</span>.sqEngine.<span class="fn">finalizeRejection</span>(request, dto.reason);
+  } <span class="kw">else if</span> (dto.decision === <span class="str">'escalate'</span>) {
+    <span class="kw">await</span> <span class="kw">this</span>.sqEngine.<span class="fn">forwardToReview</span>(request, <span class="str">'crb'</span>);
+  }
+}</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     8. CRB REVIEW
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(99,102,241,0.15);">🔍</div>
+    <div>
+      <span class="section-num">Section 08</span>
+      <h2>CRB Review & Override Path</h2>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--indigo);"></span>What is CRB?</div>
+    <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">
+      The <strong>Central Record Blockchain (CRB)</strong> body is an independent oversight layer above both the automated rule engine and franchise reviewers. CRB handles:
+    </p>
+    <div class="info-row" style="margin-top:12px;">
+      <div class="info-item">
+        <div class="lbl">Entry Path 1</div>
+        <div class="val" style="font-size:13px; color:var(--text-secondary);">Rule engine routes score 40–59% directly to CRB</div>
+      </div>
+      <div class="info-item">
+        <div class="lbl">Entry Path 2</div>
+        <div class="val" style="font-size:13px; color:var(--text-secondary);">Franchise holder escalates a case they cannot decide</div>
+      </div>
+      <div class="info-item">
+        <div class="lbl">Entry Path 3</div>
+        <div class="val" style="font-size:13px; color:var(--text-secondary);">CRB officer opens a review on any completed decision (override)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--indigo);"></span>CRB Review Flow</div>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--indigo);color:var(--indigo);">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>CRB Record Created</h4>
+            <p>PSS CRB Service handles <code>crb.review_requested</code> event. Creates <code>edr_reviews</code> document. Sub-platform receives <code>sq.forwarded_edr</code> webhook → status <code>pending_edr</code>.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--indigo);color:var(--indigo);">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-body">
+            <h4>CRB Officer Reviews</h4>
+            <p>CRB officers can <strong>edit the entity data</strong> before deciding — this allows correcting minor data entry issues without forcing a full resubmission. The edit is logged in <code>audit_logs</code>.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="border-color:var(--indigo);color:var(--indigo);">3</div>
+          </div>
+          <div class="step-body">
+            <h4>CRB Submits Decision</h4>
+            <p>Two outcomes: <span class="status-pill pill-approved" style="font-size:10px;">approve</span> (assigns STL level) or <span class="status-pill pill-rejected" style="font-size:10px;">reject</span> (records reason). Decision triggers <code>sq.decision</code> event → webhook to sub-platform.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red);"></span>CRB Override Power</div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:16px;">
+        Uniquely, CRB officers can <strong>override any previously completed decision</strong> — even approved entities. This is the highest-authority action in the system.
+      </p>
+      <div class="code-block"><span class="cmt">// CRB Service — submitOverride()</span>
+<span class="kw">async</span> <span class="fn">submitOverride</span>(entityId, dto) {
+  <span class="cmt">// Can reverse an approved product back to rejected</span>
+  <span class="cmt">// or elevate a rejected entity to approved</span>
+  <span class="kw">if</span> (dto.decision === <span class="str">'revoke'</span>) {
+    <span class="kw">await</span> <span class="kw">this</span>.sqEngine
+      .<span class="fn">finalizeRejection</span>(entity, dto.reason);
+    <span class="cmt">// Webhook fires → GoSellr product goes Approved → Rejected</span>
+  }
+}</div>
+      <div class="callout callout-warn" style="margin-top:12px;">
+        <p><strong>Audit Trail:</strong> Every CRB override is written to <code>audit_logs</code> with the officer's ID, timestamp, old value, and new value. This record is immutable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     9. WEBHOOK DELIVERY
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(6,182,212,0.15);">📡</div>
+    <div>
+      <span class="section-num">Section 09</span>
+      <h2>Webhook Delivery System</h2>
+    </div>
+  </div>
+
+  <div class="webhook-flow">
+    <div class="wh-box">
+      <div class="wh-title">PSS Event</div>
+      <div class="wh-sub">sq.decision emitted by STL Engine after finalize</div>
+    </div>
+    <div class="wh-arrow">→</div>
+    <div class="wh-box" style="border-color:var(--amber);">
+      <div class="wh-title" style="color:var(--amber);">Bull Queue (Redis)</div>
+      <div class="wh-sub">HMAC-SHA256 signed payload queued with retries</div>
+    </div>
+    <div class="wh-arrow">→</div>
+    <div class="wh-box" style="border-color:var(--green);">
+      <div class="wh-title" style="color:var(--green);">Sub-Platform Callback</div>
+      <div class="wh-sub">POST /webhook/pss · Verifies signature · Updates local DB</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--cyan);"></span>Push Path (Normal)</div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:12px;">
+        When Redis is available, all STL decisions flow via Bull-queued webhooks. The payload is signed with HMAC-SHA256 using a platform-specific secret. The sub-platform must verify the signature before processing.
+      </p>
+      <div class="code-block"><span class="cmt">// Webhook payload shape (PssWebhookPayload)</span>
+{
+  event: <span class="str">"sq.decision"</span>,
+  stl_request_id: <span class="str">"req_abc"</span>,
+  entity_id: <span class="str">"6642f..."</span>,
+  user_id: <span class="str">"seller_id"</span>,
+  platform_id: <span class="str">"gosellr"</span>,
+  decision: <span class="str">"approved"</span>,         <span class="cmt">// approved | rejected</span>
+  stl_level: <span class="num">10</span>,
+  decided_by: <span class="str">"rule_engine"</span>,  <span class="cmt">// or "franchise" | "crb"</span>
+  decided_at: <span class="str">"2026-04-15T12:00:00Z"</span>,
+  rejection_reason: <span class="kw">null</span>
+}</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--amber);"></span>Pull Fallback (Redis Down)</div>
+      <p style="font-size:13px; color:var(--text-secondary); line-height:1.7; margin-bottom:12px;">
+        When Redis is unavailable, Bull cannot queue the webhook. In this case the sub-platform's webhook never fires. The <strong>Pull Fallback</strong> ensures sellers are not stuck permanently:
+      </p>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="font-size:12px; width:28px; height:28px; border-color:var(--amber); color:var(--amber);">1</div>
+            <div class="step-line" style="min-height:20px;"></div>
+          </div>
+          <div class="step-body" style="padding-bottom:12px;">
+            <p style="font-size:12px;">Seller clicks "Refresh Status" in the UI</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="font-size:12px; width:28px; height:28px; border-color:var(--amber); color:var(--amber);">2</div>
+            <div class="step-line" style="min-height:20px;"></div>
+          </div>
+          <div class="step-body" style="padding-bottom:12px;">
+            <p style="font-size:12px;">GoSellr calls <code style="color:#5dd6db;">GET /api/sq/:entityId/status</code> on PSS</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="font-size:12px; width:28px; height:28px; border-color:var(--amber); color:var(--amber);">3</div>
+            <div class="step-line" style="min-height:20px;"></div>
+          </div>
+          <div class="step-body" style="padding-bottom:12px;">
+            <p style="font-size:12px;">PSS returns authoritative status from its <code style="color:#5dd6db;">stl_requests</code> collection</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="step-left">
+            <div class="step-num" style="font-size:12px; width:28px; height:28px; border-color:var(--green); color:var(--green);">4</div>
+          </div>
+          <div class="step-body">
+            <p style="font-size:12px;"><code style="color:#5dd6db;">syncFromPss()</code> writes the result into GoSellr's <code style="color:#5dd6db;">products</code> collection — then the UI refetch sees the updated status</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-green" style="margin-top:16px;">
+    <p><strong>Resilience Design:</strong> The push (webhook) and pull (refresh-status) paths together guarantee that STL status always converges to the correct value. Redis failure only delays delivery — it never causes permanent data divergence.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     10. GOSELLR INTEGRATION EXAMPLE
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(34,197,94,0.15);">🛒</div>
+    <div>
+      <span class="section-num">Section 10</span>
+      <h2>GoSellr — Complete Platform Integration Example</h2>
+    </div>
+  </div>
+
+  <div class="callout callout-info" style="margin-bottom:20px;">
+    <p><strong>GoSellr is the reference implementation</strong> of how any EHB sub-platform integrates with PSS. Every other platform (OLS, JPS, HPS) follows the same pattern.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green);"></span>GoSellr Backend (NestJS)</div>
+      <p style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;">Key modules and their PSS integration points:</p>
+      <table class="sq-table">
+        <thead><tr><th>Module</th><th>PSS Integration</th></tr></thead>
+        <tbody>
+          <tr><td><code style="color:#5dd6db;">PssClientModule</code></td><td>HTTP client wrapping all PSS API calls. Shared across all modules that need PSS.</td></tr>
+          <tr><td><code style="color:#5dd6db;">ProductsService</code></td><td><code>submitForSQ()</code> → PSS submit. <code>getSQStatus()</code> → PSS pull fallback. <code>updateSqFromWebhook()</code> → push receiver.</td></tr>
+          <tr><td><code style="color:#5dd6db;">WebhookController</code></td><td>Receives <code>sq.decision</code> events from PSS. Verifies HMAC signature. Routes to appropriate service.</td></tr>
+          <tr><td><code style="color:#5dd6db;">ProductsController</code></td><td>Exposes <code>POST /products/:id/sq-submit</code>, <code>GET /products/:id/sq-status</code> to the seller frontend.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green);"></span>GoSellr Product STL States</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="info-item">
+          <div class="lbl">not_submitted</div>
+          <div class="val" style="font-size:13px; color:var(--text-secondary);">Default state. Product is not visible to buyers. Seller sees "Send for Approval" CTA.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">pending</div>
+          <div class="val" style="font-size:13px; color:var(--amber);">Submitted to PSS. Rule engine evaluating. Seller sees timeline + "Refresh Status".</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">pending_franchise</div>
+          <div class="val" style="font-size:13px; color:var(--purple);">Rule engine forwarded to area franchise. Awaiting human review.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">pending_edr</div>
+          <div class="val" style="font-size:13px; color:var(--indigo);">Escalated to CRB. Awaiting independent oversight decision.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">approved</div>
+          <div class="val" style="font-size:13px; color:var(--green);">STL level assigned. Product is visible to buyers. STL badge displayed.</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">rejected</div>
+          <div class="val" style="font-size:13px; color:var(--red);">Rejection reason shown. Seller can fix and resubmit.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title"><span class="dot" style="background:var(--green);"></span>Frontend → Backend → PSS Data Flow</div>
+    <div class="event-chain" style="flex-wrap:wrap; gap:0; align-items:center;">
+      <div class="event-node" style="min-width:140px;">
+        <div class="en-label">Next.js Frontend</div>
+        <div class="en-val" style="font-size:12px;">Seller clicks "Send for Approval"</div>
+      </div>
+      <div class="event-arrow">→</div>
+      <div class="event-node" style="min-width:160px;">
+        <div class="en-label">RTK Query Mutation</div>
+        <div class="en-val" style="font-size:12px;">useSubmitForSQMutation(productId)</div>
+      </div>
+      <div class="event-arrow">→</div>
+      <div class="event-node" style="min-width:160px;">
+        <div class="en-label">GoSellr API</div>
+        <div class="en-val" style="font-size:12px;">POST /products/:id/sq-submit</div>
+      </div>
+      <div class="event-arrow">→</div>
+      <div class="event-node" style="min-width:140px;">
+        <div class="en-label">PSS API</div>
+        <div class="en-val" style="font-size:12px;">POST /api/sq/submit</div>
+      </div>
+      <div class="event-arrow">→</div>
+      <div class="event-node" style="min-width:140px;">
+        <div class="en-label">STL Engine</div>
+        <div class="en-val" style="font-size:12px;">Creates STLRequest doc</div>
+      </div>
+    </div>
+    <div class="event-chain" style="flex-wrap:wrap; gap:0; align-items:center; margin-top:12px;">
+      <div class="event-node" style="min-width:140px; border-color:var(--green);">
+        <div class="en-label">Frontend Updates</div>
+        <div class="en-val" style="font-size:12px; color:var(--green);">Status pill → "Pending"</div>
+      </div>
+      <div class="event-arrow">←</div>
+      <div class="event-node" style="min-width:140px;">
+        <div class="en-label">GoSellr DB</div>
+        <div class="en-val" style="font-size:12px;">product.stl_status = 'pending'</div>
+      </div>
+      <div class="event-arrow">←</div>
+      <div class="event-node" style="min-width:140px;">
+        <div class="en-label">Webhook Received</div>
+        <div class="en-val" style="font-size:12px;">POST /webhook/pss (PSS fires)</div>
+      </div>
+      <div class="event-arrow">←</div>
+      <div class="event-node" style="min-width:140px; border-color:var(--green);">
+        <div class="en-label">PSS Decision</div>
+        <div class="en-val" style="font-size:12px; color:var(--green);">sq.decision: approved</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     11. ARCHITECTURE RULES
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(239,68,68,0.15);">📐</div>
+    <div>
+      <span class="section-num">Section 11</span>
+      <h2>Architecture Rules — Hard Constraints</h2>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--red);"></span>What is FORBIDDEN</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="callout callout-warn">
+          <p>❌ <strong>No direct platform-to-platform communication.</strong> GoSellr cannot call OLS's API, and OLS cannot call GoSellr's API. All trust flows through PSS.</p>
+        </div>
+        <div class="callout callout-warn">
+          <p>❌ <strong>No shared MongoDB databases.</strong> Each platform has its own MongoDB database/cluster. Cross-database joins are not permitted.</p>
+        </div>
+        <div class="callout callout-warn">
+          <p>❌ <strong>No bypassing PSS verification.</strong> A platform cannot mark its own entities as "approved" without a PSS STL decision. The <code>stl_status</code> field on any entity must only be updated via webhook or pull-fallback from PSS.</p>
+        </div>
+        <div class="callout callout-warn">
+          <p>❌ <strong>No user-level STL.</strong> STL levels are per-entity, not per-user. A seller account has no STL level — only their submitted entities do.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green);"></span>What is REQUIRED</div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="callout callout-green">
+          <p>✓ <strong>PSS-First Verification.</strong> Every entity that becomes publicly active on any EHB platform must have <code>stl_status = 'approved'</code> set by PSS.</p>
+        </div>
+        <div class="callout callout-green">
+          <p>✓ <strong>Webhook Signature Verification.</strong> All sub-platforms must verify the HMAC-SHA256 signature on incoming PSS webhooks before processing.</p>
+        </div>
+        <div class="callout callout-green">
+          <p>✓ <strong>Audit Logging.</strong> All STL state changes must be written to PSS's immutable <code>audit_logs</code> collection with actor, timestamp, and old/new values.</p>
+        </div>
+        <div class="callout callout-green">
+          <p>✓ <strong>Pull Fallback Implementation.</strong> All sub-platforms must implement the <code>/sq-status</code> pull endpoint that calls PSS and writes back to the local entity document, as a resilience fallback.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title"><span class="dot"></span>NestJS Module Isolation Rules</div>
+    <div class="grid-3" style="margin-top:8px;">
+      <div class="info-item">
+        <div class="lbl">Module Exports</div>
+        <div class="val" style="font-size:12px; color:var(--text-secondary);">Only export services that other modules <em>need</em>. Internal helpers stay private.</div>
+      </div>
+      <div class="info-item">
+        <div class="lbl">Event Bus</div>
+        <div class="val" style="font-size:12px; color:var(--text-secondary);">Internal cross-module communication via EventEmitter2. Never import and call a service from another module directly if an event can serve instead.</div>
+      </div>
+      <div class="info-item">
+        <div class="lbl">PssClientModule</div>
+        <div class="val" style="font-size:12px; color:var(--text-secondary);">All outbound calls to PSS from a sub-platform go through a shared <code>PssClientService</code>. No module makes raw HTTP calls to PSS independently.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     12. DEPLOYMENT MODEL
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <div class="section-icon" style="background:rgba(168,85,247,0.15);">🚀</div>
+    <div>
+      <span class="section-num">Section 12</span>
+      <h2>Deployment Model</h2>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="platform-card acc-purple">
+      <div class="p-tag">Backend APIs</div>
+      <h3>Railway</h3>
+      <p>All NestJS backends (PSS API, GoSellr API, etc.) are deployed as individual Railway services. Each gets its own PORT and environment variables.</p>
+      <span class="p-badge">Auto-scaling · ENV isolation</span>
+    </div>
+    <div class="platform-card acc-blue">
+      <div class="p-tag">Frontends</div>
+      <h3>Vercel</h3>
+      <p>All Next.js frontends deployed on Vercel. Each platform has its own Vercel project with its own domain and environment config pointing to its respective Railway API.</p>
+      <span class="p-badge">Edge CDN · ISR</span>
+    </div>
+    <div class="platform-card acc-green">
+      <div class="p-tag">Databases</div>
+      <h3>MongoDB Atlas</h3>
+      <p>Each platform has its own MongoDB Atlas cluster or dedicated database. PSS has the <code>pss_db</code>; GoSellr has <code>gosellr_db</code>. No shared collections.</p>
+      <span class="p-badge">Atlas M0/M10 · TLS</span>
+    </div>
+    <div class="platform-card acc-amber">
+      <div class="p-tag">Queue / Cache</div>
+      <h3>Redis (Upstash)</h3>
+      <p>Bull queues for webhook delivery run on Redis. PSS is the only service that uses Redis. Sub-platforms do not need Redis — they only receive webhooks.</p>
+      <span class="p-badge">Upstash Serverless · Graceful fallback</span>
+    </div>
+    <div class="platform-card acc-teal">
+      <div class="p-tag">Monorepo</div>
+      <h3>Nx Workspace</h3>
+      <p>Both PSS and GoSellr live in Nx monorepos. Shared types (STL interfaces, DTOs) live in <code>libs/gosellr-types</code> and <code>libs/pss-types</code>.</p>
+      <span class="p-badge">Nx · shared libs</span>
+    </div>
+    <div class="platform-card acc-indigo">
+      <div class="p-tag">Auth</div>
+      <h3>JWT (NestJS Guard)</h3>
+      <p>JWT-based auth on all protected endpoints. The <code>JwtAuthGuard</code> decorates seller-facing routes. PSS webhook endpoints use HMAC verification instead of JWT.</p>
+      <span class="p-badge">RS256 · 7-day expiry</span>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title"><span class="dot"></span>Service Communication Map</div>
+    <div class="arch-diagram">
+      <div class="arch-row">
+        <div class="arch-box" style="background:rgba(59,130,246,0.1);border-color:#3b82f6;color:#7cb9f4;">Next.js (Vercel)</div>
+        <div class="arch-arrow">→ REST →</div>
+        <div class="arch-box" style="background:rgba(34,197,94,0.1);border-color:var(--green);color:var(--green);">GoSellr API (Railway)</div>
+        <div class="arch-arrow">→ HTTP →</div>
+        <div class="arch-central" style="font-size:14px; padding:10px 20px;">PSS API (Railway)</div>
+      </div>
+      <div style="margin:12px 0; color:var(--text-muted); font-size:12px;">↕ MongoDB Atlas (per-platform) &nbsp;&nbsp;&nbsp; PSS ↔ Redis (Upstash) → Webhook → GoSellr API callback</div>
+      <div class="arch-row">
+        <div class="arch-box" style="background:rgba(168,85,247,0.1);border-color:var(--purple);color:var(--purple); font-size:12px;">PSS ← Franchise Decisions</div>
+        <div class="arch-arrow" style="font-size:12px;">&nbsp;&nbsp;</div>
+        <div class="arch-box" style="background:rgba(99,102,241,0.1);border-color:var(--indigo);color:var(--indigo); font-size:12px;">PSS ← CRB Decisions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════════════════
+     SUMMARY
+═══════════════════════════════════════════════════════════════ -->
+<section class="section" style="margin-top:32px;" id="summary">
+  <div class="card" style="border-color:var(--ehb-gold); background:linear-gradient(135deg, rgba(201,162,39,0.06), rgba(13,115,119,0.06));">
+    <div class="card-title"><span class="dot" style="background:var(--ehb-gold);"></span>EHB Ecosystem — In One Paragraph</div>
+    <p style="font-size:15px; color:var(--text-secondary); line-height:1.8;">
+      <strong style="color:#fff;">EHB</strong> is an umbrella trust infrastructure operating 8 specialized sub-platforms across education, health, commerce, employment, and waste management in Pakistan.
+      <strong style="color:#fff;">PSS</strong> (Personal Security System) is its central verification engine — every seller, instructor, service provider, or entity on any sub-platform must submit to PSS and earn an
+      <strong style="color:#fff;">STL (Standard Quality) level</strong> before going live. PSS evaluates submissions through a
+      <strong style="color:#fff;">9-step event-driven flow</strong>: submit → classify → load criteria → score → rule-engine route → (optional franchise/CRB human review) → assign STL level → webhook delivery.
+      The <strong style="color:#fff;">Rule Engine</strong> applies first-match-wins priority rules to route submissions to auto-approve (≥80%), franchise review (60–79%), CRB review (40–59%), or auto-reject (&lt;40%).
+      Decisions are pushed to sub-platforms via <strong style="color:#fff;">HMAC-signed Bull/Redis webhooks</strong>, with a pull-based fallback ensuring convergence even when Redis is unavailable.
+      <strong style="color:#fff;">GoSellr</strong> is the reference implementation — its <code style="color:#5dd6db;">PssClientService</code>, <code style="color:#5dd6db;">ProductsService</code>, and webhook handler demonstrate the integration pattern that all other platforms follow.
+      No platform communicates directly with another — <em>all trust flows through PSS</em>.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer class="doc-footer">
+  <div>EHB Ecosystem Architecture Document · Generated from actual codebase · April 2026</div>
+  <div>PSS + GoSellr · NestJS · MongoDB · Next.js · Railway · Vercel</div>
+</footer>
+
+</body>
+</html>

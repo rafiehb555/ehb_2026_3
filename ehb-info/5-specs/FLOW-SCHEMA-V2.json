@@ -1,0 +1,423 @@
+{
+  "$schema": "EHB Executable Flow Schema v2.0",
+  "purpose": "Executable event flows with steps, conditions, retry, rollback, error handling. Direct import for the flow engine.",
+  "last_updated": "2026-04-30",
+  "version": "2.0",
+  "supersedes": "FLOW-SCHEMA.json v1.0 (kept for reference)",
+
+  "events": {
+    "order.submitted": {
+      "description": "Buyer placed order — must validate, lock funds, persist",
+      "priority": "high",
+      "timeout_ms": 30000,
+      "steps": [
+        {
+          "action": "validate.user",
+          "required": true,
+          "params": { "minSTL": "${industry.minSTL}", "userId": "${payload.buyerId}" },
+          "on_fail": "abort"
+        },
+        {
+          "action": "validate.industry_allowed",
+          "required": true,
+          "params": { "industryCode": "${payload.industry}", "country": "${payload.buyerCountry}" },
+          "on_fail": "abort"
+        },
+        {
+          "action": "validate.seller_active",
+          "required": true,
+          "params": { "sellerId": "${payload.sellerId}" },
+          "on_fail": "abort"
+        },
+        {
+          "action": "wallet.escrow_lock",
+          "required": true,
+          "params": { "buyerId": "${payload.buyerId}", "amount": "${payload.amount}", "currency": "${payload.currency}", "orderId": "${payload.orderId}" },
+          "retry": 3,
+          "backoff_ms": [1000, 5000, 30000],
+          "on_fail": "abort"
+        },
+        {
+          "action": "db.insert_order",
+          "required": true,
+          "params": { "order": "${payload}" },
+          "retry": 2,
+          "rollback": "wallet.escrow_refund",
+          "rollback_params": { "orderId": "${payload.orderId}" }
+        },
+        {
+          "action": "notification.seller",
+          "required": false,
+          "params": { "sellerId": "${payload.sellerId}", "orderId": "${payload.orderId}" },
+          "on_fail": "log_continue"
+        },
+        {
+          "action": "polkadot.queue_anchor",
+          "required": false,
+          "params": { "entityType": "order", "entityId": "${payload.orderId}", "payload": "${payload}" },
+          "on_fail": "log_continue"
+        }
+      ],
+      "next_state": "PAYMENT_HELD",
+      "audit": { "anchor": true, "log_level": "info" }
+    },
+
+    "order.fulfilled": {
+      "description": "Seller marked delivered",
+      "steps": [
+        { "action": "validate.order_state", "params": { "orderId": "${payload.orderId}", "expected": "ACCEPTED" }, "required": true },
+        { "action": "db.update_order_state", "params": { "orderId": "${payload.orderId}", "newState": "FULFILLED" }, "required": true, "retry": 2 },
+        { "action": "notification.buyer_review_window", "params": { "buyerId": "${payload.buyerId}" }, "on_fail": "log_continue" },
+        { "action": "timer.start_cooling", "params": { "orderId": "${payload.orderId}", "days": "${dmoMode.cooling}" } }
+      ],
+      "next_state": "FULFILLED"
+    },
+
+    "order.settled": {
+      "description": "Cooling ended → distribute funds",
+      "steps": [
+        { "action": "validate.order_state", "params": { "orderId": "${payload.orderId}", "expected": "REVIEWED" }, "required": true },
+        { "action": "compute.split_70_10_10_10", "params": { "amount": "${order.value}", "hasRider": "${order.hasRider}" } },
+        { "action": "compute.franchise_5tier_split", "params": { "franchiseShare": "${prev.franchise}" } },
+        {
+          "action": "wallet.escrow_release",
+          "params": { "orderId": "${payload.orderId}", "distribution": "${prev.distribution}" },
+          "required": true,
+          "retry": 5,
+          "backoff_ms": [1000, 5000, 15000, 60000, 300000],
+          "rollback": "wallet.escrow_hold",
+          "on_fail": "alert_dmo"
+        },
+        { "action": "db.transactions_insert", "required": true, "retry": 3 },
+        { "action": "polkadot.anchor", "required": false, "on_fail": "log_continue" },
+        { "action": "stl.update_seller", "params": { "sellerId": "${order.sellerId}" } },
+        { "action": "notification.all_parties", "on_fail": "log_continue" }
+      ],
+      "next_state": "SETTLED"
+    },
+
+    "order.disputed": {
+      "description": "Complaint filed — pause settlement, route to DMO",
+      "steps": [
+        { "action": "wallet.escrow_hold", "params": { "orderId": "${payload.orderId}" }, "required": true },
+        { "action": "ai.pre_mediator", "params": { "complaint": "${payload}" }, "on_fail": "log_continue" },
+        { "action": "dmo.queue_triage", "params": { "complaint": "${payload}", "priority": "${payload.severity}" }, "required": true, "retry": 2 },
+        { "action": "notification.both_parties", "on_fail": "log_continue" }
+      ],
+      "next_state": "DISPUTE_OPEN"
+    },
+
+    "user.kyc.approved": {
+      "description": "PSS verification completed",
+      "steps": [
+        { "action": "user.upgrade_pss_level", "required": true, "retry": 2 },
+        { "action": "stl.recompute", "required": true },
+        { "action": "notification.kyc_approved", "on_fail": "log_continue" },
+        { "action": "polkadot.anchor", "params": { "entityType": "kyc", "entityId": "${payload.userId}" }, "on_fail": "log_continue" }
+      ]
+    },
+
+    "lock.created": {
+      "description": "EHBGC locked",
+      "steps": [
+        { "action": "validate.user_balance", "params": { "userId": "${payload.userId}", "amount": "${payload.amount}" }, "required": true, "on_fail": "abort" },
+        { "action": "wallet.lock_funds", "required": true, "retry": 3, "rollback": "wallet.unlock_funds" },
+        { "action": "stl.recompute", "required": true },
+        { "action": "yield.start_streaming", "params": { "userId": "${payload.userId}", "amount": "${payload.amount}", "rate": "${stl.yieldRate}" } },
+        { "action": "polkadot.anchor", "on_fail": "log_continue" }
+      ]
+    },
+
+    "lock.unlocked_premature": {
+      "description": "User unlocks before grace period",
+      "steps": [
+        { "action": "validate.grace_period", "params": { "lockId": "${payload.lockId}" } },
+        {
+          "action": "compute.penalty",
+          "params": {
+            "afterGrace": "${prev.afterGrace}",
+            "amount": "${payload.amount}",
+            "slashPct": 15
+          }
+        },
+        { "action": "wallet.slash", "params": { "userId": "${payload.userId}", "amount": "${prev.slashAmount}" }, "if": "${prev.afterGrace}" },
+        { "action": "stl.downgrade", "params": { "userId": "${payload.userId}", "levels": 2 }, "if": "${prev.afterGrace}" },
+        { "action": "wallet.return_remainder", "params": { "userId": "${payload.userId}", "amount": "${prev.remainder}" }, "required": true },
+        { "action": "polkadot.anchor", "on_fail": "log_continue" }
+      ]
+    },
+
+    "slash.executed": {
+      "description": "DMO slashed entity",
+      "steps": [
+        { "action": "validate.dmo_authority", "params": { "dmoId": "${payload.dmoId}", "minRole": "DMO_SENIOR" }, "required": true, "on_fail": "abort" },
+        { "action": "wallet.slash", "required": true, "retry": 3 },
+        { "action": "stl.adjust", "required": true },
+        { "action": "cascade.check_owned_entities", "params": { "userId": "${payload.userId}" }, "on_fail": "log_continue" },
+        { "action": "notification.user_appeal_window", "params": { "days": 7 } },
+        { "action": "treasury.distribute_slashed", "params": { "amount": "${payload.amount}", "dist": { "treasury": 0.6, "sub": 0.25, "master": 0.15 } } },
+        { "action": "polkadot.anchor", "required": true, "retry": 5 }
+      ]
+    },
+
+    "fraud.suspected": {
+      "description": "AI flagged fraud",
+      "priority": "critical",
+      "steps": [
+        { "action": "up_guard.alert_dmo_senior", "required": true },
+        { "action": "ai.cluster_check", "params": { "userId": "${payload.userId}" } },
+        { "action": "block.user_temp", "params": { "userId": "${payload.userId}", "reason": "fraud_suspected" }, "required": true },
+        { "action": "notification.dmo_senior", "params": { "severity": "critical" } }
+      ]
+    },
+
+    "refill.missed": {
+      "description": "Franchise missed refill window",
+      "steps": [
+        { "action": "compute.miss_count", "params": { "franchiseId": "${payload.franchiseId}" } },
+        { "action": "penalty.apply", "params": { "missCount": "${prev.missCount}" } },
+        { "action": "stl.adjust", "params": { "userId": "${payload.franchiseId}", "delta": "${prev.stlDelta}" } },
+        { "action": "wallet.slash", "if": "${prev.missCount >= 2}", "params": { "amount": "${prev.slashAmount}" } },
+        { "action": "polkadot.anchor", "on_fail": "log_continue" }
+      ]
+    }
+  },
+
+  "action_definitions": {
+    "validate.user": { "module": "validators", "fn": "validateUser" },
+    "validate.industry_allowed": { "module": "validators", "fn": "validateIndustry" },
+    "validate.seller_active": { "module": "validators", "fn": "validateSellerActive" },
+    "validate.order_state": { "module": "validators", "fn": "validateOrderState" },
+    "validate.user_balance": { "module": "validators", "fn": "validateBalance" },
+    "validate.grace_period": { "module": "validators", "fn": "validateGracePeriod" },
+    "validate.dmo_authority": { "module": "validators", "fn": "validateDmoAuthority" },
+
+    "wallet.escrow_lock": { "module": "walletAdapter", "fn": "escrowLock" },
+    "wallet.escrow_release": { "module": "walletAdapter", "fn": "escrowRelease" },
+    "wallet.escrow_refund": { "module": "walletAdapter", "fn": "escrowRefund" },
+    "wallet.escrow_hold": { "module": "walletAdapter", "fn": "escrowHold" },
+    "wallet.lock_funds": { "module": "walletAdapter", "fn": "lockFunds" },
+    "wallet.unlock_funds": { "module": "walletAdapter", "fn": "releaseFunds" },
+    "wallet.slash": { "module": "walletAdapter", "fn": "slash" },
+    "wallet.return_remainder": { "module": "walletAdapter", "fn": "returnRemainder" },
+
+    "db.insert_order": { "module": "orderRepo", "fn": "insert" },
+    "db.update_order_state": { "module": "orderRepo", "fn": "updateState" },
+    "db.transactions_insert": { "module": "transactionRepo", "fn": "insertMany" },
+
+    "notification.seller": { "module": "notificationService", "fn": "notifySeller" },
+    "notification.buyer": { "module": "notificationService", "fn": "notifyBuyer" },
+    "notification.kyc_approved": { "module": "notificationService", "fn": "notifyKycApproved" },
+    "notification.dmo_senior": { "module": "notificationService", "fn": "notifyDmoSenior" },
+    "notification.both_parties": { "module": "notificationService", "fn": "notifyBothParties" },
+    "notification.user_appeal_window": { "module": "notificationService", "fn": "notifyAppealWindow" },
+    "notification.buyer_review_window": { "module": "notificationService", "fn": "notifyReviewWindow" },
+    "notification.all_parties": { "module": "notificationService", "fn": "notifyAllParties" },
+
+    "stl.recompute": { "module": "stlService", "fn": "recompute" },
+    "stl.update_seller": { "module": "stlService", "fn": "updateSeller" },
+    "stl.adjust": { "module": "stlService", "fn": "adjust" },
+    "stl.downgrade": { "module": "stlService", "fn": "downgrade" },
+
+    "polkadot.anchor": { "module": "blockchainAdapter", "fn": "anchor" },
+    "polkadot.queue_anchor": { "module": "blockchainAdapter", "fn": "queueAnchor" },
+
+    "compute.split_70_10_10_10": { "module": "distributionService", "fn": "computeOrderSplit" },
+    "compute.franchise_5tier_split": { "module": "distributionService", "fn": "computeFranchiseSplit" },
+    "compute.penalty": { "module": "penaltyService", "fn": "computePenalty" },
+    "compute.miss_count": { "module": "refillService", "fn": "getMissCount" },
+
+    "ai.pre_mediator": { "module": "aiService", "fn": "preMediate" },
+    "ai.cluster_check": { "module": "aiService", "fn": "clusterCheck" },
+
+    "dmo.queue_triage": { "module": "dmoService", "fn": "queueTriage" },
+    "up_guard.alert_dmo_senior": { "module": "upGuardService", "fn": "alertSenior" },
+
+    "user.upgrade_pss_level": { "module": "userService", "fn": "upgradePssLevel" },
+    "block.user_temp": { "module": "userService", "fn": "tempBlock" },
+
+    "yield.start_streaming": { "module": "yieldService", "fn": "startStreaming" },
+    "treasury.distribute_slashed": { "module": "treasuryService", "fn": "distributeSlashed" },
+    "cascade.check_owned_entities": { "module": "cascadeService", "fn": "checkOwnedEntities" },
+
+    "timer.start_cooling": { "module": "timerService", "fn": "startCooling" },
+    "penalty.apply": { "module": "penaltyService", "fn": "apply" }
+  },
+
+  "error_strategies": {
+    "abort": "Stop flow immediately. Trigger rollback for completed steps.",
+    "log_continue": "Log error, mark step failed, continue to next step.",
+    "alert_dmo": "Notify DMO Senior, hold flow, await manual intervention.",
+    "retry": "Use retry config (n attempts with backoff)."
+  },
+
+  "rollback_strategy": {
+    "description": "If any required step fails after some steps succeeded, run rollback actions for completed steps in REVERSE order.",
+    "example": "order.submitted: db.insert_order fails → run wallet.escrow_refund (rollback for wallet.escrow_lock)"
+  },
+
+  "constants": {
+    "stl_formula": "MIN(Score / 1.2, lowest_component + 1)",
+    "min_chain": "MIN(productSTL, sellerSTL, companySTL, ownerSTL)",
+    "revenue_split": [70, 10, 10, 10],
+    "franchise_split": [40, 15, 25, 15, 5],
+    "_franchise_split_meaning": "5-tier: [Sub, Corporate, Master, Country, HQ_buffer]",
+    "slashing": {
+      "fraud_T6": 100,
+      "complaint_unresolved_30d": 25,
+      "refill_miss_2x": 10,
+      "late_delivery_3x": 5,
+      "max_per_window": 50
+    },
+    "cooling_period_days": {
+      "default": 7,
+      "high_value_orders": 30,
+      "regulated_industries": 14
+    }
+  },
+
+  "stl_lock_ladder": {
+    "L1": 0, "L2": 20, "L3": 40, "L4": 100, "L5": 200,
+    "L6": 400, "L7": 800, "L8": 2000, "L9": 4000, "L10": 10000
+  },
+
+  "industry_multipliers": {
+    "WMS": 2.0, "OLS": 2.0, "FIN": 2.0, "INS": 2.0,
+    "ELECTRICAL": 1.5, "CONSTRUCTION": 1.5,
+    "CNS": 1.5, "RES": 1.5, "MFS": 1.5, "LSM": 1.5, "HCS": 1.5, "SCS": 1.5,
+    "GSM": 1.3, "ITS": 1.3, "SOT": 1.3,
+    "HPS": 1.2, "EDS": 1.2, "ATS": 1.2, "MAS": 1.2, "TCS": 1.2, "RRS": 1.2,
+    "PTS": 1.1, "GSS": 1.1,
+    "_default": 1.0
+  },
+
+  "min_stl_per_industry": {
+    "GSM": 1, "WMS": 4, "HPS": 1, "OBS": 1, "OLS": 3, "LDS": 1,
+    "AGTS": 1, "HMS": 2, "ITS": 2, "SOT": 1, "ERS": 2, "EFS": 3,
+    "EPS": 1, "EAS": 1, "ELS": 1, "EHB_TUBE": 1,
+    "RES": 2, "FBS": 1, "ATS": 2, "CNS": 2, "BCS": 1, "FWS": 1,
+    "MAS": 2, "GES": 1, "EHB_MUSIC": 1, "PTS": 2, "WES": 1,
+    "FIN": 4, "TCS": 2, "MFS": 3, "EDS": 1, "GSS": 1,
+    "INS": 3, "LSM": 2, "HCS": 3, "SCS": 3, "RRS": 2, "CMS": 1
+  },
+
+  "dmo_modes_per_industry": {
+    "FAST": ["GSM", "FBS", "LDS", "PTS", "BCS", "ELS"],
+    "BALANCED": ["HPS", "OBS", "ERS", "EPS", "EAS", "ITS", "SOT", "HMS", "EHB_TUBE", "ATS", "FWS", "MAS", "GES", "EHB_MUSIC", "WES", "TCS", "EDS", "GSS", "RRS", "CMS"],
+    "STRICT": ["WMS", "OLS", "CNS", "RES", "LSM", "HCS", "MFS"],
+    "CRITICAL": ["FIN", "INS", "SCS", "EFS"]
+  },
+
+  "crb_physical_verification": {
+    "_locked_at": "2026-04-30",
+    "_authority": "founder",
+
+    "verifier_cascade": [
+      "sub_franchise_L8_L9_L10_in_area",
+      "sub_franchise_L8_plus_nearest_crb_tree_city",
+      "master_franchise_same_or_nearest_area",
+      "country_franchise_auto_route"
+    ],
+
+    "trusty_wallet_lock_formula": {
+      "ehbgc_per_daily_request_slot": 400,
+      "examples": {
+        "5_req_per_day": 2000,
+        "10_req_per_day": 4000,
+        "20_req_per_day": 8000,
+        "50_req_per_day": 20000,
+        "100_req_per_day": 40000
+      }
+    },
+
+    "practical_days_per_stl_level": {
+      "L1": 3,
+      "L2": 5,
+      "L3": 7,
+      "L4": 10,
+      "L5": 20,
+      "L6": 30,
+      "L7": 45,
+      "L8": 60,
+      "L9": 75,
+      "L10": 90
+    },
+
+    "verification_fee": {
+      "base_usd": 10,
+      "varies_by_stl_level": true,
+      "admin_configurable": true,
+      "note": "Higher STL targets = higher fee. Admin can change anytime."
+    },
+
+    "verification_fee_split_pct": {
+      "verifier_franchise": 45,
+      "master_franchise": 5,
+      "corporate_franchise": 2,
+      "country_franchise": 1,
+      "referral": 5,
+      "dmo": 5,
+      "ehb_company": 37
+    },
+
+    "industry_pairing_rule": "Every industry's service providers MUST work with franchises in that industry. Franchise is verification host + ongoing oversight body."
+  },
+
+  "refilling_system": {
+    "_locked_at": "2026-04-30",
+    "_authority": "founder",
+
+    "service_provider": {
+      "standard_cycle_months": 6,
+      "books_per_semester_min": 4,
+      "books_per_semester_max": 6,
+      "fast_track_allowed": true,
+      "fast_track_min_gap_days_between_exams": 3,
+      "fast_track_min_pace": "1 semester per week",
+      "pass_score_L1_to_L7_pct": 70,
+      "pass_score_L8_to_L10_pct": 100
+    },
+
+    "cumulative_refills_to_reach_level": {
+      "L1": 0, "L2": 1, "L3": 2, "L4": 3, "L5": 3,
+      "L6": 4, "L7": 5, "L8": 6, "L9": 7, "L10": 8
+    },
+
+    "maintenance_cycle_all_levels_months": 6,
+
+    "product_verification": {
+      "cycle_months": 6,
+      "fast_track_allowed": false,
+
+      "verification_fee_usd_by_product_price": {
+        "lte_1000": 10,
+        "around_5000_pct_off": 5,
+        "around_10000_pct_off": 10
+      },
+
+      "product_buy_cost": "full_product_market_price (paid by user, verifier buys locally)",
+
+      "first_time_first_industry_multiplier": 2,
+      "first_industry_auto_selected_higher_fee": true,
+      "other_industries_lower_default": true,
+      "admin_configurable_per_industry_x_product_combo": true,
+
+      "cross_industry_rating_boost_pct_per_extra_verification": 5,
+      "industries_cap": "unlimited",
+      "boost_decay": "none — permanent if refilled every 6 months",
+
+      "failed_verification_flow": {
+        "verifier_can_pause": true,
+        "verifier_adds_remark_with_requirement": true,
+        "applicant_fulfils_then_resumes": true,
+        "verifier_contact_shared_with_applicant": false,
+        "communication_anonymous_channel_only": true
+      },
+
+      "ai_global_ranking": {
+        "computes_same_product_across_companies": true,
+        "top_ranked_daily_list_public": true
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "code": "MY",
+  "name": "Malaysia",
+  "phase": 1,
+  "status": "active",
+
+  "currency": { "code": "MYR", "symbol": "RM", "minor_units": 2, "fx_to_usd": 0.211 },
+  "languages": ["ms", "en", "zh"],
+  "timezone": "Asia/Kuala_Lumpur",
+  "rtl": false,
+
+  "payment_methods": {
+    "primary": ["stripe", "fpx"],
+    "local": ["fpx", "duitnow", "tng_ewallet", "boost"],
+    "wallet": ["touchngo", "grabpay", "shopeepay"],
+    "bank_transfer": ["IBG", "DuitNow"],
+    "ehbgc_supported": true
+  },
+
+  "kyc": {
+    "primary_partner": "MyKad",
+    "min_pss_for_transactions": 3,
+    "id_documents_accepted": ["MyKad", "Passport", "MyTentera"]
+  },
+
+  "compliance": {
+    "regulator_payments": "BNM",
+    "regulator_data": "PDPA_2010",
+    "regulator_kyc": "MyKad",
+    "sst_pct": 6,
+    "amlcft_required": true,
+    "data_residency": "Malaysia_or_approved_jurisdiction",
+    "consumer_cooling_off_days": 7
+  },
+
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 13, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 100, "L9": 200, "L10": 100 },
+    "micro": { "max": "unlimited" }
+  },
+
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "BNM_fintech" },
+    "WMS": { "additional_license_required": "MMC_Malaysia" },
+    "OLS": { "additional_license_required": "BC_Malaysia" }
+  },
+
+  "shipping": {
+    "domestic_carriers": ["PosLaju", "JNT_Malaysia", "Ninjavan_MY"],
+    "international_carriers": ["DHL", "FedEx", "UPS"]
+  },
+
+  "launch_checklist": {
+    "legal_entity_formed": false,
+    "payment_partner_signed": false,
+    "kyc_partner_signed": false,
+    "tos_translated": true
+  }
+}

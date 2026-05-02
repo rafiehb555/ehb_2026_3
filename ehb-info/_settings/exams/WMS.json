@@ -1,0 +1,207 @@
+{
+  "industry": "WMS",
+  "name": "World Medical Services",
+  "version": "1.0",
+  "passing_criteria": { "theory_min_pct": 70, "practical_min_pct": 75, "overall_min_pct": 75 },
+  "validity_months": 12,
+  "crb_level_per_score": {
+    "L1": [60, 70], "L2": [70, 75], "L3": [75, 80], "L4": [80, 85],
+    "L5": [85, 90], "L6": [90, 92], "L7": [92, 95], "L8": [95, 97], "L9": [97, 99], "L10": [99, 100]
+  },
+
+  "theory_mcqs": [
+    {
+      "id": "WMS-T-001",
+      "stem": "What is the normal resting heart rate for an adult?",
+      "options": ["40-60 bpm", "60-100 bpm", "100-130 bpm", "130-160 bpm"],
+      "answer_index": 1,
+      "category": "physiology",
+      "difficulty": "L2"
+    },
+    {
+      "id": "WMS-T-002",
+      "stem": "Which of these is NOT a contraindication for paracetamol?",
+      "options": ["Severe liver disease", "Mild headache", "Alcohol abuse", "G6PD deficiency"],
+      "answer_index": 1,
+      "category": "pharmacology",
+      "difficulty": "L4"
+    },
+    {
+      "id": "WMS-T-003",
+      "stem": "When should informed consent be obtained for a procedure?",
+      "options": ["After the procedure", "During the procedure", "Before the procedure begins, while patient is competent", "Only if patient asks"],
+      "answer_index": 2,
+      "category": "ethics",
+      "difficulty": "L3"
+    },
+    {
+      "id": "WMS-T-004",
+      "stem": "What does BMI of 27 indicate?",
+      "options": ["Underweight", "Normal", "Overweight", "Obese class I"],
+      "answer_index": 2,
+      "category": "diagnosis",
+      "difficulty": "L2"
+    },
+    {
+      "id": "WMS-T-005",
+      "stem": "Which sign suggests possible meningitis?",
+      "options": ["Productive cough", "Kernig's sign", "Tenosynovitis", "Murphy's sign"],
+      "answer_index": 1,
+      "category": "diagnosis",
+      "difficulty": "L5"
+    },
+    {
+      "id": "WMS-T-006",
+      "stem": "First-line treatment for anaphylaxis in adults?",
+      "options": ["Oral antihistamine", "IM Adrenaline 0.5 mg", "IV Hydrocortisone alone", "Salbutamol nebulizer"],
+      "answer_index": 1,
+      "category": "emergency",
+      "difficulty": "L6"
+    },
+    {
+      "id": "WMS-T-007",
+      "stem": "HbA1c target for most adults with type 2 diabetes?",
+      "options": ["< 5.0%", "< 6.5–7.0%", "< 8.5%", "< 10%"],
+      "answer_index": 1,
+      "category": "endocrinology",
+      "difficulty": "L4"
+    },
+    {
+      "id": "WMS-T-008",
+      "stem": "Which of the following is a symptom of stroke (FAST mnemonic)?",
+      "options": ["Foot pain", "Facial drooping", "Fever", "Fatigue"],
+      "answer_index": 1,
+      "category": "neurology",
+      "difficulty": "L3"
+    },
+    {
+      "id": "WMS-T-009",
+      "stem": "Universal precautions include which of these?",
+      "options": ["Treating only known infectious patients", "Hand hygiene + appropriate PPE for all patients", "Wearing gloves only when bleeding visible", "Avoiding all patient contact"],
+      "answer_index": 1,
+      "category": "infection_control",
+      "difficulty": "L2"
+    },
+    {
+      "id": "WMS-T-010",
+      "stem": "Patient confidentiality may be breached when:",
+      "options": ["Family asks for info", "Court order or imminent harm to others", "Insurance asks", "Friend visits"],
+      "answer_index": 1,
+      "category": "ethics",
+      "difficulty": "L3"
+    },
+    {
+      "id": "WMS-T-011",
+      "stem": "Which of these is a cardinal sign of dehydration in children?",
+      "options": ["Wet diapers > 6/day", "Sunken fontanelle", "Bright eyes", "Crying with tears"],
+      "answer_index": 1,
+      "category": "pediatrics",
+      "difficulty": "L4"
+    },
+    {
+      "id": "WMS-T-012",
+      "stem": "Most appropriate triage category for active heavy bleeding:",
+      "options": ["Green (minor)", "Yellow (delayed)", "Red (immediate)", "Black (deceased/expectant)"],
+      "answer_index": 2,
+      "category": "emergency",
+      "difficulty": "L3"
+    },
+    {
+      "id": "WMS-T-013",
+      "stem": "Drug-drug interaction risk is highest with:",
+      "options": ["Vitamin C + Calcium", "Warfarin + NSAIDs", "Paracetamol + Vitamin D", "Saline + 5% Dextrose"],
+      "answer_index": 1,
+      "category": "pharmacology",
+      "difficulty": "L5"
+    },
+    {
+      "id": "WMS-T-014",
+      "stem": "WHO guideline for maximum safe weekly alcohol intake (men)?",
+      "options": ["Up to 14 units/week", "Up to 28 units/week", "No safe upper limit; less is better", "Up to 50 units/week"],
+      "answer_index": 2,
+      "category": "lifestyle",
+      "difficulty": "L4"
+    },
+    {
+      "id": "WMS-T-015",
+      "stem": "Documentation in EHB telemedicine MUST include:",
+      "options": ["Just diagnosis", "Encounter time, consent, ID verification, prescription if any", "Only billing code", "Only patient complaint"],
+      "answer_index": 1,
+      "category": "compliance",
+      "difficulty": "L4"
+    }
+  ],
+
+  "practical_tasks": [
+    {
+      "id": "WMS-P-001",
+      "title": "Telemedicine consult — written summary",
+      "scenario": "Patient presents with 3-day fever, productive cough, and chest tightness. Conduct mock consult. Submit a structured note (SOAP format) including differentials, plan, and red flags.",
+      "deliverables": ["SOAP note (PDF)", "Differential list (3 items, ranked)", "Patient education summary"],
+      "evaluation_rubric": [
+        { "criterion": "History completeness", "weight": 25 },
+        { "criterion": "Appropriate examination/questions", "weight": 25 },
+        { "criterion": "Differential reasoning", "weight": 20 },
+        { "criterion": "Safe plan + red flags", "weight": 20 },
+        { "criterion": "Documentation clarity", "weight": 10 }
+      ],
+      "time_limit_hours": 2,
+      "min_pass_score": 75
+    },
+    {
+      "id": "WMS-P-002",
+      "title": "Prescription review",
+      "scenario": "Review a complex polypharmacy regimen for an 80-year-old with multiple comorbidities. Identify interactions, dosing issues, and propose safer alternatives.",
+      "deliverables": ["Annotated medication list", "Identified problems table", "Recommendation memo"],
+      "evaluation_rubric": [
+        { "criterion": "Identifies all major interactions", "weight": 35 },
+        { "criterion": "Dose appropriateness flagged", "weight": 25 },
+        { "criterion": "Recommendations evidence-based", "weight": 25 },
+        { "criterion": "Communication clarity", "weight": 15 }
+      ],
+      "time_limit_hours": 3,
+      "min_pass_score": 80
+    },
+    {
+      "id": "WMS-P-003",
+      "title": "Emergency triage demo (video)",
+      "scenario": "Five patient vignettes given. Live video: triage each into Red/Yellow/Green/Black with reasoning.",
+      "deliverables": ["Recorded video (10 min max)", "Written justification for each"],
+      "evaluation_rubric": [
+        { "criterion": "Correct triage decisions", "weight": 60 },
+        { "criterion": "Reasoning clarity", "weight": 25 },
+        { "criterion": "Time efficiency", "weight": 15 }
+      ],
+      "time_limit_hours": 1,
+      "min_pass_score": 80
+    },
+    {
+      "id": "WMS-P-004",
+      "title": "Informed consent simulation",
+      "scenario": "Explain a moderately complex procedure (e.g., colonoscopy) to a simulated patient. Capture and address concerns.",
+      "deliverables": ["Recorded session", "Signed consent form (sample)", "Reflection note"],
+      "evaluation_rubric": [
+        { "criterion": "Patient-centered communication", "weight": 35 },
+        { "criterion": "Risk/benefit explanation", "weight": 30 },
+        { "criterion": "Question handling", "weight": 20 },
+        { "criterion": "Documentation", "weight": 15 }
+      ],
+      "time_limit_hours": 1,
+      "min_pass_score": 75
+    },
+    {
+      "id": "WMS-P-005",
+      "title": "Continuous monitoring case (chronic disease)",
+      "scenario": "Manage a 6-month type-2 diabetic patient remotely. Plan visits, labs, lifestyle, and adjustments based on a series of provided readings.",
+      "deliverables": ["6-month plan", "Two response notes to mid-period exacerbations", "Patient education materials"],
+      "evaluation_rubric": [
+        { "criterion": "Evidence-based plan", "weight": 30 },
+        { "criterion": "Adaptive responses", "weight": 30 },
+        { "criterion": "Patient empowerment", "weight": 20 },
+        { "criterion": "Coordination of care", "weight": 20 }
+      ],
+      "time_limit_hours": 4,
+      "min_pass_score": 80
+    }
+  ]
+}

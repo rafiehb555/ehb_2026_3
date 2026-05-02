@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHB PSS — UI/UX Prototype + User Flow</title>
+<style>
+  :root{
+    --bg:#0C0E1A; --card:#13162A; --nested:#1A1D33;
+    --purple:#7B6EF6; --lpurple:#A098F8; --teal:#2BBFA0;
+    --amber:#F0A030; --red:#F05858; --green:#38C878; --blue:#29ABE2;
+    --fg:#E7E9F5; --muted:#8A8FAE; --divider:rgba(255,255,255,0.07);
+    --border:rgba(255,255,255,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--fg);font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;padding:0 0 80px}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  /* ================= Top nav ================= */
+  .top{position:sticky;top:0;z-index:50;background:rgba(12,14,26,.92);backdrop-filter:blur(18px);border-bottom:1px solid var(--divider);padding:14px 28px;display:flex;align-items:center;gap:18px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+  .brand .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--red) 0%,var(--blue) 50%,var(--green) 100%);box-shadow:0 0 20px rgba(123,110,246,.35)}
+  .brand small{color:var(--muted);font-weight:500}
+  .tabs{display:flex;gap:6px;margin-left:auto}
+  .tab{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:500;color:var(--muted);border:1px solid transparent;transition:.2s}
+  .tab:hover{color:var(--fg);background:var(--nested)}
+  .tab.active{color:var(--fg);background:rgba(123,110,246,.12);border-color:rgba(123,110,246,.35)}
+  .themes{display:flex;gap:6px;margin-left:14px}
+  .dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);cursor:pointer}
+  .dot.d1{background:#fff}.dot.d2{background:#0C0E1A}.dot.d3{background:linear-gradient(135deg,#7B6EF6,#2BBFA0)}.dot.d4{background:linear-gradient(135deg,#0a0d2e,#1a1d33)}
+
+  /* ================= Layout ================= */
+  .wrap{max-width:1440px;margin:0 auto;padding:24px 28px}
+  .crumbs{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+  .crumbs span.on{color:var(--purple)}
+  h1{font-size:26px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:22px;max-width:800px;line-height:1.6}
+
+  /* ================= Screen cards ================= */
+  .scene{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:22px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:none}
+  .scene.show{display:block;animation:fadein .25s}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .scene-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+  .scene-title{font-size:18px;font-weight:700}
+  .scene-meta{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.02em}
+  .chip.purple{color:var(--lpurple);background:rgba(123,110,246,.15);border:1px solid rgba(123,110,246,.3)}
+  .chip.teal{color:var(--teal);background:rgba(43,191,160,.15);border:1px solid rgba(43,191,160,.3)}
+  .chip.amber{color:var(--amber);background:rgba(240,160,48,.15);border:1px solid rgba(240,160,48,.3)}
+  .chip.red{color:var(--red);background:rgba(240,88,88,.15);border:1px solid rgba(240,88,88,.3)}
+  .chip.green{color:var(--green);background:rgba(56,200,120,.15);border:1px solid rgba(56,200,120,.3)}
+  .chip.blue{color:var(--blue);background:rgba(41,171,226,.15);border:1px solid rgba(41,171,226,.3)}
+  .chip.gray{color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border)}
+
+  /* ================= User flow (top-level diagram) ================= */
+  .flow{display:grid;grid-template-columns:repeat(9,1fr);gap:10px;margin-top:6px}
+  .step{background:var(--nested);border:1px solid var(--border);border-radius:10px;padding:12px 10px;position:relative;min-height:130px;cursor:pointer;transition:.2s}
+  .step:hover{border-color:var(--purple);transform:translateY(-2px)}
+  .step .n{font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:4px}
+  .step h4{font-size:12px;font-weight:600;margin-bottom:6px}
+  .step p{font-size:11px;color:var(--muted);line-height:1.4}
+  .step .dot-t{width:8px;height:8px;border-radius:50%;background:var(--purple);margin-bottom:8px;box-shadow:0 0 10px var(--purple)}
+  .step.user .dot-t{background:var(--green);box-shadow:0 0 10px var(--green)}
+  .step.pss .dot-t{background:var(--purple)}
+  .step.dmo .dot-t{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+  .step.crb .dot-t{background:var(--blue);box-shadow:0 0 10px var(--blue)}
+
+  .legend{display:flex;gap:14px;margin-top:14px;flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+  .legend span::before{content:"";width:8px;height:8px;border-radius:50%}
+  .legend .lu::before{background:var(--green)}
+  .legend .lp::before{background:var(--purple)}
+  .legend .ld::before{background:var(--amber)}
+  .legend .lc::before{background:var(--blue)}
+
+  /* ================= Grid helpers ================= */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+  .nc{background:var(--nested);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .nc h5{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+  .big{font-size:28px;font-weight:700;letter-spacing:-.02em}
+  .kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--divider);font-size:13px}
+  .kv:last-child{border:none}
+  .kv span:first-child{color:var(--muted)}
+
+  /* ================= STL badge/card ================= */
+  .stl-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-weight:700;font-size:13px;letter-spacing:.02em;background:linear-gradient(135deg,rgba(123,110,246,.2),rgba(41,171,226,.1));border:1px solid var(--purple)}
+  .stl-badge .lv{width:26px;height:26px;border-radius:6px;display:grid;place-items:center;background:var(--purple);color:#fff;font-size:11px}
+
+  .lvl-row{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin:14px 0}
+  .lvl{border:1px solid var(--border);border-radius:8px;padding:10px 8px;text-align:center;background:var(--nested)}
+  .lvl .l{font-size:10px;color:var(--muted);margin-bottom:2px}
+  .lvl .k{font-size:11px;font-weight:700;letter-spacing:.04em}
+
+  /* ================= Buttons ================= */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--nested);color:var(--fg);transition:.2s}
+  .btn:hover{border-color:var(--purple);background:rgba(123,110,246,.12)}
+  .btn.primary{background:linear-gradient(135deg,var(--purple),#6557e6);border-color:transparent}
+  .btn.primary:hover{box-shadow:0 6px 20px rgba(123,110,246,.4)}
+  .btn.danger{background:rgba(240,88,88,.12);border-color:rgba(240,88,88,.4);color:var(--red)}
+  .btn.success{background:rgba(56,200,120,.12);border-color:rgba(56,200,120,.4);color:var(--green)}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+
+  /* ================= Progress rail ================= */
+  .rail{display:flex;gap:4px;margin:14px 0 20px}
+  .rail .r{flex:1;height:4px;border-radius:2px;background:var(--nested)}
+  .rail .r.done{background:var(--green)}
+  .rail .r.cur{background:var(--purple);box-shadow:0 0 12px rgba(123,110,246,.6)}
+
+  /* ================= Checklist ================= */
+  .check{display:flex;align-items:flex-start;gap:12px;padding:14px;border-radius:10px;background:var(--nested);border:1px solid var(--border);margin-bottom:10px}
+  .check .box{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);display:grid;place-items:center;flex-shrink:0;margin-top:2px}
+  .check.done .box{background:var(--green);border-color:var(--green)}
+  .check.done .box::before{content:"✓";color:#fff;font-size:14px;font-weight:700}
+  .check .tx h6{font-size:13px;font-weight:600;margin-bottom:3px}
+  .check .tx p{font-size:11px;color:var(--muted)}
+
+  /* ================= Table ================= */
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--divider)}
+  th{color:var(--muted);font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  tr:hover td{background:rgba(123,110,246,.04)}
+
+  /* ================= Timeline ================= */
+  .tl{border-left:2px solid var(--divider);padding-left:22px;margin-left:8px;margin-top:10px}
+  .tl-item{position:relative;padding-bottom:16px}
+  .tl-item::before{content:"";position:absolute;left:-30px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--purple);border:3px solid var(--card);box-shadow:0 0 0 1px var(--purple)}
+  .tl-item.ok::before{background:var(--green);box-shadow:0 0 0 1px var(--green)}
+  .tl-item.warn::before{background:var(--amber);box-shadow:0 0 0 1px var(--amber)}
+  .tl-item h6{font-size:13px;font-weight:600;margin-bottom:2px}
+  .tl-item p{font-size:11px;color:var(--muted)}
+  .tl-item small{font-size:10px;color:var(--muted);letter-spacing:.04em}
+
+  /* ================= Rule card ================= */
+  .rule{display:grid;grid-template-columns:100px 1fr 1fr 110px 80px;gap:12px;align-items:center;padding:12px;background:var(--nested);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;font-size:12px}
+  .rule code{background:rgba(123,110,246,.1);padding:2px 6px;border-radius:4px;color:var(--lpurple);font-size:11px}
+
+  /* ================= Webhook block ================= */
+  .wh{background:#06070f;border:1px solid var(--border);border-radius:10px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.65;color:#b3bccc;overflow-x:auto}
+  .wh .k{color:var(--lpurple)}.wh .s{color:var(--green)}.wh .n{color:var(--amber)}
+
+  /* ================= Footer ================= */
+  .foot{max-width:1440px;margin:30px auto 0;padding:0 28px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* ================= Nav buttons ================= */
+  .nav-bottom{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px;background:rgba(19,22,42,.95);backdrop-filter:blur(12px);padding:10px 14px;border-radius:14px;border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.5);z-index:80}
+  .nav-bottom .np{font-size:11px;color:var(--muted);padding:8px 10px}
+
+  /* ================= User flow arrow row ================= */
+  .arrow{color:var(--muted);font-size:18px;text-align:center;margin:0 -5px;align-self:center}
+</style>
+</head>
+<body>
+
+<!-- ============================== TOP NAV ============================== -->
+<div class="top">
+  <div class="brand"><div class="logo"></div>EHB PSS <small>· UI/UX prototype</small></div>
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-s="0">Flow overview</button>
+    <button class="tab" data-s="1">① Submit</button>
+    <button class="tab" data-s="2">② Criteria</button>
+    <button class="tab" data-s="3">③ Score</button>
+    <button class="tab" data-s="4">④ Routing</button>
+    <button class="tab" data-s="5">⑤ DMO queue</button>
+    <button class="tab" data-s="6">⑥ Case drill</button>
+    <button class="tab" data-s="7">⑦ Franchise</button>
+    <button class="tab" data-s="8">⑧ CRB override</button>
+    <button class="tab" data-s="9">⑨ Webhook + badge</button>
+    <button class="tab" data-s="10">Refilling loop</button>
+  </div>
+  <div class="themes">
+    <div class="dot d1" title="White"></div>
+    <div class="dot d2" title="Dark"></div>
+    <div class="dot d3" title="Purple"></div>
+    <div class="dot d4" title="Midnight"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- =================== 0. FLOW OVERVIEW =================== -->
+<section class="scene show" data-s="0">
+  <div class="crumbs">EHB · DMO · PSS · <span class="on">User flow</span></div>
+  <h1>PSS — 9-step user flow with operator handoffs</h1>
+  <p class="sub">Ek hi engine (PSS) har platform ke liye verification chalata hai. Ye diagram har step ka owner dikhata hai — user, PSS engine, DMO operator, CRB. Kisi bhi step pe click karein — detailed screen khul jayega.</p>
+
+  <div class="flow">
+    <div class="step user" onclick="go(1)"><div class="dot-t"></div><div class="n">STEP 01</div><h4>User submits entity</h4><p>Seller / doctor / lawyer clicks "Send for Approval" on product / profile / listing.</p></div>
+    <div class="step pss" onclick="go(2)"><div class="dot-t"></div><div class="n">STEP 02</div><h4>Platform → PSS</h4><p>pss-client POST /stl/submit with x-platform-key. Request enters pending state.</p></div>
+    <div class="step pss" onclick="go(2)"><div class="dot-t"></div><div class="n">STEP 03</div><h4>Criteria loaded</h4><p>PSS loads platform + entity-type criteria_set (7–15 rules).</p></div>
+    <div class="step pss" onclick="go(3)"><div class="dot-t"></div><div class="n">STEP 04</div><h4>Score + STL map</h4><p>Criteria met / total × 100 → L0 → L8 band. PSS cap = L4 alone.</p></div>
+    <div class="step pss" onclick="go(4)"><div class="dot-t"></div><div class="n">STEP 05</div><h4>Rule engine routes</h4><p>Priority-ordered rules: auto-approve · franchise · CRB · reject.</p></div>
+    <div class="step dmo" onclick="go(5)"><div class="dot-t"></div><div class="n">STEP 06</div><h4>DMO queue</h4><p>High/critical risk cases land in DMO operator cockpit.</p></div>
+    <div class="step dmo" onclick="go(7)"><div class="dot-t"></div><div class="n">STEP 07</div><h4>Franchise review</h4><p>Area franchise staff reviews docs, returns decision.</p></div>
+    <div class="step crb" onclick="go(8)"><div class="dot-t"></div><div class="n">STEP 08</div><h4>CRB override</h4><p>L8 cases + escalations. Can override franchise. On-chain hash push.</p></div>
+    <div class="step pss" onclick="go(9)"><div class="dot-t"></div><div class="n">STEP 09</div><h4>Webhook + live badge</h4><p>Signed webhook → platform → STL badge appears to buyers.</p></div>
+  </div>
+
+  <div class="legend">
+    <span class="lu">User-facing</span>
+    <span class="lp">PSS engine</span>
+    <span class="ld">DMO cockpit</span>
+    <span class="lc">CRB oversight</span>
+  </div>
+
+  <div class="grid4" style="margin-top:24px">
+    <div class="nc"><h5>STL cap per source</h5><div class="big" style="color:var(--green)">L4</div><p style="font-size:11px;color:var(--muted);margin-top:4px">PSS alone (identity + basic compliance)</p></div>
+    <div class="nc"><h5>Franchise reach</h5><div class="big" style="color:var(--amber)">L5–L7</div><p style="font-size:11px;color:var(--muted);margin-top:4px">Manual review + governance bonus</p></div>
+    <div class="nc"><h5>CRB only</h5><div class="big" style="color:var(--blue)">L8</div><p style="font-size:11px;color:var(--muted);margin-top:4px">Elite · on-chain · top 0.1%</p></div>
+    <div class="nc"><h5>Audit</h5><div class="big" style="color:var(--lpurple)">100%</div><p style="font-size:11px;color:var(--muted);margin-top:4px">Every step immutable in pss_db.audit_logs</p></div>
+  </div>
+</section>
+
+<!-- =================== 1. SUBMIT (USER) =================== -->
+<section class="scene" data-s="1">
+  <div class="crumbs">GoSellr · Seller dashboard · <span class="on">Submit for STL</span></div>
+  <h1>Step 01 — Seller submits a product for STL approval</h1>
+  <p class="sub">User journey shuru yahan se hoti hai. Seller apna product upload karta hai, aur "Send for Approval" click karte hi verification pipeline trigger hoti hai. Yahi screen OLS lawyer profile, HPS doctor listing, JPS job profile sab ke liye same shape mein hai.</p>
+  <div class="rail"><div class="r cur"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div>
+
+  <div class="grid2">
+    <div class="nc">
+      <h5>Product — “Organic Pakistani Honey 1kg”</h5>
+      <div class="kv"><span>Entity ID</span><span>prd_9f2a1c</span></div>
+      <div class="kv"><span>Platform</span><span>GoSellr</span></div>
+      <div class="kv"><span>Seller</span><span>Zain Traders (Lahore)</span></div>
+      <div class="kv"><span>Current STL</span><span class="chip gray">Unverified · L0</span></div>
+      <div class="kv"><span>Price</span><span>PKR 2,400</span></div>
+      <div class="btn-row">
+        <button class="btn primary" onclick="go(2)">Send for Approval →</button>
+        <button class="btn">Save draft</button>
+      </div>
+    </div>
+    <div class="nc">
+      <h5>What happens next — plain English</h5>
+      <div class="check done"><div class="box"></div><div class="tx"><h6>Product locked for review</h6><p>Edits disabled until PSS returns decision.</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>PSS pulls criteria checklist</h6><p>15 GoSellr product criteria run in the background.</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>STL level calculated</h6><p>Badge visible to you before it's public — you can see projected level.</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>Optional franchise / CRB</h6><p>If your rule-set demands manual review, we'll tell you why.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 2. CRITERIA =================== -->
+<section class="scene" data-s="2">
+  <div class="crumbs">PSS engine · <span class="on">Criteria loaded</span></div>
+  <h1>Steps 02 + 03 — Platform → PSS + criteria loaded</h1>
+  <p class="sub">Platform backend <code style="background:rgba(123,110,246,.1);padding:2px 6px;border-radius:4px;color:var(--lpurple);font-size:12px">pss-client</code> ke through POST /stl/submit call karta hai. PSS immediately ek stl_request banata hai aur iss platform+entity-type ke liye authoritative criteria_set load karta hai.</p>
+  <div class="rail"><div class="r done"></div><div class="r cur"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div>
+
+  <div class="grid2">
+    <div class="nc">
+      <h5>Request envelope</h5>
+      <div class="wh">POST <span class="k">pss-api/stl/submit</span>
+<span class="k">headers</span>: {
+  <span class="k">x-platform-key</span>: <span class="s">"pk_gs_live_****"</span>,
+  <span class="k">x-platform-id</span>: <span class="s">"gosellr"</span>,
+  <span class="k">x-idempotency-key</span>: <span class="s">"req_01ht..."</span>
+}
+<span class="k">body</span>: {
+  <span class="k">entity_id</span>: <span class="s">"prd_9f2a1c"</span>,
+  <span class="k">entity_type</span>: <span class="s">"product"</span>,
+  <span class="k">user_id</span>: <span class="s">"usr_7102"</span>,
+  <span class="k">entity_data</span>: { ... }
+}
+      </div>
+      <div class="btn-row"><span class="chip green">✓ stl_request created</span><span class="chip purple">audit.write</span></div>
+    </div>
+    <div class="nc">
+      <h5>GoSellr product criteria (15) — checklist</h5>
+      <div class="check done"><div class="box"></div><div class="tx"><h6>Title ≥ 20 chars</h6><p>Avoids sparse listings.</p></div></div>
+      <div class="check done"><div class="box"></div><div class="tx"><h6>≥ 3 images, all ≥ 800px</h6><p>Visual quality gate.</p></div></div>
+      <div class="check done"><div class="box"></div><div class="tx"><h6>Verified seller identity (PSS)</h6><p>KYC + liveness passed within 12 months.</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>Brand / origin proof</h6><p>Optional — unlocks L5+.</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>Halal / organic certificate</h6><p>Required for category: food.</p></div></div>
+      <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">+ 10 more criteria auto-evaluated</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 3. SCORE =================== -->
+<section class="scene" data-s="3">
+  <div class="crumbs">PSS · <span class="on">STL score calculated</span></div>
+  <h1>Step 04 — STL score + level mapping</h1>
+  <p class="sub">criteria_met / total × 100 = percentage. Percentage ek STL level pe map hoti hai. PSS akele maximum L4 de sakta hai — L5 aur upar franchise / CRB approval ke bina assign nahi hota.</p>
+  <div class="rail"><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r cur"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div>
+
+  <div class="grid3">
+    <div class="nc">
+      <h5>Score card</h5>
+      <div class="big" style="color:var(--amber)">62%</div>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px">9 of 15 criteria met · risk: LOW (0.12)</p>
+      <div class="kv" style="margin-top:10px"><span>Mapped band</span><span class="chip amber">L3 HIGH</span></div>
+      <div class="kv"><span>Projected cap</span><span class="chip gray">PSS max L4</span></div>
+      <div class="kv"><span>Decision path</span><span class="chip purple">Rule engine</span></div>
+    </div>
+    <div class="nc" style="grid-column:span 2">
+      <h5>Level bands</h5>
+      <div class="lvl-row">
+        <div class="lvl" style="border-color:#9CA3AF"><div class="l">&lt;20%</div><div class="k">L0</div></div>
+        <div class="lvl" style="border-color:#60A5FA"><div class="l">20–24</div><div class="k">L1</div></div>
+        <div class="lvl" style="border-color:#22B14C"><div class="l">25–39</div><div class="k">L2</div></div>
+        <div class="lvl" style="border-color:#F59E0B;background:rgba(245,158,11,.12)"><div class="l">40–54</div><div class="k">L3 ★</div></div>
+        <div class="lvl" style="border-color:#F97316"><div class="l">55–69</div><div class="k">L4</div></div>
+        <div class="lvl" style="border-color:#EC4899"><div class="l">70–79</div><div class="k">L5</div></div>
+        <div class="lvl" style="border-color:#A855F7"><div class="l">80–87</div><div class="k">L6</div></div>
+        <div class="lvl" style="border-color:#7B6EF6"><div class="l">88–94</div><div class="k">L7</div></div>
+        <div class="lvl" style="border-color:#29ABE2"><div class="l">≥95</div><div class="k">L8</div></div>
+      </div>
+      <p style="font-size:11px;color:var(--muted)">Default band mapping. Har platform DMO se apni band-map tune kar sakta hai.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 4. ROUTING =================== -->
+<section class="scene" data-s="4">
+  <div class="crumbs">PSS · <span class="on">Rule engine</span></div>
+  <h1>Step 05 — Admin rule engine routes the decision</h1>
+  <p class="sub">Priority-ordered rules evaluate hote hain — first match wins. Yahan GoSellr ke default rules dikh rahe hain. DMO admin live edit kar sakta hai.</p>
+  <div class="rail"><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r cur"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div>
+
+  <div class="rule"><span class="chip gray">P1</span><span><code>auto_low</code></span><span>criteria_met ≤ 2</span><span class="chip red">Reject</span><span>—</span></div>
+  <div class="rule"><span class="chip gray">P2</span><span><code>auto_basic</code></span><span>criteria_met = 3</span><span class="chip teal">Auto L2</span><span>—</span></div>
+  <div class="rule" style="border-color:var(--purple);background:rgba(123,110,246,.06)"><span class="chip purple">P3 · MATCH</span><span><code>auto_standard</code></span><span>criteria_met ≥ 8</span><span class="chip teal">Auto L3</span><span class="chip green">WIN</span></div>
+  <div class="rule"><span class="chip gray">P4</span><span><code>franchise_full</code></span><span>criteria_met ≥ 12</span><span class="chip amber">→ Franchise</span><span>—</span></div>
+  <div class="rule"><span class="chip gray">P5</span><span><code>crb_elite</code></span><span>coin_lock ≥ tier4</span><span class="chip blue">→ CRB</span><span>—</span></div>
+
+  <div class="grid2" style="margin-top:20px">
+    <div class="nc">
+      <h5>Decision</h5>
+      <div class="big" style="color:var(--teal)">Auto-approve · L3</div>
+      <p style="font-size:11px;color:var(--muted);margin-top:4px">No human-in-loop. Webhook pushed in &lt; 400 ms.</p>
+      <div class="btn-row"><button class="btn primary" onclick="go(9)">Jump to webhook →</button></div>
+    </div>
+    <div class="nc">
+      <h5>Alternative — higher-risk case</h5>
+      <p style="font-size:12px;color:var(--muted);line-height:1.6">Agar yeh product "Medical device" category ka hota to P4 match hota — franchise manual review mein jata. DMO queue screen pe chalein dekhne ke liye.</p>
+      <div class="btn-row"><button class="btn" onclick="go(5)">Open DMO queue →</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 5. DMO QUEUE =================== -->
+<section class="scene" data-s="5">
+  <div class="crumbs">DMO cockpit · PSS · <span class="on">Verification queue</span></div>
+  <h1>Step 06 — DMO operator queue</h1>
+  <p class="sub">Wo cases jo auto-approve nahi hue — franchise, CRB, ya high-risk flagged — DMO operator ke cockpit mein land karte hain. Filter by risk, stage, platform. Click any row to drill in.</p>
+
+  <div class="grid4" style="margin-bottom:16px">
+    <div class="nc"><h5>Pending today</h5><div class="big">47</div></div>
+    <div class="nc"><h5>Auto-approved</h5><div class="big" style="color:var(--teal)">312</div></div>
+    <div class="nc"><h5>Franchise review</h5><div class="big" style="color:var(--amber)">28</div></div>
+    <div class="nc"><h5>CRB escalated</h5><div class="big" style="color:var(--blue)">4</div></div>
+  </div>
+
+  <div class="nc">
+    <div class="btn-row" style="margin-bottom:10px">
+      <button class="btn primary">All · 47</button>
+      <button class="btn">Critical · 6</button>
+      <button class="btn">High · 12</button>
+      <button class="btn">Medium · 18</button>
+      <button class="btn">Low · 11</button>
+      <button class="btn" style="margin-left:auto">+ New rule</button>
+    </div>
+    <table>
+      <thead><tr><th>User / Entity</th><th>Platform</th><th>Score</th><th>Risk</th><th>Stage</th><th>Updated</th><th></th></tr></thead>
+      <tbody>
+        <tr onclick="go(6)" style="cursor:pointer"><td><b>Ali Khan</b><br><small style="color:var(--muted)">prd_1a · Medical device</small></td><td>GoSellr</td><td>78</td><td><span class="chip red">High</span></td><td>AML_RISK</td><td>14 Apr · 21:37</td><td>→</td></tr>
+        <tr onclick="go(7)" style="cursor:pointer"><td><b>Dr. Sara Noor</b><br><small style="color:var(--muted)">prof_42 · Cardiologist</small></td><td>HPS</td><td>84</td><td><span class="chip amber">Medium</span></td><td>FRANCHISE_REVIEW</td><td>14 Apr · 18:22</td><td>→</td></tr>
+        <tr style="cursor:pointer"><td><b>Usman Raza</b><br><small style="color:var(--muted)">prd_7c · Organic food</small></td><td>GoSellr</td><td>46</td><td><span class="chip amber">Medium</span></td><td>DOCUMENTS</td><td>14 Apr · 22:07</td><td>→</td></tr>
+        <tr onclick="go(8)" style="cursor:pointer"><td><b>Lex Partners LLC</b><br><small style="color:var(--muted)">firm_11 · Corporate law</small></td><td>OLS</td><td>93</td><td><span class="chip blue">CRB</span></td><td>CRB_REVIEW</td><td>14 Apr · 20:11</td><td>→</td></tr>
+        <tr style="cursor:pointer"><td><b>Hira Textiles</b><br><small style="color:var(--muted)">prd_4e · Fabric bulk</small></td><td>GoSellr</td><td>62</td><td><span class="chip green">Low</span></td><td>AUTO_APPROVED</td><td>14 Apr · 17:02</td><td>→</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- =================== 6. CASE DRILL =================== -->
+<section class="scene" data-s="6">
+  <div class="crumbs">DMO · PSS queue · <span class="on">Case prd_1a — Ali Khan</span></div>
+  <h1>Step 06b — Case drill-in (operator detail)</h1>
+  <p class="sub">Single case ka full picture — identity signals, criteria breakdown, risk flags, audit timeline, aur operator actions ek hi screen pe.</p>
+  <div class="rail"><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r cur"></div><div class="r"></div><div class="r"></div><div class="r"></div></div>
+
+  <div class="grid3">
+    <div class="nc">
+      <h5>Subject</h5>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--teal));display:grid;place-items:center;font-weight:700">AK</div><div><b>Ali Khan</b><br><small style="color:var(--muted)">ID · usr_7102</small></div></div>
+      <div class="kv"><span>Platform</span><span>GoSellr</span></div>
+      <div class="kv"><span>Entity type</span><span>Medical device</span></div>
+      <div class="kv"><span>Current STL</span><span class="chip amber">L3 HIGH (projected)</span></div>
+      <div class="kv"><span>Risk score</span><span style="color:var(--red)">78 / 100</span></div>
+      <div class="kv"><span>Area franchise</span><span>GoSellr — Lahore</span></div>
+    </div>
+
+    <div class="nc">
+      <h5>Criteria breakdown (15)</h5>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="width:78%;height:100%;background:linear-gradient(90deg,var(--green),var(--amber))"></div></div><b style="color:var(--amber)">78%</b></div>
+      <div class="check done"><div class="box"></div><div class="tx"><h6>KYC passed</h6><p>CNIC + liveness — 3 months ago</p></div></div>
+      <div class="check done"><div class="box"></div><div class="tx"><h6>Seller profile complete</h6><p>Address, tax ID, contact verified</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>Medical device import license — MISSING</h6><p>Required for category</p></div></div>
+      <div class="check"><div class="box"></div><div class="tx"><h6>AML screening — FLAGGED</h6><p>Name match on watchlist (confidence 0.34)</p></div></div>
+    </div>
+
+    <div class="nc">
+      <h5>Audit timeline</h5>
+      <div class="tl">
+        <div class="tl-item ok"><small>14 Apr · 21:12</small><h6>stl_request created</h6><p>Source: gosellr-backend</p></div>
+        <div class="tl-item ok"><small>14 Apr · 21:12</small><h6>Criteria loaded — 15</h6><p>criteria_set: gs_product_v4</p></div>
+        <div class="tl-item warn"><small>14 Apr · 21:13</small><h6>AML flag raised</h6><p>Watchlist match · confidence 0.34</p></div>
+        <div class="tl-item"><small>14 Apr · 21:13</small><h6>Routed → Franchise</h6><p>Rule: franchise_full (P4 match)</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn success">Approve · assign L3</button>
+    <button class="btn">Conditional · lower to L2</button>
+    <button class="btn danger">Reject with reason</button>
+    <button class="btn" onclick="go(8)">Escalate to CRB →</button>
+  </div>
+</section>
+
+<!-- =================== 7. FRANCHISE =================== -->
+<section class="scene" data-s="7">
+  <div class="crumbs">Franchise · GoSellr · <span class="on">Lahore</span></div>
+  <h1>Step 07 — Franchise manual review</h1>
+  <p class="sub">Area franchise ko sirf apni area + apni platform ki cases dikhti hain. Franchise decisions: approve · conditional (lower STL) · reject · escalate. CRB ko override nahi kar sakte.</p>
+
+  <div class="grid3">
+    <div class="nc"><h5>Lahore franchise</h5><div class="big" style="color:var(--amber)">GoSellr · LHE</div><p style="font-size:11px;color:var(--muted);margin-top:6px">Auto-created 2025-11 · Owner: Saeed Ahmed · SLA 48h</p></div>
+    <div class="nc"><h5>Active caseload</h5><div class="big">12</div><p style="font-size:11px;color:var(--muted);margin-top:6px">3 overdue · avg turnaround 27h</p></div>
+    <div class="nc"><h5>This month</h5><div class="big" style="color:var(--green)">87%</div><p style="font-size:11px;color:var(--muted);margin-top:6px">approval rate · 142 of 163 cases</p></div>
+  </div>
+
+  <div class="nc" style="margin-top:16px">
+    <h5>Active review — Dr. Sara Noor (Cardiologist, HPS)</h5>
+    <div class="grid2" style="margin-top:10px">
+      <div>
+        <div class="kv"><span>PMDC license</span><span class="chip green">Valid · expires 2028</span></div>
+        <div class="kv"><span>Hospital affiliation</span><span class="chip green">Shaukat Khanum — verified</span></div>
+        <div class="kv"><span>Experience</span><span>12 years</span></div>
+        <div class="kv"><span>Patient reviews</span><span>4.8 / 5 (214)</span></div>
+        <div class="kv"><span>PSS score</span><span><b style="color:var(--teal)">84</b> / 100</span></div>
+        <div class="kv"><span>Projected STL</span><span class="chip purple">L5 ULTRA</span></div>
+      </div>
+      <div>
+        <h6 style="font-size:12px;margin-bottom:8px">Operator notes</h6>
+        <textarea placeholder="Add note for audit trail…" style="width:100%;min-height:110px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--fg);font-family:inherit;font-size:12px">PMDC manual verified on council.org — valid. Hospital contract attached. Recommending L5 standard approval.</textarea>
+        <div class="btn-row">
+          <button class="btn success">✓ Approve L5</button>
+          <button class="btn">Conditional L4</button>
+          <button class="btn danger">Reject</button>
+          <button class="btn" onclick="go(8)">Escalate → CRB</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 8. CRB =================== -->
+<section class="scene" data-s="8">
+  <div class="crumbs">CRB · <span class="on">Override review</span></div>
+  <h1>Step 08 — CRB (Central Record Blockchain)</h1>
+  <p class="sub">CRB ka scope: sab platforms, sab areas. Ye franchise decisions ko override kar sakti hai, L8 SUPREME assign kar sakti hai, aur on-chain certificate hash push karti hai (Polkadot). Override event always immutable logged.</p>
+
+  <div class="grid3">
+    <div class="nc"><h5>Pending CRB reviews</h5><div class="big" style="color:var(--blue)">4</div></div>
+    <div class="nc"><h5>Override rate (30d)</h5><div class="big">6.2%</div></div>
+    <div class="nc"><h5>On-chain hashes pushed</h5><div class="big" style="color:var(--lpurple)">1,247</div></div>
+  </div>
+
+  <div class="nc" style="margin-top:16px">
+    <h5>Case — Lex Partners LLC (Corporate law, OLS)</h5>
+    <div class="grid2" style="margin-top:10px">
+      <div>
+        <div class="kv"><span>PSS score</span><span><b style="color:var(--teal)">93</b> / 100</span></div>
+        <div class="kv"><span>Franchise decision</span><span class="chip amber">L6 DIAMOND</span></div>
+        <div class="kv"><span>CRB proposal</span><span class="chip blue">L8 SUPREME</span></div>
+        <div class="kv"><span>Governance bonus</span><span>+4 (DMO policy)</span></div>
+        <div class="kv"><span>Coin lock tier</span><span>Tier 5 — 100k EHBGC</span></div>
+        <div class="kv"><span>On-chain push</span><span class="chip purple">Ready</span></div>
+      </div>
+      <div>
+        <h6 style="font-size:12px;margin-bottom:8px">Override justification (required)</h6>
+        <textarea style="width:100%;min-height:110px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--fg);font-family:inherit;font-size:12px">Firm has 3 decades clean regulatory history, SBP advisory mandate, and coin-lock tier 5 sustained 18+ months. Eligible for SUPREME. Overriding franchise L6 → L8 per DMO policy §3.2.</textarea>
+        <div class="btn-row">
+          <button class="btn primary">Confirm override + push hash</button>
+          <button class="btn">Uphold franchise decision</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 9. WEBHOOK + BADGE =================== -->
+<section class="scene" data-s="9">
+  <div class="crumbs">PSS → Platform · <span class="on">Webhook + live badge</span></div>
+  <h1>Step 09 — Signed webhook + STL badge live</h1>
+  <p class="sub">Decision final hote hi PSS signed webhook push karta hai. Platform us ko verify karta hai (HMAC), apni DB update karta hai, STL badge product pe appear ho jata hai. Failure pe 3x exponential retry.</p>
+  <div class="rail"><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r done"></div><div class="r cur"></div></div>
+
+  <div class="grid2">
+    <div class="nc">
+      <h5>Webhook payload</h5>
+      <div class="wh">POST <span class="k">gosellr-api/webhooks/pss</span>
+<span class="k">header</span>: {
+  <span class="k">x-pss-signature</span>: <span class="s">"sha256=HMAC(secret, body)"</span>,
+  <span class="k">x-pss-event-id</span>: <span class="s">"evt_01ht..."</span>
+}
+<span class="k">body</span>: {
+  <span class="k">event</span>: <span class="s">"stl.decision"</span>,
+  <span class="k">entity_id</span>: <span class="s">"prd_9f2a1c"</span>,
+  <span class="k">decision</span>: <span class="s">"approved"</span>,
+  <span class="k">stl_level</span>: <span class="n">3</span>,
+  <span class="k">decided_by</span>: <span class="s">"auto_standard"</span>,
+  <span class="k">decided_at</span>: <span class="s">"2026-04-14T21:13:48Z"</span>
+}
+      </div>
+      <div class="btn-row"><span class="chip green">✓ Delivered 127ms</span><span class="chip purple">HMAC valid</span></div>
+    </div>
+    <div class="nc">
+      <h5>Live product card (buyer view)</h5>
+      <div style="background:linear-gradient(135deg,rgba(123,110,246,.08),rgba(41,171,226,.04));border:1px solid var(--border);border-radius:14px;padding:18px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+          <div><b style="font-size:15px">Organic Pakistani Honey 1kg</b><br><small style="color:var(--muted)">Zain Traders · Lahore</small></div>
+          <div class="stl-badge"><div class="lv">L3</div>HIGH · STL verified</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin:14px 0">
+          <span class="chip green">KYC verified</span>
+          <span class="chip teal">PSS approved</span>
+          <span class="chip amber">Free return 7d</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--divider)">
+          <div><div style="font-size:22px;font-weight:700">PKR 2,400</div><small style="color:var(--muted)">Shipping PKR 180</small></div>
+          <button class="btn primary">Add to cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =================== 10. REFILLING LOOP =================== -->
+<section class="scene" data-s="10">
+  <div class="crumbs">PSS · Ongoing monitoring · <span class="on">Refilling</span></div>
+  <h1>Bonus — Refilling loop (ongoing lifecycle)</h1>
+  <p class="sub">STL ek lifetime badge nahi hai. KYC / license 12 months mein expire hoti hai, AML risk score change ho sakti hai, franchise compliance audits hoti hain. Refilling loop user ko auto-notify karta hai aur re-verification trigger karta hai.</p>
+
+  <div class="grid4">
+    <div class="nc"><h5>KYC expiring 30d</h5><div class="big" style="color:var(--amber)">142</div><p style="font-size:11px;color:var(--muted);margin-top:4px">auto-reminder sent</p></div>
+    <div class="nc"><h5>License expired</h5><div class="big" style="color:var(--red)">6</div><p style="font-size:11px;color:var(--muted);margin-top:4px">STL auto-downgraded</p></div>
+    <div class="nc"><h5>Risk re-score (quarterly)</h5><div class="big" style="color:var(--lpurple)">3,412</div><p style="font-size:11px;color:var(--muted);margin-top:4px">completed last run</p></div>
+    <div class="nc"><h5>Refill success rate</h5><div class="big" style="color:var(--green)">94%</div><p style="font-size:11px;color:var(--muted);margin-top:4px">renewed within SLA</p></div>
+  </div>
+
+  <div class="nc" style="margin-top:16px">
+    <h5>Example — Zain Traders (GoSellr)</h5>
+    <div class="tl">
+      <div class="tl-item ok"><small>2025-04-14 · initial</small><h6>L3 assigned · auto-approve</h6><p>KYC fresh, 9/15 criteria</p></div>
+      <div class="tl-item ok"><small>2026-01-14 · T-90d</small><h6>Reminder · KYC expires in 90 days</h6><p>Email + in-app nudge sent</p></div>
+      <div class="tl-item warn"><small>2026-04-01 · T-13d</small><h6>Urgent reminder · docs not refreshed</h6><p>STL downgrade schedule set</p></div>
+      <div class="tl-item"><small>2026-04-14 · today</small><h6>Refill submitted</h6><p>New liveness check + updated docs → PSS re-run → L3 re-confirmed</p></div>
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:20px">
+    <button class="btn" onclick="go(0)">← Back to flow overview</button>
+    <button class="btn primary">Open full PSS plan</button>
+  </div>
+</section>
+
+</div>
+
+<!-- ============================== NAV ============================== -->
+<div class="nav-bottom">
+  <button class="btn" onclick="prev()">← Prev</button>
+  <span class="np" id="cur">Screen 0 / 10</span>
+  <button class="btn primary" onclick="next()">Next →</button>
+</div>
+
+<div class="foot">
+  <span>EHB Technologies (Pvt.) Ltd. · PSS UI/UX prototype v1.0 · 2026-04-14</span>
+  <span>10 screens · 9-step flow · design-system/EHB-UIUX-SYSTEM.md</span>
+</div>
+
+<script>
+  const scenes=document.querySelectorAll('.scene');
+  const tabs=document.querySelectorAll('.tab');
+  let cur=0;const total=scenes.length-1;
+  function go(i){
+    cur=Math.max(0,Math.min(total,i));
+    scenes.forEach(s=>s.classList.remove('show'));
+    scenes[cur].classList.add('show');
+    tabs.forEach(t=>t.classList.remove('active'));
+    tabs[cur].classList.add('active');
+    document.getElementById('cur').textContent='Screen '+cur+' / '+total;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function next(){go(cur+1)}
+  function prev(){go(cur-1)}
+  tabs.forEach(t=>t.addEventListener('click',()=>go(parseInt(t.dataset.s))));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft')prev()});
+</script>
+</body>
+</html>

@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHB-STL-LEVEL Card Component</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0C0E1A;
+    color: #F3F4F6;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .page-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .page-sub { text-align: center; color: #9CA3AF; font-size: 13px; margin-bottom: 40px; }
+
+  /* ===== DEMO GRID ===== */
+  .demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .demo-label {
+    text-align: center;
+    font-size: 12px;
+    color: #9CA3AF;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ═══════════════════════════════════════════════
+     EHB-STL-LEVEL CARD — THE CORE COMPONENT
+     ═══════════════════════════════════════════════ */
+
+  .stl-card {
+    position: relative;
+    background: #13162A;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible;
+  }
+  .stl-card:hover {
+    border-color: rgba(123,110,246,0.35);
+    box-shadow: 0 8px 32px rgba(123,110,246,0.12);
+    transform: translateY(-2px);
+  }
+
+  /* --- TOP ROW: Avatar + Info + Level Badge --- */
+  .stl-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .stl-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .stl-avatar.buyer { background: rgba(43,191,160,0.15); }
+  .stl-avatar.seller { background: rgba(123,110,246,0.15); }
+  .stl-avatar.rider { background: rgba(240,160,48,0.15); }
+  .stl-avatar.inspector { background: rgba(240,88,88,0.15); }
+  .stl-avatar.franchise { background: rgba(56,200,120,0.15); }
+  .stl-avatar.service { background: rgba(41,171,226,0.15); }
+  .stl-avatar.company { background: rgba(160,152,248,0.15); }
+  .stl-avatar.employee { background: rgba(123,110,246,0.15); }
+  .stl-avatar.job-seeker { background: rgba(240,160,48,0.15); }
+
+  /* Verified checkmark on avatar */
+  .stl-avatar .verified {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    width: 18px;
+    height: 18px;
+    background: #2BBFA0;
+    border-radius: 50%;
+    border: 2px solid #13162A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+
+  .stl-info { flex: 1; min-width: 0; }
+  .stl-name {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .stl-role {
+    font-size: 12px;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .role-chip {
+    font-size: 10px;
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .role-chip.buyer { background: rgba(43,191,160,0.15); color: #2BBFA0; }
+  .role-chip.seller { background: rgba(123,110,246,0.15); color: #A098F8; }
+  .role-chip.rider { background: rgba(240,160,48,0.15); color: #F0A030; }
+  .role-chip.inspector { background: rgba(240,88,88,0.15); color: #F05858; }
+  .role-chip.franchise { background: rgba(56,200,120,0.15); color: #38C878; }
+  .role-chip.service { background: rgba(41,171,226,0.15); color: #29ABE2; }
+  .role-chip.company { background: rgba(160,152,248,0.15); color: #A098F8; }
+  .role-chip.employee-ehb { background: rgba(123,110,246,0.2); color: #A098F8; border: 1px solid rgba(123,110,246,0.3); }
+  .role-chip.employee-franchise { background: rgba(56,200,120,0.15); color: #38C878; }
+  .role-chip.employee-open { background: rgba(41,171,226,0.15); color: #29ABE2; }
+  .role-chip.job-seeker { background: rgba(240,160,48,0.15); color: #F0A030; }
+
+  /* --- TRUST LEVEL STRIP (Top of card) --- */
+  .trust-level-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .trust-level-strip .tl-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .trust-level-strip .tl-left .tl-icon {
+    font-size: 13px;
+  }
+  .trust-level-strip .tl-word {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 2px 10px;
+    border-radius: 5px;
+  }
+  /* Trust word colors */
+  .tl-word.tl-weak { background: rgba(240,88,88,0.12); color: #F05858; border: 1px solid rgba(240,88,88,0.2); }
+  .tl-word.tl-basic { background: rgba(240,160,48,0.12); color: #F0A030; border: 1px solid rgba(240,160,48,0.2); }
+  .tl-word.tl-moderate { background: rgba(41,171,226,0.12); color: #29ABE2; border: 1px solid rgba(41,171,226,0.2); }
+  .tl-word.tl-strong { background: rgba(123,110,246,0.12); color: #A098F8; border: 1px solid rgba(123,110,246,0.2); }
+  .tl-word.tl-trusted { background: rgba(43,191,160,0.12); color: #2BBFA0; border: 1px solid rgba(43,191,160,0.2); }
+  .tl-word.tl-excellent { background: rgba(56,200,120,0.12); color: #38C878; border: 1px solid rgba(56,200,120,0.2); }
+  .tl-word.tl-supreme {
+    background: linear-gradient(135deg, rgba(43,191,160,0.15), rgba(123,110,246,0.15));
+    color: #fff;
+    border: 1px solid rgba(123,110,246,0.3);
+    box-shadow: 0 0 8px rgba(123,110,246,0.15);
+  }
+
+  /* Trust level mini bar */
+  .tl-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    margin: 0 10px;
+  }
+  .tl-bar-bg {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .tl-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+  .tl-bar-fill.tl-weak { background: linear-gradient(90deg, #F05858, #F05858); }
+  .tl-bar-fill.tl-basic { background: linear-gradient(90deg, #F0A030, #F0A030); }
+  .tl-bar-fill.tl-moderate { background: linear-gradient(90deg, #29ABE2, #29ABE2); }
+  .tl-bar-fill.tl-strong { background: linear-gradient(90deg, #7B6EF6, #A098F8); }
+  .tl-bar-fill.tl-trusted { background: linear-gradient(90deg, #2BBFA0, #38C878); }
+  .tl-bar-fill.tl-excellent { background: linear-gradient(90deg, #38C878, #2BBFA0); }
+  .tl-bar-fill.tl-supreme { background: linear-gradient(90deg, #2BBFA0, #7B6EF6, #F0A030); }
+
+  /* --- STL BADGE — FUTURISTIC RING --- */
+  .stl-badge-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .stl-ring-container {
+    position: relative;
+    width: 88px;
+    height: 88px;
+  }
+  .stl-ring-svg {
+    width: 88px;
+    height: 88px;
+    transform: rotate(-90deg);
+    filter: drop-shadow(0 0 6px var(--ring-glow, rgba(123,110,246,0.4)));
+  }
+  .stl-ring-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.06);
+    stroke-width: 3.5;
+  }
+  .stl-ring-progress {
+    fill: none;
+    stroke: url(#ringGrad);
+    stroke-width: 3.5;
+    stroke-linecap: round;
+    stroke-dasharray: 226;
+    stroke-dashoffset: 226;
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .stl-ring-ticks {
+    fill: none;
+    stroke: rgba(255,255,255,0.12);
+    stroke-width: 0.5;
+  }
+  /* Glow pulse animation */
+  @keyframes ringPulse {
+    0%, 100% { filter: drop-shadow(0 0 6px var(--ring-glow, rgba(123,110,246,0.4))); }
+    50% { filter: drop-shadow(0 0 14px var(--ring-glow, rgba(123,110,246,0.6))); }
+  }
+  .stl-ring-svg { animation: ringPulse 3s ease-in-out infinite; }
+
+  /* Inner content overlay */
+  .stl-ring-inner {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+  }
+  .stl-ring-inner .badge-icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .stl-ring-inner .badge-level {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--badge-color1, #7B6EF6), var(--badge-color2, #2BBFA0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .stl-ring-inner .badge-stl-label {
+    font-size: 6px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1;
+    margin-top: 1px;
+  }
+  .stl-ring-inner .badge-pct {
+    font-size: 8px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  /* Badge color tiers (applied to ring-inner for gradient text) */
+  .stl-ring-container.tier-low { --badge-color1: #4B5563; --badge-color2: #6B7280; --ring-glow: rgba(107,114,128,0.3); }
+  .stl-ring-container.tier-mid { --badge-color1: #29ABE2; --badge-color2: #7B6EF6; --ring-glow: rgba(41,171,226,0.4); }
+  .stl-ring-container.tier-high { --badge-color1: #7B6EF6; --badge-color2: #F0A030; --ring-glow: rgba(123,110,246,0.45); }
+  .stl-ring-container.tier-elite { --badge-color1: #F0A030; --badge-color2: #F05858; --ring-glow: rgba(240,160,48,0.45); }
+  .stl-ring-container.tier-supreme { --badge-color1: #2BBFA0; --badge-color2: #7B6EF6; --ring-glow: rgba(43,191,160,0.5); }
+
+  .stl-badge-label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    color: #9CA3AF;
+  }
+
+  /* --- 3 DIMENSION MINI BARS --- */
+  .stl-mini-dims {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .mini-dim {
+    flex: 1;
+    text-align: center;
+  }
+  .mini-dim-label {
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mini-dim-label.pss { color: #29ABE2; }
+  .mini-dim-label.crb { color: #F0A030; }
+  .mini-dim-label.dmo { color: #38C878; }
+
+  .mini-bar-bg {
+    width: 100%;
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .mini-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .mini-bar-fill.pss { background: linear-gradient(90deg, #1a4a6a, #29ABE2); }
+  .mini-bar-fill.crb { background: linear-gradient(90deg, #5a3a0a, #F0A030); }
+  .mini-bar-fill.dmo { background: linear-gradient(90deg, #0a3a1a, #38C878); }
+
+  .mini-dim-val {
+    font-size: 10px;
+    color: #9CA3AF;
+    margin-top: 3px;
+  }
+
+  /* --- QUICK STL TYPES BUTTON ROW --- */
+  .stl-quick-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .stl-quick-btn {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #9CA3AF;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .stl-quick-btn:hover {
+    background: rgba(123,110,246,0.1);
+    border-color: rgba(123,110,246,0.3);
+    color: #A098F8;
+  }
+  .stl-quick-btn .q-level {
+    font-weight: 800;
+  }
+  .stl-quick-btn .q-level.high { color: #2BBFA0; }
+  .stl-quick-btn .q-level.mid { color: #F0A030; }
+  .stl-quick-btn .q-level.low { color: #F05858; }
+
+  /* --- USER META STRIP (Rule#, Rating, Refilling, Exam) --- */
+  .stl-meta-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+    padding: 10px 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 10px;
+  }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+  .meta-icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .meta-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: #F3F4F6;
+    line-height: 1;
+  }
+  .meta-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    line-height: 1;
+  }
+  /* Rating stars */
+  .meta-stars {
+    display: flex;
+    gap: 1px;
+    font-size: 10px;
+    line-height: 1;
+  }
+  .meta-stars .star-on { color: #F0A030; }
+  .meta-stars .star-off { color: #374151; }
+  /* Exam grade chip */
+  .exam-grade {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .exam-count { color: #A098F8; }
+  .exam-result {
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 800;
+  }
+  .exam-result.grade-a-plus { background: rgba(56,200,120,0.15); color: #38C878; border: 1px solid rgba(56,200,120,0.25); }
+  .exam-result.grade-a { background: rgba(43,191,160,0.15); color: #2BBFA0; border: 1px solid rgba(43,191,160,0.25); }
+  .exam-result.grade-b { background: rgba(240,160,48,0.15); color: #F0A030; border: 1px solid rgba(240,160,48,0.25); }
+  .exam-result.grade-c { background: rgba(240,88,88,0.15); color: #F05858; border: 1px solid rgba(240,88,88,0.25); }
+  /* Refill chip */
+  .refill-val {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #2BBFA0;
+  }
+
+  /* ═══════════════════════════════════════════════
+     HOVER POPUP — FULL BREAKDOWN
+     ═══════════════════════════════════════════════ */
+
+  .stl-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.2s ease;
+  }
+  .stl-popup-overlay.active { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .stl-popup {
+    background: #13162A;
+    border: 1px solid rgba(123,110,246,0.3);
+    border-radius: 20px;
+    width: 95%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+    animation: slideUp 0.25s ease;
+    box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: none;
+    color: #9CA3AF;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .popup-close:hover { background: rgba(240,88,88,0.15); color: #F05858; }
+
+  /* Popup header */
+  .popup-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .popup-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+  }
+  .popup-name { font-size: 20px; font-weight: 700; }
+  .popup-role { font-size: 13px; color: #9CA3AF; margin-top: 2px; }
+  .popup-stl-big {
+    margin-left: auto;
+    text-align: center;
+  }
+  .popup-stl-num {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .popup-stl-label {
+    font-size: 11px;
+    color: #9CA3AF;
+    font-weight: 600;
+  }
+
+  /* Section headers */
+  .popup-section {
+    margin-bottom: 20px;
+  }
+  .popup-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #7B6EF6;
+    margin-bottom: 12px;
+  }
+
+  /* 3D Dimension Cards */
+  .dim-cards {
+    display: flex;
+    gap: 10px;
+  }
+  .dim-card {
+    flex: 1;
+    background: #1A1D33;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .dim-card:hover { border-color: rgba(255,255,255,0.12); }
+  .dim-card-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .dim-card-name {
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .dim-card-name.pss { color: #29ABE2; }
+  .dim-card-name.crb { color: #F0A030; }
+  .dim-card-name.dmo { color: #38C878; }
+
+  .dim-card-level {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 4px 0;
+  }
+  .dim-card-level.pss { color: #29ABE2; }
+  .dim-card-level.crb { color: #F0A030; }
+  .dim-card-level.dmo { color: #38C878; }
+
+  .dim-card-status {
+    font-size: 10px;
+    color: #9CA3AF;
+  }
+
+  /* Gauge bar */
+  .gauge-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .gauge-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+  .gauge-fill.pss { background: linear-gradient(90deg, #1a4a6a, #29ABE2); }
+  .gauge-fill.crb { background: linear-gradient(90deg, #5a3a0a, #F0A030); }
+  .gauge-fill.dmo { background: linear-gradient(90deg, #0a3a1a, #38C878); }
+
+  /* HYBRID formula display */
+  .formula-display {
+    background: #1A1D33;
+    border: 1px solid rgba(123,110,246,0.15);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .formula-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+  }
+  .formula-chip {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .formula-chip.pss { background: rgba(41,171,226,0.15); color: #29ABE2; }
+  .formula-chip.crb { background: rgba(240,160,48,0.15); color: #F0A030; }
+  .formula-chip.dmo { background: rgba(56,200,120,0.15); color: #38C878; }
+  .formula-op { color: #9CA3AF; font-weight: 700; }
+  .formula-result {
+    font-weight: 800;
+    font-size: 14px;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .formula-note {
+    font-size: 10px;
+    color: #9CA3AF;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .cap-warning {
+    color: #F0A030;
+    font-weight: 600;
+    font-size: 11px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Entity STL breakdown (MIN rule chain) */
+  .min-chain {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .chain-box {
+    background: #1A1D33;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+  }
+  .chain-box-label {
+    font-size: 9px;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .chain-box-level {
+    font-size: 18px;
+    font-weight: 800;
+    margin-top: 2px;
+  }
+  .chain-box.weakest {
+    border-color: rgba(240,88,88,0.4);
+    background: rgba(240,88,88,0.05);
+  }
+  .chain-box.weakest .chain-box-level { color: #F05858; }
+  .chain-arrow { color: #9CA3AF; font-size: 14px; flex-shrink: 0; }
+
+  /* Product/Service/Franchise cards in popup */
+  .entity-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .entity-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1A1D33;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 10px 14px;
+    transition: all 0.2s;
+  }
+  .entity-row:hover { border-color: rgba(255,255,255,0.12); }
+  .entity-icon { font-size: 20px; flex-shrink: 0; }
+  .entity-info { flex: 1; }
+  .entity-name { font-size: 13px; font-weight: 600; }
+  .entity-type { font-size: 10px; color: #9CA3AF; }
+  .entity-stl {
+    font-size: 16px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .entity-stl.green { color: #2BBFA0; }
+  .entity-stl.amber { color: #F0A030; }
+  .entity-stl.red { color: #F05858; }
+  .entity-stl.purple { color: #A098F8; }
+
+  /* Wallet section */
+  .wallet-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1A1D33;
+    border: 1px solid rgba(123,110,246,0.15);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .wallet-icon { font-size: 24px; }
+  .wallet-info { flex: 1; }
+  .wallet-label { font-size: 12px; color: #9CA3AF; }
+  .wallet-amount { font-size: 16px; font-weight: 700; color: #A098F8; }
+  .wallet-boost {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2BBFA0;
+    background: rgba(43,191,160,0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  /* Scrollbar */
+  .stl-popup::-webkit-scrollbar { width: 6px; }
+  .stl-popup::-webkit-scrollbar-track { background: transparent; }
+  .stl-popup::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+  /* Section note */
+  .section-note {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: #7B6EF6;
+    margin: 50px 0 20px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG Gradient Definitions (hidden) -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad-high" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7B6EF6"/>
+      <stop offset="100%" stop-color="#F0A030"/>
+    </linearGradient>
+    <linearGradient id="ringGrad-mid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#29ABE2"/>
+      <stop offset="100%" stop-color="#7B6EF6"/>
+    </linearGradient>
+    <linearGradient id="ringGrad-low" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4B5563"/>
+      <stop offset="100%" stop-color="#6B7280"/>
+    </linearGradient>
+    <linearGradient id="ringGrad-elite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0A030"/>
+      <stop offset="100%" stop-color="#F05858"/>
+    </linearGradient>
+    <linearGradient id="ringGrad-supreme" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2BBFA0"/>
+      <stop offset="100%" stop-color="#7B6EF6"/>
+    </linearGradient>
+    <linearGradient id="ringGrad-service" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#29ABE2"/>
+      <stop offset="100%" stop-color="#2BBFA0"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="page-title">EHB-STL-LEVEL Card Component</div>
+<div class="page-sub">Universal trust card — har user type ke liye — hover/click karein popup dekhne ke liye</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- DEMO: Different User Types                  -->
+<!-- ════════════════════════════════════════════ -->
+
+<div class="demo-grid">
+
+  <!-- ===== SELLER CARD ===== -->
+  <div>
+    <div class="demo-label">Seller — GoSellr Shop Owner</div>
+    <div class="stl-card" onclick="openPopup('seller')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-strong" style="width:70%"></div></div></div>
+        <span class="tl-word tl-strong">Strong</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar seller">
+          🏪
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Ahmed Electronics</div>
+          <div class="stl-role">
+            <span class="role-chip seller">Seller</span>
+            Lahore · Since 2025
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-high" data-pct="70">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-high)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L7</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">70%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">PRO</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:80%"></div></div>
+          <div class="mini-dim-val">L8</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:70%"></div></div>
+          <div class="mini-dim-val">L7</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:60%"></div></div>
+          <div class="mini-dim-val">L6</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-7421</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-off">★</span></div>
+          <span class="meta-label">Rating 4.2</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">3x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">5x</span> <span class="exam-result grade-a-plus">A+</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">📦 Products <span class="q-level high">L7</span></div>
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L7</span></div>
+        <div class="stl-quick-btn">🏢 Company <span class="q-level mid">L5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BUYER CARD ===== -->
+  <div>
+    <div class="demo-label">Buyer — Regular Shopper</div>
+    <div class="stl-card" onclick="openPopup('buyer')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-moderate" style="width:40%"></div></div></div>
+        <span class="tl-word tl-moderate">Moderate</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar buyer">
+          🛒
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Fatima Khan</div>
+          <div class="stl-role">
+            <span class="role-chip buyer">Buyer</span>
+            Karachi · Since 2026
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-mid" data-pct="40">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-mid)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L4</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">40%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">STANDARD</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:50%"></div></div>
+          <div class="mini-dim-val">L5</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:10%"></div></div>
+          <div class="mini-dim-val">L1</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:40%"></div></div>
+          <div class="mini-dim-val">L4</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-1089</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-off">★</span><span class="star-off">★</span></div>
+          <span class="meta-label">Rating 3.5</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">1x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span style="color:#6B7280;font-size:10px">N/A</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L4</span></div>
+        <div class="stl-quick-btn">⭐ BSTL <span class="q-level high">Good</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FRANCHISE CARD ===== -->
+  <div>
+    <div class="demo-label">Franchise Owner — Master Franchise Lahore</div>
+    <div class="stl-card" onclick="openPopup('franchise')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-excellent" style="width:90%"></div></div></div>
+        <span class="tl-word tl-excellent">Excellent</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar franchise">
+          🏢
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">EHB Gulberg Master</div>
+          <div class="stl-role">
+            <span class="role-chip franchise">Master Franchise</span>
+            Lahore
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-supreme" data-pct="90">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-supreme)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L9</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">90%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">ELITE</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:90%"></div></div>
+          <div class="mini-dim-val">L9</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:90%"></div></div>
+          <div class="mini-dim-val">L9</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:90%"></div></div>
+          <div class="mini-dim-val">L9</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-0012</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span></div>
+          <span class="meta-label">Rating 4.9</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">7x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">8x</span> <span class="exam-result grade-a-plus">A+</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">👤 Owner <span class="q-level high">L9</span></div>
+        <div class="stl-quick-btn">🏢 Territory <span class="q-level high">L9</span></div>
+        <div class="stl-quick-btn">💰 Lock <span class="q-level mid">200K</span></div>
+        <div class="stl-quick-btn">📊 Health <span class="q-level high">94%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SERVICE PROVIDER CARD ===== -->
+  <div>
+    <div class="demo-label">Service Provider — Doctor (WMS)</div>
+    <div class="stl-card" onclick="openPopup('service')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-trusted" style="width:60%"></div></div></div>
+        <span class="tl-word tl-trusted">Trusted</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar service">
+          🩺
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Dr. Hassan Ali</div>
+          <div class="stl-role">
+            <span class="role-chip service">Service Provider</span>
+            Islamabad
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-high" data-pct="60" style="--badge-color1:#29ABE2;--badge-color2:#2BBFA0;--ring-glow:rgba(41,171,226,0.4)">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-service)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L6</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">60%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">HIGH</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:70%"></div></div>
+          <div class="mini-dim-val">L7</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:50%"></div></div>
+          <div class="mini-dim-val">L5</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:70%"></div></div>
+          <div class="mini-dim-val">L7</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-3356</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span></div>
+          <span class="meta-label">Rating 4.8</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">4x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">6x</span> <span class="exam-result grade-a">A</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">🩺 Services <span class="q-level high">L6</span></div>
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L6</span></div>
+        <div class="stl-quick-btn">💰 Lock <span class="q-level mid">1.5K</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RIDER CARD ===== -->
+  <div>
+    <div class="demo-label">Rider — Delivery Partner</div>
+    <div class="stl-card" onclick="openPopup('rider')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-moderate" style="width:50%"></div></div></div>
+        <span class="tl-word tl-moderate">Moderate</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar rider">
+          🏍️
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Imran Delivery</div>
+          <div class="stl-role">
+            <span class="role-chip rider">Rider</span>
+            Lahore Zone-3
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-mid" data-pct="50">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-mid)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L5</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">50%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">ADVANCED</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:60%"></div></div>
+          <div class="mini-dim-val">L6</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:10%"></div></div>
+          <div class="mini-dim-val">N/A</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:50%"></div></div>
+          <div class="mini-dim-val">L5</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-5590</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-off">★</span></div>
+          <span class="meta-label">Rating 4.1</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">2x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">3x</span> <span class="exam-result grade-b">B+</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L5</span></div>
+        <div class="stl-quick-btn">⚡ RPS <span class="q-level high">82/100</span></div>
+        <div class="stl-quick-btn">📦 Deliveries <span class="q-level mid">342</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== INSPECTOR CARD ===== -->
+  <div>
+    <div class="demo-label">Inspector — CRB Verifier</div>
+    <div class="stl-card" onclick="openPopup('inspector')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-excellent" style="width:80%"></div></div></div>
+        <span class="tl-word tl-excellent">Excellent</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar inspector">
+          🔍
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Saad Inspection Pro</div>
+          <div class="stl-role">
+            <span class="role-chip inspector">Inspector</span>
+            Lahore — Food + Electronics
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-elite" data-pct="80">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-elite)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L8</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">80%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">VIP</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:80%"></div></div>
+          <div class="mini-dim-val">L8</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:80%"></div></div>
+          <div class="mini-dim-val">L8</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:80%"></div></div>
+          <div class="mini-dim-val">L8</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-0234</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span></div>
+          <span class="meta-label">Rating 4.9</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">5x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">7x</span> <span class="exam-result grade-a-plus">A+</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L8</span></div>
+        <div class="stl-quick-btn">⚡ IPS <span class="q-level high">91/100</span></div>
+        <div class="stl-quick-btn">📋 Inspections <span class="q-level mid">156</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== JOB SEEKER CARD (Profile created, looking for job) ===== -->
+  <div>
+    <div class="demo-label">Job Seeker — JPS Profile (Searching)</div>
+    <div class="stl-card" onclick="openPopup('jobseeker')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-basic" style="width:20%"></div></div></div>
+        <span class="tl-word tl-basic">Basic</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar job-seeker">
+          🔍
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Ali Raza</div>
+          <div class="stl-role">
+            <span class="role-chip job-seeker">Job Seeker</span>
+            Rawalpindi · Web Dev
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-low" data-pct="20">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-low)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L2</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">20%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">BASIC</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:30%"></div></div>
+          <div class="mini-dim-val">L3</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:10%"></div></div>
+          <div class="mini-dim-val">N/A</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:20%"></div></div>
+          <div class="mini-dim-val">L2</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-8821</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-off">★</span><span class="star-off">★</span><span class="star-off">★</span><span class="star-off">★</span><span class="star-off">★</span></div>
+          <span class="meta-label">No Rating</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">0x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span style="color:#6B7280;font-size:10px">Pending</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">👤 Profile <span class="q-level low">L2</span></div>
+        <div class="stl-quick-btn">📄 Resume <span class="q-level mid">Uploaded</span></div>
+        <div class="stl-quick-btn">🎓 Skills <span class="q-level mid">4</span></div>
+        <div class="stl-quick-btn">📊 JPS Score <span class="q-level low">35/100</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EMPLOYEE — EHB COMPANY ===== -->
+  <div>
+    <div class="demo-label">Employee — EHB Technologies (Company)</div>
+    <div class="stl-card" onclick="openPopup('emp-ehb')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-excellent" style="width:80%"></div></div></div>
+        <span class="tl-word tl-excellent">Excellent</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar employee">
+          💼
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Usman Tariq</div>
+          <div class="stl-role">
+            <span class="role-chip employee-ehb">EHB Employee</span>
+            Sr. Developer
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-elite" data-pct="80">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-elite)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L8</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">80%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">VIP</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:90%"></div></div>
+          <div class="mini-dim-val">L9</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:80%"></div></div>
+          <div class="mini-dim-val">L8</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:80%"></div></div>
+          <div class="mini-dim-val">L8</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-0045</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span></div>
+          <span class="meta-label">Rating 4.9</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">6x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">8x</span> <span class="exam-result grade-a-plus">A+</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">🏢 EHB Tech <span class="q-level high">Company</span></div>
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L8</span></div>
+        <div class="stl-quick-btn">📋 Dept <span class="q-level mid">Engineering</span></div>
+        <div class="stl-quick-btn">📅 Since <span class="q-level high">2024</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EMPLOYEE — FRANCHISE ===== -->
+  <div>
+    <div class="demo-label">Employee — Franchise Office (JPS Hired)</div>
+    <div class="stl-card" onclick="openPopup('emp-franchise')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-trusted" style="width:55%"></div></div></div>
+        <span class="tl-word tl-trusted">Trusted</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar employee">
+          🏬
+          <div class="verified">✓</div>
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Sana Malik</div>
+          <div class="stl-role">
+            <span class="role-chip employee-franchise">Franchise Staff</span>
+            Gulberg Branch
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-mid" data-pct="55">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-mid)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L5</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">55%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">ADVANCED</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:60%"></div></div>
+          <div class="mini-dim-val">L6</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:50%"></div></div>
+          <div class="mini-dim-val">L5</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:50%"></div></div>
+          <div class="mini-dim-val">L5</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-4401</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-off">★</span></div>
+          <span class="meta-label">Rating 4.0</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">2x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">3x</span> <span class="exam-result grade-a">A</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">🏬 Franchise <span class="q-level high">Gulberg</span></div>
+        <div class="stl-quick-btn">👤 Personal <span class="q-level high">L5</span></div>
+        <div class="stl-quick-btn">📋 Role <span class="q-level mid">Customer Care</span></div>
+        <div class="stl-quick-btn">🏢 Owner STL <span class="q-level high">L9</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EMPLOYEE — OPEN MARKET ===== -->
+  <div>
+    <div class="demo-label">Employee — Open Market Company (via JPS)</div>
+    <div class="stl-card" onclick="openPopup('emp-open')">
+      <div class="trust-level-strip">
+        <div class="tl-left"><span class="tl-icon">🔰</span> Trust Level</div>
+        <div class="tl-bar-wrap"><div class="tl-bar-bg"><div class="tl-bar-fill tl-moderate" style="width:35%"></div></div></div>
+        <span class="tl-word tl-moderate">Moderate</span>
+      </div>
+      <div class="stl-card-top">
+        <div class="stl-avatar employee">
+          🏗️
+        </div>
+        <div class="stl-info">
+          <div class="stl-name">Kamran Sheikh</div>
+          <div class="stl-role">
+            <span class="role-chip employee-open">Open Market</span>
+            Zenith Corp · Accountant
+          </div>
+        </div>
+        <div class="stl-badge-wrap">
+          <div class="stl-ring-container tier-low" data-pct="35">
+            <svg class="stl-ring-svg" viewBox="0 0 80 80">
+              <circle class="stl-ring-bg" cx="40" cy="40" r="36"/>
+              <circle class="stl-ring-progress" cx="40" cy="40" r="36" stroke="url(#ringGrad-low)"/>
+            </svg>
+            <div class="stl-ring-inner">
+              <span class="badge-icon">🛡️</span>
+              <span class="badge-level">L3</span>
+              <span class="badge-stl-label">EHB-STL-LEVEL</span>
+              <span class="badge-pct">35%</span>
+            </div>
+          </div>
+          <div class="stl-badge-label">NORMAL</div>
+        </div>
+      </div>
+
+      <div class="stl-mini-dims">
+        <div class="mini-dim">
+          <div class="mini-dim-label pss">PSS</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill pss" style="width:40%"></div></div>
+          <div class="mini-dim-val">L4</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label crb">CRB</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill crb" style="width:10%"></div></div>
+          <div class="mini-dim-val">N/A</div>
+        </div>
+        <div class="mini-dim">
+          <div class="mini-dim-label dmo">DMO</div>
+          <div class="mini-bar-bg"><div class="mini-bar-fill dmo" style="width:30%"></div></div>
+          <div class="mini-dim-val">L3</div>
+        </div>
+      </div>
+
+      <div class="stl-meta-strip">
+        <div class="meta-item">
+          <span class="meta-icon">🆔</span>
+          <span class="meta-value">EHB-6712</span>
+          <span class="meta-label">Rule #</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">⭐</span>
+          <div class="meta-stars"><span class="star-on">★</span><span class="star-on">★</span><span class="star-on">★</span><span class="star-off">★</span><span class="star-off">★</span></div>
+          <span class="meta-label">Rating 3.2</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">🔄</span>
+          <span class="refill-val">1x</span>
+          <span class="meta-label">Refilling</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-icon">📝</span>
+          <div class="exam-grade"><span class="exam-count">1x</span> <span class="exam-result grade-b">B+</span></div>
+          <span class="meta-label">Exam</span>
+        </div>
+      </div>
+
+      <div class="stl-quick-row">
+        <div class="stl-quick-btn">🏗️ Company <span class="q-level low">Zenith Corp</span></div>
+        <div class="stl-quick-btn">👤 Personal <span class="q-level mid">L3</span></div>
+        <div class="stl-quick-btn">📋 Role <span class="q-level mid">Accountant</span></div>
+        <div class="stl-quick-btn">🏢 Employer STL <span class="q-level low">L4</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- POPUPS (one per user type - click card to open)        -->
+<!-- ════════════════════════════════════════════════════════ -->
+
+<!-- SELLER POPUP -->
+<div class="stl-popup-overlay" id="popup-seller" onclick="if(event.target===this)closePopup()">
+  <div class="stl-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:rgba(123,110,246,0.15)">🏪</div>
+      <div>
+        <div class="popup-name">Ahmed Electronics</div>
+        <div class="popup-role">Seller · GoSellr · Lahore · Member since Jan 2025</div>
+      </div>
+      <div class="popup-stl-big">
+        <div class="popup-stl-num">L7</div>
+        <div class="popup-stl-label">EHB-STL · PRO</div>
+      </div>
+    </div>
+
+    <!-- 3D DIMENSIONS -->
+    <div class="popup-section">
+      <div class="popup-section-title">🔷 3-Dimensional Trust Breakdown</div>
+      <div class="dim-cards">
+        <div class="dim-card">
+          <div class="dim-card-icon">🔐</div>
+          <div class="dim-card-name pss">PSS</div>
+          <div class="dim-card-level pss">L8</div>
+          <div class="dim-card-status">Video Verified</div>
+          <div class="gauge-bar"><div class="gauge-fill pss" style="width:80%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">🏭</div>
+          <div class="dim-card-name crb">CRB</div>
+          <div class="dim-card-level crb">L7</div>
+          <div class="dim-card-status">Multi-Category</div>
+          <div class="gauge-bar"><div class="gauge-fill crb" style="width:70%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">📊</div>
+          <div class="dim-card-name dmo">DMO</div>
+          <div class="dim-card-level dmo">L6</div>
+          <div class="dim-card-status">Strong Compliance</div>
+          <div class="gauge-bar"><div class="gauge-fill dmo" style="width:60%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HYBRID FORMULA -->
+    <div class="popup-section">
+      <div class="popup-section-title">⚡ HYBRID Formula Calculation</div>
+      <div class="formula-display">
+        <div class="formula-row">
+          <span class="formula-chip pss">PSS L8 × 40%</span>
+          <span class="formula-op">+</span>
+          <span class="formula-chip crb">CRB L7 × 35%</span>
+          <span class="formula-op">+</span>
+          <span class="formula-chip dmo">DMO L6 × 25%</span>
+          <span class="formula-op">=</span>
+          <span class="formula-result">7.15 → L7</span>
+        </div>
+        <div class="formula-row">
+          <span style="color:#9CA3AF; font-size:11px">Lowest: DMO L6 → Cap: L6+1 = L7</span>
+          <span class="formula-op">→</span>
+          <span class="formula-result">FINAL: L7 ✓</span>
+        </div>
+        <div class="formula-note">
+          Weighted score (7.15) is within cap (L7). No bottleneck blocking upgrade.
+        </div>
+      </div>
+    </div>
+
+    <!-- MIN RULE CHAIN -->
+    <div class="popup-section">
+      <div class="popup-section-title">🔗 Entity Trust Chain (MIN Rule)</div>
+      <div class="min-chain">
+        <div class="chain-box">
+          <div class="chain-box-label">Products</div>
+          <div class="chain-box-level" style="color:#2BBFA0">L7</div>
+        </div>
+        <span class="chain-arrow">≤</span>
+        <div class="chain-box">
+          <div class="chain-box-label">Seller</div>
+          <div class="chain-box-level" style="color:#A098F8">L7</div>
+        </div>
+        <span class="chain-arrow">≤</span>
+        <div class="chain-box weakest">
+          <div class="chain-box-label">Company</div>
+          <div class="chain-box-level">L5</div>
+        </div>
+        <span class="chain-arrow">≤</span>
+        <div class="chain-box">
+          <div class="chain-box-label">Owner</div>
+          <div class="chain-box-level" style="color:#2BBFA0">L8</div>
+        </div>
+        <span class="chain-arrow">=</span>
+        <div class="chain-box" style="border-color:rgba(240,88,88,0.4); background:rgba(240,88,88,0.08)">
+          <div class="chain-box-label" style="color:#F05858">Display STL</div>
+          <div class="chain-box-level" style="color:#F05858">L5</div>
+        </div>
+      </div>
+      <p style="font-size:10px; color:#F05858; margin-top:8px; text-align:center">⚠️ Company STL (L5) is the weakest link — buyer dekhega L5</p>
+    </div>
+
+    <!-- PRODUCTS / SERVICES -->
+    <div class="popup-section">
+      <div class="popup-section-title">📦 Products & Services STL</div>
+      <div class="entity-cards">
+        <div class="entity-row">
+          <div class="entity-icon">📱</div>
+          <div class="entity-info">
+            <div class="entity-name">Samsung Galaxy S24</div>
+            <div class="entity-type">Electronics · 234 sold</div>
+          </div>
+          <div class="entity-stl green">L7</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">🎧</div>
+          <div class="entity-info">
+            <div class="entity-name">AirPods Pro 2</div>
+            <div class="entity-type">Electronics · 89 sold</div>
+          </div>
+          <div class="entity-stl green">L7</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">💻</div>
+          <div class="entity-info">
+            <div class="entity-name">MacBook Air M3</div>
+            <div class="entity-type">Electronics · 12 sold</div>
+          </div>
+          <div class="entity-stl amber">L6</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="popup-section">
+      <div class="popup-section-title">💰 Wallet & Trust Lock</div>
+      <div class="wallet-row">
+        <div class="wallet-icon">🔒</div>
+        <div class="wallet-info">
+          <div class="wallet-label">EHBGC Locked</div>
+          <div class="wallet-amount">3,000 EHBGC</div>
+        </div>
+        <div class="wallet-boost">+15% Boost</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BUYER POPUP -->
+<div class="stl-popup-overlay" id="popup-buyer" onclick="if(event.target===this)closePopup()">
+  <div class="stl-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:rgba(43,191,160,0.15)">🛒</div>
+      <div>
+        <div class="popup-name">Fatima Khan</div>
+        <div class="popup-role">Buyer · Karachi · Member since Feb 2026</div>
+      </div>
+      <div class="popup-stl-big">
+        <div class="popup-stl-num">L4</div>
+        <div class="popup-stl-label">EHB-STL · STANDARD</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🔷 Trust Breakdown (Buyer = PSS + DMO)</div>
+      <div class="dim-cards">
+        <div class="dim-card">
+          <div class="dim-card-icon">🔐</div>
+          <div class="dim-card-name pss">PSS</div>
+          <div class="dim-card-level pss">L5</div>
+          <div class="dim-card-status">Address Verified</div>
+          <div class="gauge-bar"><div class="gauge-fill pss" style="width:50%"></div></div>
+        </div>
+        <div class="dim-card" style="opacity:0.3">
+          <div class="dim-card-icon">🏭</div>
+          <div class="dim-card-name" style="color:#9CA3AF">CRB</div>
+          <div class="dim-card-level" style="color:#9CA3AF">N/A</div>
+          <div class="dim-card-status">Buyers don't need CRB</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">📊</div>
+          <div class="dim-card-name dmo">DMO</div>
+          <div class="dim-card-level dmo">L4</div>
+          <div class="dim-card-status">Verified Behavior</div>
+          <div class="gauge-bar"><div class="gauge-fill dmo" style="width:40%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">⚡ Buyer Formula: PSS×55% + DMO×45%</div>
+      <div class="formula-display">
+        <div class="formula-row">
+          <span class="formula-chip pss">PSS L5 × 55%</span>
+          <span class="formula-op">+</span>
+          <span class="formula-chip dmo">DMO L4 × 45%</span>
+          <span class="formula-op">=</span>
+          <span class="formula-result">4.55 → L4</span>
+        </div>
+        <div class="formula-note">Buyer formula uses PSS + DMO only. CRB not required for buyers.</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">⭐ Buyer Trust Score (BSTL)</div>
+      <div class="entity-cards">
+        <div class="entity-row">
+          <div class="entity-icon">⭐</div>
+          <div class="entity-info">
+            <div class="entity-name">BSTL Score: Good</div>
+            <div class="entity-type">23 orders · 0 complaints · 4.8 avg rating given</div>
+          </div>
+          <div class="entity-stl green">Good</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">🎯</div>
+          <div class="entity-info">
+            <div class="entity-name">Complaint Weight: Normal</div>
+            <div class="entity-type">Standard evidence required for complaints</div>
+          </div>
+          <div class="entity-stl amber">Mid</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FRANCHISE POPUP -->
+<div class="stl-popup-overlay" id="popup-franchise" onclick="if(event.target===this)closePopup()">
+  <div class="stl-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:rgba(56,200,120,0.15)">🏢</div>
+      <div>
+        <div class="popup-name">EHB Gulberg Master</div>
+        <div class="popup-role">Master Franchise · Lahore · Territory: Gulberg</div>
+      </div>
+      <div class="popup-stl-big">
+        <div class="popup-stl-num">L9</div>
+        <div class="popup-stl-label">EHB-STL · ELITE</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🔷 3-Dimensional Trust Breakdown</div>
+      <div class="dim-cards">
+        <div class="dim-card">
+          <div class="dim-card-icon">🔐</div>
+          <div class="dim-card-name pss">PSS</div>
+          <div class="dim-card-level pss">L9</div>
+          <div class="dim-card-status">Continuous Monitor</div>
+          <div class="gauge-bar"><div class="gauge-fill pss" style="width:90%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">🏭</div>
+          <div class="dim-card-name crb">CRB</div>
+          <div class="dim-card-level crb">L9</div>
+          <div class="dim-card-status">Continuous Audit</div>
+          <div class="gauge-bar"><div class="gauge-fill crb" style="width:90%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">📊</div>
+          <div class="dim-card-name dmo">DMO</div>
+          <div class="dim-card-level dmo">L9</div>
+          <div class="dim-card-status">Premium Trusted</div>
+          <div class="gauge-bar"><div class="gauge-fill dmo" style="width:90%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🏢 Franchise Territory Details</div>
+      <div class="entity-cards">
+        <div class="entity-row">
+          <div class="entity-icon">📍</div>
+          <div class="entity-info">
+            <div class="entity-name">Territory: Gulberg Block A-G</div>
+            <div class="entity-type">Active sellers: 47 · Active riders: 12</div>
+          </div>
+          <div class="entity-stl green">Active</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">📊</div>
+          <div class="entity-info">
+            <div class="entity-name">Territory Health Score</div>
+            <div class="entity-type">Avg seller STL: L5.2 · Complaint rate: 1.8%</div>
+          </div>
+          <div class="entity-stl green">94%</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">💰</div>
+          <div class="entity-info">
+            <div class="entity-name">Monthly Revenue (50% share)</div>
+            <div class="entity-type">This month: 847 orders · 2.3M PKR GMV</div>
+          </div>
+          <div class="entity-stl purple">23K</div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">💰 Wallet Lock (Mandatory)</div>
+      <div class="wallet-row">
+        <div class="wallet-icon">🔒</div>
+        <div class="wallet-info">
+          <div class="wallet-label">Master Franchise Lock</div>
+          <div class="wallet-amount">200,000 EHBGC</div>
+        </div>
+        <div class="wallet-boost">+20% Boost</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE PROVIDER POPUP -->
+<div class="stl-popup-overlay" id="popup-service" onclick="if(event.target===this)closePopup()">
+  <div class="stl-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:rgba(41,171,226,0.15)">🩺</div>
+      <div>
+        <div class="popup-name">Dr. Hassan Ali</div>
+        <div class="popup-role">Service Provider · WMS (Medical) · Islamabad</div>
+      </div>
+      <div class="popup-stl-big">
+        <div class="popup-stl-num">L6</div>
+        <div class="popup-stl-label">EHB-STL · HIGH</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🔷 3-Dimensional Trust (Service Provider = Strictest)</div>
+      <div class="dim-cards">
+        <div class="dim-card">
+          <div class="dim-card-icon">🔐</div>
+          <div class="dim-card-name pss">PSS</div>
+          <div class="dim-card-level pss">L7</div>
+          <div class="dim-card-status">Device Bound</div>
+          <div class="gauge-bar"><div class="gauge-fill pss" style="width:70%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">🏭</div>
+          <div class="dim-card-name crb">CRB</div>
+          <div class="dim-card-level crb">L5</div>
+          <div class="dim-card-status">License Verified</div>
+          <div class="gauge-bar"><div class="gauge-fill crb" style="width:50%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">📊</div>
+          <div class="dim-card-name dmo">DMO</div>
+          <div class="dim-card-level dmo">L7</div>
+          <div class="dim-card-status">High Compliance</div>
+          <div class="gauge-bar"><div class="gauge-fill dmo" style="width:70%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">⚡ HYBRID Formula (CRB is Bottleneck)</div>
+      <div class="formula-display">
+        <div class="formula-row">
+          <span class="formula-chip pss">PSS L7 × 40%</span>
+          <span class="formula-op">+</span>
+          <span class="formula-chip crb">CRB L5 × 35%</span>
+          <span class="formula-op">+</span>
+          <span class="formula-chip dmo">DMO L7 × 25%</span>
+          <span class="formula-op">=</span>
+          <span class="formula-result">6.3 → L6</span>
+        </div>
+        <div class="cap-warning">⚠️ CRB (L5) is the bottleneck — max allowed = L5+1 = L6</div>
+        <div class="formula-note">Dr. Hassan needs CRB re-inspection to unlock L7. Schedule CRB appointment to upgrade.</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🩺 Services Offered</div>
+      <div class="entity-cards">
+        <div class="entity-row">
+          <div class="entity-icon">🩺</div>
+          <div class="entity-info">
+            <div class="entity-name">General Consultation</div>
+            <div class="entity-type">WMS · 156 consultations · 4.9⭐</div>
+          </div>
+          <div class="entity-stl green">L6</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">💊</div>
+          <div class="entity-info">
+            <div class="entity-name">Follow-up Visit</div>
+            <div class="entity-type">WMS · 89 visits · 4.8⭐</div>
+          </div>
+          <div class="entity-stl green">L6</div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">💰 Wallet Lock (Mandatory for Service Providers)</div>
+      <div class="wallet-row">
+        <div class="wallet-icon">🔒</div>
+        <div class="wallet-info">
+          <div class="wallet-label">Service Provider Lock</div>
+          <div class="wallet-amount">1,500 EHBGC</div>
+        </div>
+        <div class="wallet-boost">+10% Boost</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RIDER POPUP -->
+<div class="stl-popup-overlay" id="popup-rider" onclick="if(event.target===this)closePopup()">
+  <div class="stl-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:rgba(240,160,48,0.15)">🏍️</div>
+      <div>
+        <div class="popup-name">Imran Delivery</div>
+        <div class="popup-role">Rider · Lahore Zone-3 · 342 deliveries</div>
+      </div>
+      <div class="popup-stl-big">
+        <div class="popup-stl-num">L5</div>
+        <div class="popup-stl-label">EHB-STL · ADVANCED</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🔷 Trust Breakdown (Rider = PSS + DMO + RPS)</div>
+      <div class="dim-cards">
+        <div class="dim-card">
+          <div class="dim-card-icon">🔐</div>
+          <div class="dim-card-name pss">PSS</div>
+          <div class="dim-card-level pss">L6</div>
+          <div class="dim-card-status">Liveness Passed</div>
+          <div class="gauge-bar"><div class="gauge-fill pss" style="width:60%"></div></div>
+        </div>
+        <div class="dim-card" style="opacity:0.3">
+          <div class="dim-card-icon">🏭</div>
+          <div class="dim-card-name" style="color:#9CA3AF">CRB</div>
+          <div class="dim-card-level" style="color:#9CA3AF">N/A</div>
+          <div class="dim-card-status">Vehicle check only</div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">📊</div>
+          <div class="dim-card-name dmo">DMO</div>
+          <div class="dim-card-level dmo">L5</div>
+          <div class="dim-card-status">Trusted</div>
+          <div class="gauge-bar"><div class="gauge-fill dmo" style="width:50%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">⚡ Rider Performance Score (RPS)</div>
+      <div class="entity-cards">
+        <div class="entity-row">
+          <div class="entity-icon">⚡</div>
+          <div class="entity-info">
+            <div class="entity-name">RPS: 82/100</div>
+            <div class="entity-type">On-time: 94% · Accept rate: 88% · Rating: 4.7⭐</div>
+          </div>
+          <div class="entity-stl green">82</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">📦</div>
+          <div class="entity-info">
+            <div class="entity-name">Total Deliveries: 342</div>
+            <div class="entity-type">This month: 67 · COD collected: 45K PKR</div>
+          </div>
+          <div class="entity-stl purple">342</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INSPECTOR POPUP -->
+<div class="stl-popup-overlay" id="popup-inspector" onclick="if(event.target===this)closePopup()">
+  <div class="stl-popup">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-header">
+      <div class="popup-avatar" style="background:rgba(240,88,88,0.15)">🔍</div>
+      <div>
+        <div class="popup-name">Saad Inspection Pro</div>
+        <div class="popup-role">Inspector · Lahore · Food + Electronics</div>
+      </div>
+      <div class="popup-stl-big">
+        <div class="popup-stl-num">L8</div>
+        <div class="popup-stl-label">EHB-STL · VIP</div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">🔷 3-Dimensional Trust (Inspector = Highest)</div>
+      <div class="dim-cards">
+        <div class="dim-card">
+          <div class="dim-card-icon">🔐</div>
+          <div class="dim-card-name pss">PSS</div>
+          <div class="dim-card-level pss">L8</div>
+          <div class="dim-card-status">Video Verified</div>
+          <div class="gauge-bar"><div class="gauge-fill pss" style="width:80%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">🏭</div>
+          <div class="dim-card-name crb">CRB</div>
+          <div class="dim-card-level crb">L8</div>
+          <div class="dim-card-status">Dual Inspector</div>
+          <div class="gauge-bar"><div class="gauge-fill crb" style="width:80%"></div></div>
+        </div>
+        <div class="dim-card">
+          <div class="dim-card-icon">📊</div>
+          <div class="dim-card-name dmo">DMO</div>
+          <div class="dim-card-level dmo">L8</div>
+          <div class="dim-card-status">Elite Status</div>
+          <div class="gauge-bar"><div class="gauge-fill dmo" style="width:80%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">⚡ Inspector Performance Score (IPS)</div>
+      <div class="entity-cards">
+        <div class="entity-row">
+          <div class="entity-icon">⚡</div>
+          <div class="entity-info">
+            <div class="entity-name">IPS: 91/100</div>
+            <div class="entity-type">Report quality: 95% · On-time: 97% · Re-inspection rate: 3%</div>
+          </div>
+          <div class="entity-stl green">91</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">📋</div>
+          <div class="entity-info">
+            <div class="entity-name">156 Inspections Completed</div>
+            <div class="entity-type">Pass: 132 · Conditional: 18 · Fail: 6</div>
+          </div>
+          <div class="entity-stl purple">156</div>
+        </div>
+        <div class="entity-row">
+          <div class="entity-icon">🏷️</div>
+          <div class="entity-info">
+            <div class="entity-name">Specializations</div>
+            <div class="entity-type">Food Hygiene · Electronics Authenticity</div>
+          </div>
+          <div class="entity-stl green">2</div>
+        </div>
+      </div>
+    </div>
+    <div class="popup-section">
+      <div class="popup-section-title">💰 Inspector Bond</div>
+      <div class="wallet-row">
+        <div class="wallet-icon">🔒</div>
+        <div class="wallet-info">
+          <div class="wallet-label">Inspector Wallet Bond</div>
+          <div class="wallet-amount">5,000 EHBGC</div>
+        </div>
+        <div class="wallet-boost">+15% Boost</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openPopup(type) {
+  document.getElementById('popup-' + type).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closePopup() {
+  document.querySelectorAll('.stl-popup-overlay').forEach(el => el.classList.remove('active'));
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+// ========== ANIMATE STL RINGS ON LOAD ==========
+document.addEventListener('DOMContentLoaded', () => {
+  const circumference = 2 * Math.PI * 36; // r=36
+
+  document.querySelectorAll('.stl-ring-container').forEach(container => {
+    const pct = parseInt(container.dataset.pct) || 0;
+    const progressCircle = container.querySelector('.stl-ring-progress');
+    if (progressCircle) {
+      progressCircle.style.strokeDasharray = circumference;
+      progressCircle.style.strokeDashoffset = circumference;
+      setTimeout(() => {
+        const offset = circumference - (circumference * pct / 100);
+        progressCircle.style.strokeDashoffset = offset;
+      }, 300);
+    }
+  });
+});
+</script>
+
+</body>
+</html>

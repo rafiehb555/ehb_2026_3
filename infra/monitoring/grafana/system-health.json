@@ -1,0 +1,58 @@
+{
+  "title": "EHB · System Health",
+  "uid": "ehb-system-health",
+  "tags": ["ehb", "system"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "title": "API Uptime",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "avg(up{service=\"api\"}) * 100", "legendFormat": "Uptime %" }]
+    },
+    {
+      "title": "API Request Rate (req/s)",
+      "type": "graph",
+      "gridPos": { "x": 6, "y": 0, "w": 12, "h": 8 },
+      "targets": [{ "expr": "sum(rate(http_requests_total{service=\"api\"}[1m]))" }]
+    },
+    {
+      "title": "API Error Rate %",
+      "type": "stat",
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 },
+      "targets": [{ "expr": "sum(rate(http_requests_total{service=\"api\",status=~\"5..\"}[5m])) / sum(rate(http_requests_total{service=\"api\"}[5m])) * 100" }],
+      "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }
+    },
+    {
+      "title": "API Latency p50/p95/p99",
+      "type": "graph",
+      "gridPos": { "x": 0, "y": 8, "w": 24, "h": 8 },
+      "targets": [
+        { "expr": "histogram_quantile(0.5, sum(rate(http_request_duration_seconds_bucket{service=\"api\"}[5m])) by (le))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service=\"api\"}[5m])) by (le))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket{service=\"api\"}[5m])) by (le))", "legendFormat": "p99" }
+      ]
+    },
+    {
+      "title": "Disk Usage",
+      "type": "gauge",
+      "gridPos": { "x": 0, "y": 16, "w": 6, "h": 6 },
+      "targets": [{ "expr": "(1 - (node_filesystem_free_bytes / node_filesystem_size_bytes)) * 100" }]
+    },
+    {
+      "title": "Mongo Connections",
+      "type": "graph",
+      "gridPos": { "x": 6, "y": 16, "w": 9, "h": 6 },
+      "targets": [{ "expr": "mongodb_connections_current" }]
+    },
+    {
+      "title": "Memory Usage by Service",
+      "type": "graph",
+      "gridPos": { "x": 15, "y": 16, "w": 9, "h": 6 },
+      "targets": [{ "expr": "process_resident_memory_bytes", "legendFormat": "{{service}}" }]
+    }
+  ],
+  "time": { "from": "now-6h", "to": "now" },
+  "refresh": "30s"
+}

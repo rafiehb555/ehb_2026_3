@@ -1,0 +1,32 @@
+{
+  "industry": "FIN",
+  "name": "Finance & Investment",
+  "version": "1.0",
+  "passing_criteria": { "theory_min_pct": 75, "practical_min_pct": 80, "overall_min_pct": 80 },
+  "validity_months": 12,
+  "crb_level_per_score": {
+    "L1": [60, 70], "L2": [70, 75], "L3": [75, 80], "L4": [80, 85], "L5": [85, 90],
+    "L6": [90, 92], "L7": [92, 95], "L8": [95, 97], "L9": [97, 99], "L10": [99, 100]
+  },
+
+  "theory_mcqs": [
+    { "id": "FIN-T-001", "stem": "What does APR include vs APY?", "options": ["Same thing", "APR is interest rate; APY includes compounding", "APY is annual; APR monthly", "Both are taxes"], "answer_index": 1, "category": "personal_finance", "difficulty": "L3" },
+    { "id": "FIN-T-002", "stem": "P/E ratio of 30 typically means:", "options": ["Cheap stock", "Expensive growth stock", "Bond", "Insurance"], "answer_index": 1, "category": "investing", "difficulty": "L4" },
+    { "id": "FIN-T-003", "stem": "Diversification primarily reduces:", "options": ["Systematic risk", "Unsystematic (specific) risk", "Inflation", "Tax burden"], "answer_index": 1, "category": "portfolio", "difficulty": "L4" },
+    { "id": "FIN-T-004", "stem": "AML red flag:", "options": ["Customer asks for receipt", "Round-number large cash deposits with no business reason", "Customer pays via card", "Customer signs paperwork"], "answer_index": 1, "category": "compliance", "difficulty": "L5" },
+    { "id": "FIN-T-005", "stem": "DTI ratio of 45% typically means:", "options": ["Strong borrower", "Within safe limits", "High leverage; harder to qualify", "No loan possible"], "answer_index": 2, "category": "lending", "difficulty": "L4" },
+    { "id": "FIN-T-006", "stem": "Bond price moves ___ as interest rates rise:", "options": ["Up", "Down", "Stays same", "Doubles"], "answer_index": 1, "category": "fixed_income", "difficulty": "L4" },
+    { "id": "FIN-T-007", "stem": "FATCA requires reporting of:", "options": ["EU citizens' accounts", "US persons' foreign accounts", "Crypto only", "Cash only"], "answer_index": 1, "category": "tax", "difficulty": "L6" },
+    { "id": "FIN-T-008", "stem": "Sharpe ratio measures:", "options": ["Total return", "Risk-adjusted return per unit of volatility", "Beta", "Volatility alone"], "answer_index": 1, "category": "portfolio", "difficulty": "L5" },
+    { "id": "FIN-T-009", "stem": "Suitability rule for advisors means:", "options": ["Sell highest commission product", "Recommend products suited to client's needs/risk", "Push retirement products", "Use AI only"], "answer_index": 1, "category": "ethics", "difficulty": "L4" },
+    { "id": "FIN-T-010", "stem": "FX forward contract is:", "options": ["Spot transaction", "Locked future-rate exchange", "Insurance", "Equity"], "answer_index": 1, "category": "fx", "difficulty": "L5" }
+  ],
+
+  "practical_tasks": [
+    { "id": "FIN-P-001", "title": "Build a 3-fund portfolio", "scenario": "$50K to invest. Build a diversified 3-fund portfolio for a 35-year-old, moderate risk, 25-year horizon.", "deliverables": ["Allocation table", "Rebalancing plan", "Risk discussion"], "evaluation_rubric": [{"criterion":"Diversification","weight":30},{"criterion":"Risk match","weight":25},{"criterion":"Cost-efficiency","weight":20},{"criterion":"Justification","weight":25}], "time_limit_hours": 2, "min_pass_score": 80 },
+    { "id": "FIN-P-002", "title": "AML case review", "scenario": "Review 5 transaction patterns; identify suspicious activity, document SAR if needed.", "deliverables": ["Risk assessment per case", "SAR draft if applicable", "Recommended actions"], "evaluation_rubric": [{"criterion":"Risk identification","weight":40},{"criterion":"SAR quality","weight":30},{"criterion":"Compliance","weight":30}], "time_limit_hours": 3, "min_pass_score": 85 },
+    { "id": "FIN-P-003", "title": "Loan underwriting", "scenario": "Review a $250K business loan application. Make approval/decline recommendation with rationale.", "deliverables": ["DSCR analysis", "Risk memo", "Recommendation"], "evaluation_rubric": [{"criterion":"Financial analysis","weight":40},{"criterion":"Risk assessment","weight":30},{"criterion":"Recommendation","weight":30}], "time_limit_hours": 4, "min_pass_score": 80 },
+    { "id": "FIN-P-004", "title": "Tax-optimization plan", "scenario": "Client makes $200K. Suggest legal tax optimization (retirement, deductions, structure) for jurisdiction X.", "deliverables": ["Tax-savings table", "Implementation steps", "Risk disclosures"], "evaluation_rubric": [{"criterion":"Savings identified","weight":40},{"criterion":"Legality","weight":30},{"criterion":"Practicality","weight":30}], "time_limit_hours": 3, "min_pass_score": 80 },
+    { "id": "FIN-P-005", "title": "Investment risk disclosure", "scenario": "Draft a client risk-disclosure document for a high-volatility crypto investment vehicle.", "deliverables": ["Disclosure document", "Plain-English summary", "Acknowledgment form"], "evaluation_rubric": [{"criterion":"Comprehensiveness","weight":35},{"criterion":"Clarity","weight":35},{"criterion":"Compliance","weight":30}], "time_limit_hours": 3, "min_pass_score": 85 }
+  ]
+}

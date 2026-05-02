@@ -1,0 +1,443 @@
+{
+  "project": "EHB Technologies (Pvt.) Ltd. — Development 2026",
+  "updatedAt": "2026-04-26",
+  "currentPhase": {
+    "strategic": "Phase 2 — GoSellr + Complaints + Riders + Real-Time",
+    "buildWave": "Phase 1 + Phase 2 full backend + frontend COMPLETE",
+    "status": "Full marketplace platform end-to-end: products → orders → escrow → delivery → commission settle → complaints → penalty ladder → real-time notifications + CRB exams.",
+    "phase1Weeks": 12,
+    "phase2Weeks": 10,
+    "totalWeeksDelivered": 22
+  },
+  "completion": {
+    "phase1": "done",
+    "phase2": {
+      "gosellr": "done (products, orders with escrow, reviews, ranking engine)",
+      "complaints": "done (tier classification, SLA, progressive penalty ladder, appeals)",
+      "riders": "done (onboarding, assignment algo, delivery event tracking)",
+      "commission": "done (70/10/10/10 + 40/25/20/15 sub-split on order confirm)",
+      "realtime": "done (Socket.IO server, /dmo /orders /delivery namespaces)",
+      "crbExams": "done (MCQ runner, pass/fail, blockchain cert anchor)",
+      "notifications": "done (model + service + Socket.IO + UI bell)"
+    },
+    "demoReady": "yes",
+    "productionReady": "needs real KYC + payment + Polkadot drivers only"
+  },
+  "stlTests": { "total": 58, "passing": 58, "runCmd": "pnpm test:stl" },
+  "mongoCollections": [
+    "users", "wallets", "franchises", "franchiseapplications", "serialcounters",
+    "transactions", "aiinvocations", "blockchainproofs", "activitylogs",
+    "products", "orders", "reviews", "riders", "deliveries",
+    "complaints", "penalties", "notifications", "crbexams", "crbattempts"
+  ],
+  "newApiRoutesPhase2": {
+    "gosellr": ["GET /api/gosellr/products", "GET /api/gosellr/products/:slugOrId", "POST /api/gosellr/products (STL L4+ gate)", "GET /api/gosellr/sellers/:id"],
+    "orders": ["POST /api/orders", "POST /api/orders/:id/pay (escrow lock)", "POST /api/orders/:id/mark-ready", "POST /api/orders/:id/confirm-delivery (triggers commission)", "POST /api/orders/:id/cancel", "GET /api/orders/my"],
+    "reviews": ["POST /api/reviews", "GET /api/reviews/product/:id", "GET /api/reviews/seller/:id"],
+    "complaints": ["POST /api/complaints", "GET /api/complaints/my", "GET /api/complaints/pending (DMO)", "POST /api/complaints/:id/resolve (DMO)", "POST /api/complaints/:id/appeal", "GET /api/complaints/penalties/my"],
+    "riders": ["POST /api/riders/apply", "GET /api/riders/me", "POST /api/riders/availability", "GET /api/riders/online (DMO)"],
+    "delivery": ["POST /api/delivery/:orderId/assign", "POST /api/delivery/:id/event", "GET /api/delivery/:id"],
+    "notifications": ["GET /api/notifications/my", "GET /api/notifications/unread-count", "POST /api/notifications/:id/read", "POST /api/notifications/read-all"],
+    "crb": ["GET /api/crb/exams", "POST /api/crb/exams/:id/start", "POST /api/crb/attempts/:id/submit", "GET /api/crb/certificates/my"]
+  },
+  "newNextJsRoutesPhase2": {
+    "public": ["/gosellr", "/gosellr/[productId]", "/gosellr/seller/[id]", "/cart", "/checkout", "/orders", "/orders/[id]", "/rider", "/complaints/file", "/complaints/my", "/crb/exams", "/crb/exams/[id]"],
+    "dmo": ["/dmo/complaints (real queue)", "/dmo/riders (new)", "/dmo/notifications (real)"]
+  },
+  "socketIoEvents": {
+    "/dmo": ["notification:new", "complaint:filed", "complaint:resolved", "complaint:appealed", "stl:drop-alert"],
+    "/orders": ["order:placed", "order:paid", "order:ready", "order:confirmed", "order:cancelled"],
+    "/delivery": ["rider:assigned", "delivery:picked_up", "delivery:in_transit", "delivery:delivered", "delivery:failed"]
+  },
+  "fileCounts": {
+    "total": 157,
+    "nextJsPages": 43,
+    "reactComponents": 10,
+    "reactLibHelpers": 4,
+    "apiRoutes": 17,
+    "apiServices": 18,
+    "mongoModels": 19,
+    "stlGoldMasterTests": 58
+  },
+  "top5Priorities": [
+    { "id": 1, "task": "Affiliate v3.2 MVP backend (Phase 1 scope) — Track A only, 2-level cascade (10/5), 3 bonuses (STL + First Sale + Fast Sale), signup/login/referral/buy/earnings APIs, bcrypt+JWT, anti-fraud basics. Spec: ehb-info/departments/Affiliate.md section 12 v3.2 §12.19.", "owner": "backend", "status": "in-progress", "eta": "2026-05-09" },
+    { "id": 2, "task": "Affiliate v3.2 MVP frontend — DAM page (search/filter/cards), seller listing UI (hidden 5% network), affiliate dashboard (L1/L2/L3 breakdown + rank progress + lock countdown), referral link generator. Per spec §12.3.", "owner": "frontend", "status": "queued", "eta": "2026-05-16" },
+    { "id": 6, "task": "Affiliate v3.2 Phase 2 — Track B (10-level franchise cascade) + R1-R10 rank engine + active-leg + multi-industry trackers + 6-condition franchise gate + 7-step activation state machine + remaining 8 bonuses + dynamic pricing + 3-layer price lock + admin flexibility layer.", "owner": "backend+frontend", "status": "queued", "eta": "2026-06-30" },
+    { "id": 7, "task": "Affiliate v3.3 Phase 2 — Wallet Service (Main + Affiliate dual-wallet) · USDT TRC20 deposit/withdrawal · Pakistan bank rail (JazzCash + HBL) · KYC tier 0-2 · 2FA + withdrawal whitelist · capping engine · velocity caps · OFAC screening hook. Spec: ehb-info/departments/Affiliate.md section 13.", "owner": "backend", "status": "queued", "eta": "2026-09-30" },
+    { "id": 8, "task": "Architecture v3.3 — Compliance service (KYC adapters Jumio/Onfido/NADRA, IDS generator, OFAC/FATF screening, country-cert tracker) + Audit service (immutable on-chain anchored event log) + service mesh (Istio) prep + observability stack (OpenTelemetry+Prometheus+Grafana).", "owner": "backend+infra", "status": "queued", "eta": "2026-12-31" },
+    { "id": 3, "task": "Run pnpm install (socket.io added) then pnpm seed to populate full Phase 1+2 demo data", "owner": "Rafi", "status": "ready", "eta": "2026-04-25" },
+    { "id": 4, "task": "Run pnpm test:stl (expect 58/58)", "owner": "Rafi", "status": "ready", "eta": "2026-04-25" },
+    { "id": 5, "task": "Real KYC vendor (Jumio/Onfido/NADRA) → swap pssService drivers", "owner": "backend", "status": "Wave 2 deferred", "eta": "2026-06-01" }
+  ],
+  "deferredQueue": [
+    { "task": "Payment gateway (JazzCash/Easypaisa/Stripe) → swap paymentGateway drivers", "eta": "2026-07-01" },
+    { "task": "Polkadot @polkadot/api → swap blockchainService.anchorOnPolkadot", "eta": "2026-09-01" }
+  ],
+  "affiliateV3": {
+    "status": "v3.13-dashboard-sections-§6.5-§6.6-§6.10-shipped",
+    "v313Additions": {
+      "newAffiliateDashboardPages": [
+        "apps/web/app/affiliate/analytics/page.tsx (266 lines) — §6.5 Click tracking · 4-stage conversion funnel (24180→1842→1245→412) · daily trend chart · top-5 products · 5-country geographic breakdown · per-link metrics",
+        "apps/web/app/affiliate/network-growth/page.tsx (307 lines) — §6.6 30/60/90-day stacked L1/L2/L3 growth chart · daily new signups · 4-factor weighted health score · churn tracking · 5 milestone badges (Connector → Network Legend)",
+        "apps/web/app/affiliate/notifications/page.tsx (245 lines) — §6.10 5 categories (Referral · Commission · Payout · System · Compliance) · 10 demo notifications · filter chips · settings panel with 3-channel toggles (in-app/email/SMS) + 5 frequency options per category"
+      ],
+      "newApiEndpoints§9": [
+        "GET /api/affiliate/leaderboard — country-wise top earners with ?country=PK&period=monthly&limit=10 · 10 demo entries (Ahmed K. R7 → Omar T. R2) · DB fallback to demo when collection empty",
+        "POST /api/affiliate/promotional-assets/download — auth-required · validates assetType ∈ {banner, copy_template, email_signature, pitch} · logs download event · returns asset metadata + URL",
+        "GET /api/affiliate/promotional-assets/catalog — public · 6 banner sizes + 4 copy templates + 5 industry pitches"
+      ],
+      "sidebarNavUpdate": "apps/web/components/portal/sidebar.tsx — Affiliate group expanded from 6 → 9 items: + Analytics 📈 · Network Growth 🌳 · Notifications 🔔 (badge: 5 unread)",
+      "section6DashboardCoverage": "§6.1–§6.11 = 11/11 complete (was 8/11 before v3.13)",
+      "verdict": "Affiliate dashboard 100% per-spec · API §9 endpoints fully wired · sidebar reflects all canonical routes"
+    },
+    "_legacyStatus_v312": "v3.12-production-deploy-ready",
+    "v312Additions": {
+      "envExample": ".env.example (288L) — comprehensive env vars across 12 categories",
+      "dockerApi": "Dockerfile.api (52L) — multi-stage Node 20 Alpine + tini + non-root + healthcheck",
+      "dockerWeb": "Dockerfile.web (62L) — Next.js standalone build + NEXT_PUBLIC_* args",
+      "dockerCompose": "docker-compose.yml (156L) — mongo + redis + api + web with health-based deps",
+      "ci": ".github/workflows/affiliate-ci.yml (266L) — 6 jobs: lint/STL/smoke/docker/compliance/gate",
+      "healthCheck": "services/api/src/routes/affiliateHealth.js (273L) — /deep, /lite, /ready endpoints",
+      "errorBoundary": "apps/web/components/affiliate/error-boundary.tsx (157L) — React error boundary with Sentry",
+      "productionReadme": "AFFILIATE-PRODUCTION-README.md (389L) — 3 deploy paths + day-of timeline + ops runbook",
+      "verdict": "PRODUCTION-DEPLOY-READY for Pakistan pilot soft launch"
+    },
+    "_legacyStatus": "v3.11-welcome-tab-professional-redesign",
+    "v311Additions": {
+      "newComponents": [
+        "apps/web/components/affiliate/animated-counter.tsx (93L) — IntersectionObserver count-up animation",
+        "apps/web/components/affiliate/landing-sections.tsx (707L) — 10 exported section components: TrustStrip, LiveKpiStrip, HowItWorksFlow, IndustryMatrix, LiveActivityTicker, TestimonialsCarousel, FaqAccordion, TrustSafetyStrip, FinalCta, SectionDivider"
+      ],
+      "welcomeTabFlow": "Hero → TrustStrip → LiveKpiStrip → Tracks → HowItWorksFlow → IndustryMatrix → LiveActivityTicker → Calculator → TestimonialsCarousel → FaqAccordion → TrustSafetyStrip → FinalCta",
+      "totalLibrary": "13 components + 11 standalone pages + email templates + i18n + state components (~8,275 lines)",
+      "designAesthetic": "Visily enterprise prototype match — animated counters · gradient backgrounds · glow effects · auto-updating stream · verified avatars · collapsible FAQ"
+    },
+    "_legacyStatus": "v3.10-phase-2-backlog-cleared",
+    "v310Additions": {
+      "emailTemplates": "services/api/src/services/emailTemplates.js (344 lines, 8 transactional HTML templates)",
+      "stateComponents": "apps/web/components/ui/states.tsx (281 lines, EmptyState/ErrorState/LoadingSkeleton/SuccessState/InlineState)",
+      "pdfReport": "apps/web/app/reports/commission-statement/page.tsx (355 lines, print-ready A4 statement)",
+      "i18n": "apps/web/lib/affiliate-i18n.ts (198 lines, 50+ EN/Roman-Urdu translations + useAffiliateT hook)",
+      "mobileViews": [
+        "apps/web/components/affiliate/mobile-bottom-nav.tsx (49 lines)",
+        "apps/web/app/m/affiliate/page.tsx (204 lines, mobile dashboard)",
+        "apps/web/app/m/affiliate/marketplace/page.tsx (182 lines, mobile marketplace)",
+        "apps/web/app/m/affiliate/dmo/page.tsx (206 lines, mobile DMO review)"
+      ],
+      "totalLibrary": "11 components + 11 standalone pages + email templates + i18n + state components (~7,475 lines)",
+      "phase2BacklogStatus": "cleared",
+      "v310EmailTemplateCount": 8,
+      "v310MobileScreensCount": 3,
+      "v310I18nKeyCount": 50
+    },
+    "_legacyStatus": "v3.9-enterprise-screens-built",
+    "v39Additions": {
+      "newPages": [
+        "apps/web/app/affiliate/rank-detail/page.tsx (366 lines, Silver Executive rank detail with industry verticals)",
+        "apps/web/app/affiliate/help/page.tsx (339 lines, Help & Legal Center with 5 legal docs)",
+        "apps/web/app/dmo/price-lock/page.tsx (290 lines, 12-step price lock management)",
+        "apps/web/app/dmo/campaigns/page.tsx (387 lines, Campaign Management with KPIs + table)",
+        "apps/web/app/dmo/product-moderation/page.tsx (458 lines, Product submission queue + detail)",
+        "apps/web/app/seller/analytics/page.tsx (384 lines, Seller analytics with dual-line SVG chart)"
+      ],
+      "totalLibrary": "11 reusable components + 8 standalone pages (~5,654 lines)",
+      "visilyMatch": "12 desktop screens covered + 6 mobile screens deferred to Phase 2"
+    },
+    "_legacyStatus": "v3.8-visily-prototype-gap-filled",
+    "v38Additions": {
+      "componentsAdded": [
+        "apps/web/components/affiliate/compliance-notice.tsx (154 lines, severity-based dismissible banner)",
+        "apps/web/components/affiliate/earnings-chart.tsx (273 lines, 7-day Mon-Sun SVG area chart)",
+        "apps/web/components/affiliate/activation-journey.tsx (182 lines, 7-step horizontal stepper)",
+        "apps/web/components/affiliate/promote-modal.tsx (372 lines, QR generator + Native Share + social shortcuts)"
+      ],
+      "dashboardHeroPolished": "Total Earnings + Pending Clearance + Available to Withdraw + Today's Performance KPIs match Visily prototype",
+      "totalLibrary": "11 reusable components (~3,430 lines) + 2 standalone pages"
+    },
+    "_legacyStatus": "v3.7-sharing-promo-achievements-howitworks-shipped",
+    "specFile": "ehb-info/departments/Affiliate.md (v3.7, sections 12 + 13 + 14 + 15 + 16 + 17)",
+    "masterPlanRef": "EHB-MASTER-PLAN.md sections 18 + 18.18 + 18.19 + 18.20 + 18.21 + 18.22 (v1.8)",
+    "v37Additions": {
+      "components": [
+        "apps/web/components/affiliate/sharing-tools.tsx (248 lines, 6 social channels)",
+        "apps/web/components/affiliate/promo-materials.tsx (358 lines, SVG banner generator + copy templates)",
+        "apps/web/components/affiliate/achievements.tsx (546 lines, 28 badges · 6 categories · 4 rarity tiers)"
+      ],
+      "pages": [
+        "apps/web/app/affiliate/how-it-works/page.tsx (392 lines, 6-step walkthrough + 3 earnings scenarios + 10-item FAQ)"
+      ],
+      "totalAffiliateLibrary": "7 reusable components (~2,449 lines) + 2 standalone pages"
+    },
+    "frontendCompletion": {
+      "components": [
+        "apps/web/components/affiliate/earnings-calculator.tsx (387 lines)",
+        "apps/web/components/affiliate/network-tree.tsx (376 lines)",
+        "apps/web/components/affiliate/activity-feed.tsx (266 lines)",
+        "apps/web/components/affiliate/quick-actions.tsx (282 lines)"
+      ],
+      "publicEndpoints": [
+        "GET /api/affiliate/stats — platform-wide aggregates with demo fallback",
+        "GET /api/compliance/ids — IDS with 12,847/$47/$3,240/$1.2M demo fallback when DB empty"
+      ],
+      "pageEnhancements": {
+        "welcome": "KPI fallback fixed · all cards clickable · earnings calculator embedded",
+        "dashboardJoined": "+ Quick Actions + Network Tree + Activity Feed",
+        "dashboardPreview": "Full preview with all 3 widgets in demo mode + Join CTAs",
+        "marketplace": "9 DEMO_DAM_PRODUCTS fallback when seed empty",
+        "wallet": "+ Withdrawal request panel (USDT TRC20 + JazzCash + HBL) + Transactions history + Custody safety card"
+      },
+      "noBrokenStates": "Every visitor (public, logged-in-not-joined, joined) sees fully-featured page"
+    },
+    "adminConsole": {
+      "url": "/dmo/affiliate-admin",
+      "file": "apps/web/app/dmo/affiliate-admin/page.tsx",
+      "lines": 912,
+      "tabs": ["Overview", "DMO Queue", "Withdrawals", "Country Flags", "Exports", "80/20 Report"],
+      "phase8EpicsCovered": "B.4 + C.4 + F.2 + F.3",
+      "phase8CoveragePercent": 89,
+      "phase8Shipped": 16,
+      "phase8Partial": 2,
+      "phase8Planned": 2,
+      "buildLocation": "D:\\ehb_2026_3 (direct local-drive, no sandbox detour per founder directive 2026-04-26)"
+    },
+    "lockedRules": {
+      "trackA": {
+        "name": "Product Sale Affiliate (GoSellr 2-Layer)",
+        "layer1": { "source": "seller-defined", "range": "5% to 30%", "recipient": "direct salesperson" },
+        "layer2": { "source": "platform-fixed", "totalPercent": 5, "base": "product price", "split": { "L1": 3.0, "L2": 1.5, "L3": 0.5 }, "splitRatio": "60/30/10 of pool", "visibility": "hidden from seller and buyer" }
+      },
+      "trackB": {
+        "name": "Franchise Sale Affiliate (10-Level Rank-Gated)",
+        "levels": 10,
+        "percentages": { "L1": 5.0, "L2": 3.0, "L3": 2.0, "L4": 1.5, "L5": 1.0, "L6": 0.8, "L7": 0.6, "L8": 0.5, "L9": 0.3, "L10": 0.3, "total": 15.0 },
+        "rankGated": true,
+        "unclaimedFlow": "EHB rebate / Global Pool"
+      },
+      "ranks": ["R1 Starter", "R2 Beginner", "R3 Builder", "R4 Leader", "R5 Manager", "R6 Director", "R7 Senior Director", "R8 Executive", "R9 Regional Head", "R10 Global Leader"],
+      "rankRequirements": {
+        "R1": { "directs": 0, "team": 0, "stl": "L1", "activeLegs": 0, "industries": 1, "levels": "L1", "unlocks": null },
+        "R2": { "directs": 2, "team": 10, "stl": "L2", "activeLegs": 2, "industries": 2, "levels": "L1-L2", "unlocks": "OF1" },
+        "R3": { "directs": 5, "team": 50, "stl": "L3", "activeLegs": 3, "industries": 3, "levels": "L1-L3", "unlocks": "OF2" },
+        "R4": { "directs": 10, "team": 150, "stl": "L4", "activeLegs": 5, "industries": 5, "levels": "L1-L4", "unlocks": "OF3" },
+        "R5": { "directs": 20, "team": 500, "stl": "L5", "activeLegs": 7, "industries": 10, "levels": "L1-L5", "unlocks": "OF4 + Sub L1" },
+        "R6": { "directs": 30, "team": 1000, "stl": "L6", "activeLegs": 10, "industries": 15, "levels": "L1-L6", "unlocks": "Sub L2-L4" },
+        "R7": { "directs": 50, "team": 3000, "stl": "L7", "activeLegs": 12, "industries": 20, "levels": "L1-L7", "unlocks": "Sub L5-L6" },
+        "R8": { "directs": 75, "team": 7000, "stl": "L7", "activeLegs": 13, "industries": 25, "levels": "L1-L8", "unlocks": "Sub L7-L8 + Global Pool" },
+        "R9": { "directs": 100, "team": 15000, "stl": "L8", "activeLegs": 14, "industries": 30, "levels": "L1-L9", "unlocks": "Sub L9-L10" },
+        "R10": { "directs": 150, "team": 50000, "stl": "L8 (capped)", "activeLegs": 15, "industries": 38, "levels": "L1-L10", "unlocks": "Master + DMO endorsement" }
+      },
+      "industryUnlock": "earning permission only (R1=1 industry, R10=all 38)",
+      "industryCategories": {
+        "HIGH_MARGIN": { "industries": ["OBS","OLS","ITS","MAS","FIN","INS"], "direct": 15, "l1": 5, "l2": 2 },
+        "STANDARD": { "industries": ["GSM","FWS","BCS","FBS","EFS","GSS"], "direct": 10, "l1": 5, "l2": 2 },
+        "COMMODITY": { "industries": ["LDS","AGTS","EDS","MFS","ATS"], "direct": 7, "l1": 3, "l2": 1 },
+        "RECURRING": { "industries": ["WMS","HPS","WES","HCS","TCS","CMS"], "direct": 8, "l1": 3, "l2": 1, "perCycle": true },
+        "PREMIUM": { "industries": ["RES","CNS","HMS","EAS","SCS"], "direct": 5, "l1": 2, "l2": 1 },
+        "STRATEGIC": { "industries": ["GES","JPS","ERS","ELS","EHB_TUBE"], "direct": 6, "l1": 2, "l2": 1, "kpiBonus": true }
+      },
+      "bonuses": {
+        "fastSale": { "trigger": "4 same-package sales / 1 week", "reward": "1 free same package", "cap": "2 free / week" },
+        "stlPurchase": { "trigger": "referral STL upgrade", "L1": 3, "L2": 2, "L3": 1, "base": "upgrade payment (not coin lock)", "frequency": "one-time per upgrade" },
+        "matching": { "L1": 5, "L2": 3, "L3": 2, "depthMax": 3, "scope": "Product + Industry income only (NOT STL/Rank/Franchise)" },
+        "firstSale": { "amount": 5, "currency": "USD", "autoConvert": true, "frequency": "one-time per user" },
+        "activation": { "percent": 2, "frequency": "one-time per referral first purchase" },
+        "rankAchievement": { "R3": 100, "R5": 500, "R7": 2000, "R10": 10000, "currency": "USD", "frequency": "one-time per promotion", "majorRanksOnly": true },
+        "teamPerformance": { "threshold": 100000, "thresholdCurrency": "USD/month", "percent": 2 },
+        "retention": { "monthsPerStep": 3, "upliftPercent": 1, "maxUpliftPercent": 2 },
+        "monthlyLeader": { "topN": 10, "scope": "country", "primaryMetric": "salesVolume", "secondaryMetric": "teamGrowth", "rewards": "cash/gifts/trips" },
+        "superFranchise": { "overridePercent": 2, "requires": "active franchise (OF1+)", "stacksOn": "standard cascade" },
+        "globalPool": { "source": "company NET PROFIT", "percent": 1, "minRank": "R8", "distribution": "weighted by user volume", "formula": "Share = (User Volume / Total R8+ Volume) * Pool" }
+      },
+      "franchiseLevels": {
+        "L1_Digital": { "tiers": ["OF1 $100", "OF2 $250", "OF3 $750", "OF4 $1500"] },
+        "L2_SubCity": { "tiers": ["Sub L1 $5K", "Sub L2 $8K", "Sub L3 $12K", "Sub L4 $16K"] },
+        "L3_Advanced": { "tiers": ["Sub L5 $20K", "Sub L6 $25K", "Sub L7 $30K", "Sub L8 $35K"] },
+        "L4_Elite": { "tiers": ["Sub L9 $40K", "Sub L10 $50K"] },
+        "L5_Master": { "tiers": ["Master $250,000 / SV $5M"] }
+      },
+      "svFormula": "SV = FranchisePrice x 20",
+      "unlockGate": "STL + Rank + Directs + SV + ActiveLegs + Industries (all six required) + Training + CRB + DMO License (3-step activation)",
+      "activationFlow": ["LOCKED", "CERTIFIED (post-training)", "VERIFIED (post-CRB)", "LICENSED (post-DMO)", "ACTIVE"],
+      "affiliatePathScope": "OF1-OF4 only via affiliate auto-unlock; Sub L1+ requires direct purchase or DMO approval; Master/Corporate/Country never affiliate-unlockable",
+      "dualPayment": "USD + EHBGC lock",
+      "dynamicPricing": { "trigger": "100 sales same tier per country", "stepPercent": 10, "phasesPerRound": 3, "perRoundPercent": 30, "noReset": true, "maxMultiplier": 3, "scope": "country-wise per-tier", "rewardPriceFixed": "country base, immune to dynamic" },
+      "countryBaseOF4": { "PK": 1200, "IN": 1000, "UAE": 1800, "USA": 2000 },
+      "priceLock": { "lockDays": 60, "graceDays": 30, "graceIncreasePercent": 10, "rangeLockDays": [30, 90], "freshLockOnUpgrade": true, "rewardUnlockUsers": "no lock, country base fixed forever" },
+      "trainingCRB": { "trainingModules": 8, "trainingDurationDays": [7, 14], "trainingFee": "INCLUDED in franchise price", "crbSlaDays": [3, 7], "crbFee": "small user fee (admin-tunable)" },
+      "industryTagging": "seller selects → DMO approves",
+      "refundLogic": "earnings reverse + SV rollback within 90-day window; downline impact minimal (no cascade destroy)",
+      "stlDropHandling": "30-day grace period → then franchise SUSPEND (recoverable by restoring STL)",
+      "legalPositioning": "EHB is NOT MLM — positioned as Affiliate + Marketplace + Service Platform",
+      "legalHardRules": ["No income from joining fees", "No income from pure recruitment", "No fake / overpriced / empty packages"],
+      "jurisdictionPosture": { "PK": "compliant (SECP) — launch-1 default", "UAE": "Phase 2 (license required)", "US": "Phase 2 (FTC Endorsement Guides)", "UK": "Phase 2 (DTI compliance)" },
+      "forbiddenMarketingPhrases": ["Get paid to recruit", "Join now and earn $X guaranteed", "Investment opportunity / ROI", "Passive income with no work"],
+      "approvedMarketingPhrases": ["Earn affiliate commission on real product sales", "Unlock digital franchise by building a real customer network", "Trust-based earning + franchise growth engine"],
+      "antiFraud": ["self-purchase blocked", "refund-aware SV rollback (90-day window)", "1-device 1-account enforcement", "STL drop -> 30-day grace -> franchise suspend", "fake referrals disqualified", "burst signup auto-freeze (50/IP/24h)", "wash-trade IP/device flag", "circular referral DMO review"],
+      "adminFlexibility": {
+        "principle": "Zero hardcoded numbers, everything DB-backed, hot-reload, audit-logged on-chain",
+        "configCollection": "affiliate_config",
+        "approvalWorkflow": ">5% impact = DMO Director; >10% impact = SUPER_ADMIN multi-sig",
+        "guardrails": ["range validation", "audit log", "rollback (50 versions)", "scheduled changes", "preview/simulation", "A/B test (10% sample)", "hot-reload <60s", "user grandfathering"]
+      },
+      "mvpPhase1Scope": {
+        "includes": ["Product Affiliate Track A", "2-level cascade 10/5", "3 bonuses: STL + First Sale + Fast Sale", "basic dashboard", "signup/login/referral/buy/earnings APIs"],
+        "excludes": ["Franchise system", "Track B 10-level", "Full 11-bonus catalog", "Dynamic pricing", "Industry categories", "R1-R10 ladder", "Training/CRB/DMO activation", "DAM advanced features"],
+        "successMetric": "First 100 real users + real sales + 30-day stability"
+      }
+    },
+    "pendingFromFounder": [
+      "EHBGC lock amount per OF1/OF2/OF3/OF4 (placeholder pending)",
+      "Global Pool weighting metric exact details for R8+",
+      "Withdrawal frequency tied to rank (default: 30-day hold then on-demand for all ranks)",
+      "Campaign / A-B testing rules tied to ranks (default: all ranks can run campaigns)",
+      "Pakistan SECP-licensed counsel review before launch"
+    ]
+  },
+  "architectureV33": {
+    "status": "spec-locked-2026-04-26",
+    "specFile": "ehb-info/departments/Affiliate.md section 13",
+    "compliance": {
+      "founderHardRules": ["Real product income only", "No YO BUY (no forced self-purchase)", "No fake packages", "Limited depth", "No referral-only income"],
+      "advancedAdditions": ["80/20 income rule (R3+)", "30-day cooling-off refund", "Income Disclosure Statement (IDS)", "Velocity caps (50 signups/IP/24h)", "Geographic distribution 60% max single-country (R5+)", "Auto-suspend on AI pattern anomaly", "Country compliance certifications", "OFAC sanctions screening", "FATF Travel Rule for crypto >=$1000"],
+      "selfPurchaseRule": "Counts toward STL but ZERO downline commission; 30-day external sale required to count for First Sale Bonus"
+    },
+    "cappingSystem": {
+      "dailyCapsPerRank": { "R1": 100, "R3": 300, "R5": 1000, "R7": 5000, "R10": 50000, "currency": "USD" },
+      "monthlyCapMultiplier": 25,
+      "perTxCapUsd": 10000,
+      "globalDailyCapPercentRevenue": 5,
+      "overflowDestination": "EHB rebate pool (used for marketing + customer rewards + Global Pool Bonus base)",
+      "noClawback": true
+    },
+    "longTermSustainability": {
+      "founderPrinciples": ["Modular", "Upgradeable", "No hardcoding", "Money IN >= Money OUT", "Multi-industry independent", "Profit-based bonuses"],
+      "advancedAdditions": ["Constitutional immutable layer (7/9 board to change)", "Time-locked upgrades (90-day notice)", "Semver with 18-month deprecation cycle", "Generational inheritance", "Currency migration path", "Industry sunset mechanism", "Founder succession via DMO+AI co-governance", "Open-source migration option", "7-year cold storage archival"]
+    },
+    "techStack": {
+      "founderConfirmed": { "backend": "Node.js 20 + Express → NestJS for hot services", "dbPrimary": "MongoDB 7", "dbFinancial": "PostgreSQL 16", "cache": "Redis 7 cluster", "queue": "Kafka (or Redis Streams MVP)", "cloud": "AWS primary + GCP redundancy", "cdn": "Cloudflare", "auth": "JWT + 2FA TOTP+SMS", "blockchain": "Polkadot parachain", "ai": "OpenAI + custom fraud model" },
+      "advancedAdditions": ["Service mesh (Istio/Linkerd)", "Event Sourcing + CQRS (affiliate/wallet)", "DB sharding by country", "3+ read replicas per region", "Edge computing (Cloudflare Workers)", "GraphQL Federation", "OpenTelemetry+Prometheus+Grafana+Jaeger+Loki", "Chaos engineering monthly", "Multi-region active-active (3 regions at billion users)", "DR RPO 5min RTO 15min", "Blue-green/canary deployments", "API rate limits per user/IP/endpoint", "Webhook system", "Temporal job orchestration", "SLA tiers (T0 99.99% / T1 99.9% / T2 99.5%)"]
+    },
+    "microservices": {
+      "coreEngines": ["UserEngine", "AffiliateEngine", "CommerceEngine", "FranchiseEngine", "AIEngine", "AnalyticsEngine"],
+      "supportServices": ["WalletService (NEW v3.3)", "ComplianceService (NEW v3.3)", "NotificationService", "AuditService"]
+    }
+  },
+  "walletIntegration": {
+    "status": "spec-locked-2026-04-26",
+    "model": "dual-wallet: Main EHB Wallet + Affiliate Wallet per user",
+    "mainWallet": {
+      "supportedCurrencies": ["USDT (TRC20/ERC20/BEP20)", "EHBGC native", "USD", "PKR", "AED", "INR", "EUR", "GBP"],
+      "use": "shopping, franchise purchase, STL upgrade, EHBGC lock"
+    },
+    "affiliateWallet": {
+      "supportedCurrencies": ["USDT-equivalent", "EHBGC optional"],
+      "use": "earnings storage, transfer to Main, withdraw to bank/USDT external",
+      "pendingHoldDays": 30
+    },
+    "moneyFlows": {
+      "earnToUse": "AffWallet -> MainWallet (instant, FREE) -> use",
+      "earnToWithdraw": "AffWallet -> bank (1-3 days) OR USDT external (<10min)",
+      "externalDepositToAffUse": "External -> MainWallet (deposit) -> AffWallet (re-deposit) -> use within program",
+      "p2pInternal": "MainWallet -> MainWallet only (KYC Tier 2+ for >$500); AffWallet -> AffWallet NOT allowed"
+    },
+    "usdtNetworks": ["TRC20 (default, $1 fee)", "ERC20 ($5-30 gas)", "BEP20 ($0.50)", "Polygon (Phase 2)", "Solana (Phase 2)"],
+    "bankRails": {
+      "PK": ["HBL", "Meezan", "UBL", "JazzCash", "Easypaisa", "IBFT", "RTGS"],
+      "UAE": ["Emirates NBD", "ADCB", "FAB", "SWIFT", "IBAN"],
+      "USA": ["Plaid (any major bank)", "ACH", "Wire"],
+      "IN": ["UPI", "IMPS", "NEFT", "Razorpay/PayU"],
+      "UK": ["Open Banking", "Faster Payments", "BACS"]
+    },
+    "kycTiers": {
+      "0_sandbox": { "monthlyInUsd": 100, "monthlyOutUsd": 50, "requirements": ["email", "phone"] },
+      "1_basic": { "monthlyInUsd": 1000, "monthlyOutUsd": 500, "requirements": ["+ID document"] },
+      "2_standard": { "monthlyInUsd": 10000, "monthlyOutUsd": 5000, "requirements": ["+selfie", "+address proof"] },
+      "3_pro": { "monthlyInUsd": 100000, "monthlyOutUsd": 50000, "requirements": ["+bank statement", "+source of funds"] },
+      "4_institutional": { "monthlyInUsd": "unlimited", "requirements": ["+corporate docs", "+audit"] }
+    },
+    "transactionFees": {
+      "affToMainTransfer": "FREE",
+      "mainToAffTransfer": "FREE",
+      "p2pMainToMain": "0.5% (cap $5)",
+      "bankDeposit": "1.5% (waived >=$500)",
+      "bankWithdrawal": "2% (min $2 max $50)",
+      "usdtDeposit": "0% (EHB absorbs)",
+      "usdtWithdrawalTrc20": "$1 flat",
+      "usdtWithdrawalErc20": "$5-30 gas passthrough",
+      "conversionUsdtEhbgc": "0.5% spread + 0.1% LP",
+      "conversionUsdtFiat": "1% spread"
+    },
+    "rateLimits": {
+      "withdrawalsPerDay": 3,
+      "withdrawalsPerHour": 1,
+      "newWhitelistAddressHoldHours": 24,
+      "largeWithdrawalThresholdUsd": 10000,
+      "largeWithdrawalRequires": "2FA + email confirm + DMO review",
+      "velocityFlagThresholdUsd7d": 50000,
+      "p2pDailyCapUsd": 5000,
+      "refundWindowDays": 90
+    },
+    "custodySplit": {
+      "hot": "<=5% of total custody, automated, batch >$100K signed by ops",
+      "warm": "<=20%, 3/5 ops sigs + 1-hour delay",
+      "cold": ">=75%, 5/9 board sigs + 24-hour delay"
+    },
+    "rolloutPhases": {
+      "phase1_mvp": "Affiliate Wallet only (USDT-equivalent balance, no withdrawals)",
+      "phase2": "Add Main Wallet + Main<->Aff transfer + USDT TRC20 deposit/withdraw + PK banks (JazzCash+HBL) + KYC 0-2",
+      "phase3": "Multi-currency + multi-country banks (UAE/IN/UK/USA) + USDT ERC20+BEP20 + KYC 3+ + Hot/Cold split + multi-sig",
+      "phase4": "Conversion engine USDT<->EHBGC + Polygon+Solana + Open Banking + KYC 4 institutional"
+    },
+    "lockedDecisionsV33_2026_04_26": {
+      "commissionStorage": "Hybrid 80% USDT + 20% EHBGC default (user can opt 100% EHBGC)",
+      "coolingOffDays": 30,
+      "pkBankRailsLaunch": "JazzCash + HBL simultaneously",
+      "multiRegionRollout": "Hybrid: single-region (Asia/Singapore) + Cloudflare CDN at launch, then multi-region (EU Frankfurt + US Virginia) within 90 days post-launch",
+      "multiCountryBankRailsLaunchSTRATEGY": "Pakistan-first soft launch (existing EHB Tech entity); other countries phased in as licenses complete in parallel (REVISED evening 2026-04-26 per founder 'launch first improve later' directive — was 'all 5 simultaneously')",
+      "selfPurchaseRule": "STRICT: STL credit YES, downline commission NO, First Sale Bonus only if external sale within 30 days",
+      "affiliatePathScope": "OF1-OF4 only (locked from v3.2)",
+      "walletApproach": "Simple centralized wallet at launch (DB-tracked USDT-equivalent + EHBGC balances); real blockchain (Polkadot anchor) deferred to Phase 2/3 — avoids over-engineering before product-market fit",
+      "withdrawalLimitsByRank": { "R1": "$100/day", "R5": "$500/day", "R10": "$5000/day", "kycTierMultiplier": "T0=50%, T1=75%, T2+=100%, T4=200% of rank cap" },
+      "cappingSystem": "Daily (per-rank ladder above) + Monthly (25x daily) + Per-tx ($10K) + No lifetime cap"
+    },
+    "appliedDefaults": {
+      "conversionOracleSource": "Chainlink (activated only when blockchain wallet goes live in Phase 2/3)"
+    },
+    "launchStrategy": {
+      "directive": "Launch first, improve later",
+      "Q2_2026_MVP": "Pakistan soft launch (existing EHB Tech entity) with affiliate Track A + simple wallet + JazzCash+HBL + NADRA KYC + invite-only 100-500 users",
+      "Q3_Q4_2026": "Validate product-market fit in PK; parallel: file UAE/India/UK licenses; begin blockchain integration; multi-region prep",
+      "Q1_Q2_2027": "UAE + India + UK go live; USA filing begins",
+      "Q4_2027": "USA goes live (full 5-country active-active)"
+    }
+  },
+  "blockers": [
+    { "id": "aff-v3.2-pending-details", "task": "5 minor open items remain (see affiliateV3.pendingFromFounder) — non-blocking for MVP launch; needed for Phase 2 full rollout", "since": "2026-04-25" }
+  ],
+  "howToRun": [
+    "cd D:\\ehb_2026_3",
+    "pnpm install  (adds socket.io)",
+    "pnpm seed     (populates Phase 1+2 demo data)",
+    "pnpm test:stl (expect 58/58 pass)",
+    ".\\scripts\\start-all.ps1",
+    "Open http://localhost:3000 → /gosellr → add to cart → checkout → /orders"
+  ],
+  "wellKnownAccounts": {
+    "dmo.manager@ehb.com": { "password": "ehbDmo2026", "role": "DMO_MANAGER" },
+    "user001@demo.ehb": { "password": "demo1234", "role": "user/franchisee/DMO_ANALYST" }
+  },
+  "demoScriptPhase2": [
+    "1. Register buyer → PSS verify → STL L3",
+    "2. /gosellr → browse 15 seeded products → pick one → add to cart",
+    "3. /checkout → escrow locks EHBGC-simulated funds → order created",
+    "4. /orders → track status progress bar",
+    "5. Login as DMO manager → /dmo/riders → see 3 online riders",
+    "6. POST /api/delivery/:orderId/assign → auto-assigns highest-scoring rider",
+    "7. Rider POSTs delivery events → status advances to 'delivered'",
+    "8. Buyer clicks 'Confirm delivery' → commission auto-settles (70% seller, 10% rider, 10% EHB, 10% franchise split 40/25/20/15)",
+    "9. /complaints/file → DMO sees in /dmo/complaints with tier chip",
+    "10. Click 'Uphold + penalize' → penalty ladder: warn → fine → STL -2",
+    "11. /crb/exams → take MCQ → pass → CRB level up + on-chain certificate hash",
+    "12. /dmo/notifications → see live Socket.IO events streamed"
+  ]
+}

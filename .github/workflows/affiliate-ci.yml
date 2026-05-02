@@ -1,0 +1,266 @@
+name: Affiliate CI
+
+# Runs on every push to main + every PR touching affiliate code
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/app/affiliate/**'
+      - 'apps/web/app/dmo/**'
+      - 'apps/web/app/m/affiliate/**'
+      - 'apps/web/app/wallet/**'
+      - 'apps/web/app/kyc/**'
+      - 'apps/web/components/affiliate/**'
+      - 'apps/web/lib/affiliate-i18n.ts'
+      - 'services/api/src/services/affiliate**'
+      - 'services/api/src/services/trackB**'
+      - 'services/api/src/services/bonus**'
+      - 'services/api/src/services/capping**'
+      - 'services/api/src/services/rankEngine**'
+      - 'services/api/src/services/compliance**'
+      - 'services/api/src/services/kyc**'
+      - 'services/api/src/services/withdrawal**'
+      - 'services/api/src/services/emailTemplates**'
+      - 'services/api/src/models/Affiliate**'
+      - 'services/api/src/models/KycDocument**'
+      - 'services/api/src/models/FraudSignal**'
+      - 'services/api/src/models/WithdrawalRequest**'
+      - 'services/api/src/routes/affiliate**'
+      - 'services/api/src/routes/kyc**'
+      - 'services/api/src/routes/compliance**'
+      - 'services/api/src/routes/adminAffiliate**'
+      - 'scripts/smoke-test-affiliate.js'
+      - 'ehb-info/departments/Affiliate.md'
+      - '.github/workflows/affiliate-ci.yml'
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # ── 1. Lint + Typecheck ────────────────────────────────────────────────────
+  lint:
+    name: Lint + Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint web
+        run: pnpm --filter @ehb/web lint --max-warnings 50
+
+      - name: Typecheck web
+        run: pnpm --filter @ehb/web exec tsc --noEmit
+
+      - name: Syntax check API services
+        run: |
+          for f in services/api/src/services/affiliate*.js \
+                  services/api/src/services/trackB*.js \
+                  services/api/src/services/bonus*.js \
+                  services/api/src/services/capping*.js \
+                  services/api/src/services/rankEngine*.js \
+                  services/api/src/services/compliance*.js \
+                  services/api/src/services/kyc*.js \
+                  services/api/src/services/withdrawal*.js \
+                  services/api/src/services/emailTemplates*.js \
+                  services/api/src/models/Affiliate*.js \
+                  services/api/src/routes/affiliate*.js \
+                  services/api/src/routes/kyc*.js \
+                  services/api/src/routes/compliance*.js \
+                  services/api/src/routes/adminAffiliate*.js; do
+            if [ -f "$f" ]; then
+              node --check "$f" || exit 1
+              echo "✓ $f"
+            fi
+          done
+
+  # ── 2. STL Gold-Master Tests (must remain 58/58) ──────────────────────────
+  stl-tests:
+    name: STL Gold-Master (58 tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Run STL tests
+        run: pnpm test:stl
+        env:
+          NODE_ENV: test
+
+  # ── 3. Affiliate Smoke Test (32-step end-to-end) ──────────────────────────
+  smoke:
+    name: Affiliate Smoke Test
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ping:1})' --quiet"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      MONGODB_URI: mongodb://localhost:27017/ehb_test
+      REDIS_URL: redis://localhost:6379
+      JWT_SECRET: test-jwt-secret-32-char-minimum-for-ci-runs-only
+      SESSION_SECRET: test-session-secret-32-char-min-for-ci-runs
+      NODE_ENV: test
+      DEV_SKIP_KYC: 'true'
+      DEV_SEED_AFFILIATE_DEMO: 'true'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Seed test data
+        run: pnpm seed
+        timeout-minutes: 3
+
+      - name: Start API in background
+        run: |
+          pnpm --filter @ehb/api start &
+          for i in {1..30}; do
+            sleep 2
+            curl -sf http://localhost:5000/api/health && break
+          done
+        timeout-minutes: 2
+
+      - name: Run smoke test (32 steps)
+        run: node scripts/smoke-test-affiliate.js
+        timeout-minutes: 5
+
+  # ── 4. Build Docker images (verify Dockerfiles work) ──────────────────────
+  docker-build:
+    name: Docker Build (api + web)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.api
+          push: false
+          tags: ehb/api:ci-${{ github.sha }}
+
+      - name: Build Web image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.web
+          push: false
+          tags: ehb/web:ci-${{ github.sha }}
+
+  # ── 5. Compliance check — block forbidden phrases ─────────────────────────
+  compliance:
+    name: Compliance — forbidden phrases
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for forbidden marketing phrases
+        run: |
+          set -e
+          FORBIDDEN=(
+            "Get paid to recruit"
+            "Investment opportunity"
+            "Investment ROI"
+            "Guaranteed earnings"
+            "Passive income with no work"
+            "Get rich quick"
+          )
+          FAIL=0
+          for phrase in "${FORBIDDEN[@]}"; do
+            if grep -ri --include='*.tsx' --include='*.ts' --include='*.js' --include='*.md' \
+               --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=backup \
+               -l "$phrase" apps/web services/api ehb-info 2>/dev/null \
+               | grep -v '^$' > /tmp/found_${phrase// /_}.txt; then
+              if [ -s /tmp/found_${phrase// /_}.txt ]; then
+                # Allow appearances in compliance reference docs (where they're flagged as forbidden)
+                LEGITIMATE=$(grep -l "Forbidden" /tmp/found_${phrase// /_}.txt 2>/dev/null | wc -l)
+                TOTAL=$(wc -l < /tmp/found_${phrase// /_}.txt)
+                if [ "$LEGITIMATE" -lt "$TOTAL" ]; then
+                  echo "::warning::Forbidden phrase found: '$phrase'"
+                  cat /tmp/found_${phrase// /_}.txt
+                  FAIL=1
+                fi
+              fi
+            fi
+          done
+          if [ $FAIL -eq 1 ]; then
+            echo "::error::Forbidden marketing phrases detected (see above). EHB is NOT MLM."
+            exit 1
+          fi
+          echo "✓ No forbidden phrases found in user-facing code"
+
+  # ── 6. Final verdict ──────────────────────────────────────────────────────
+  ready-to-merge:
+    name: Ready to Merge
+    needs: [lint, stl-tests, smoke, compliance]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "✅ All affiliate CI checks passed"
+          echo "  - Lint + Typecheck"
+          echo "  - STL Gold-Master 58/58"
+          echo "  - Affiliate Smoke Test (32 steps)"
+          echo "  - Compliance scan (no forbidden phrases)"
+          echo ""
+          echo "Safe to merge ✓"

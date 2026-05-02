@@ -1,0 +1,63 @@
+{
+  "code": "SA",
+  "name": "Saudi Arabia",
+  "phase": 1,
+  "status": "active",
+
+  "currency": { "code": "SAR", "symbol": "ر.س", "minor_units": 2, "fx_to_usd": 0.267 },
+  "languages": ["ar", "en"],
+  "timezone": "Asia/Riyadh",
+  "rtl": true,
+
+  "payment_methods": {
+    "primary": ["stripe", "mada"],
+    "local": ["mada", "stcpay", "tabby", "tamara"],
+    "wallet": ["apple_pay", "stcpay", "ur_pay"],
+    "bank_transfer": ["sarie"],
+    "ehbgc_supported": true
+  },
+
+  "kyc": {
+    "primary_partner": "Absher",
+    "min_pss_for_transactions": 3,
+    "id_documents_accepted": ["National_ID", "Iqama", "Passport"]
+  },
+
+  "compliance": {
+    "regulator_payments": "SAMA",
+    "regulator_data": "PDPL_2023",
+    "regulator_kyc": "Absher",
+    "vat_pct": 15,
+    "amlcft_required": true,
+    "data_residency": "Saudi_Arabia_required",
+    "consumer_cooling_off_days": 7,
+    "industry_specific_licenses_required": true
+  },
+
+  "franchise_tiers": {
+    "country": { "max": 1, "capital_lock_ehbgc": 100000 },
+    "master": { "max": 13, "capital_lock_ehbgc": 30000 },
+    "corporate": { "max_per_master": 5, "capital_lock_ehbgc": 10000 },
+    "sub": { "L8": 200, "L9": 400, "L10": 200 },
+    "micro": { "max": "unlimited" }
+  },
+
+  "industry_restrictions": {
+    "FIN": { "additional_license_required": "SAMA_fintech" },
+    "WMS": { "additional_license_required": "SCFHS" },
+    "OLS": { "additional_license_required": "MOJ_Bar" },
+    "INS": { "additional_license_required": "SAMA_insurance" }
+  },
+
+  "shipping": {
+    "domestic_carriers": ["SaudiPost", "Aramex_SA", "SMSA"],
+    "international_carriers": ["DHL", "FedEx", "UPS"]
+  },
+
+  "launch_checklist": {
+    "legal_entity_formed": false,
+    "payment_partner_signed": false,
+    "kyc_partner_signed": false,
+    "tos_translated": true
+  }
+}

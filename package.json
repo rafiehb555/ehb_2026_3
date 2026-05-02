@@ -1,0 +1,41 @@
+{
+  "name": "ehb-development-2026",
+  "version": "0.1.0",
+  "private": true,
+  "description": "EHB Technologies (Pvt.) Ltd. — Global Super-App monorepo. 38 industries, AI + Polkadot trust backbone.",
+  "author": "Muhammad Rafi <ehb.rafi@gmail.com>",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:stl": "pnpm --filter @ehb/api run test:stl",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "seed": "pnpm --filter @ehb/api run seed",
+    "dev:web": "pnpm --filter @ehb/web run dev",
+    "dev:api": "pnpm --filter @ehb/api run dev",
+    "dev:ai": "pnpm --filter @ehb/ai run dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0",
+    "prettier": "^3.2.0",
+    "eslint": "^8.57.0"
+  },
+  "keywords": [
+    "ehb",
+    "super-app",
+    "stl",
+    "dmo",
+    "franchise",
+    "ai-marketplace",
+    "polkadot"
+  ]
+}

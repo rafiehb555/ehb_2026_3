@@ -1,0 +1,156 @@
+# EHB Affiliate — Production-ready Docker Compose
+# Usage:
+#   docker compose up -d           # start all services
+#   docker compose logs -f api     # tail API logs
+#   docker compose down            # stop & remove
+#   docker compose down -v         # also remove volumes (WIPES DB!)
+# Updated: 2026-04-27 · Affiliate v3.11
+
+services:
+
+  # ── MongoDB 7 — primary database ──────────────────────────────────────────
+  mongodb:
+    image: mongo:7-jammy
+    container_name: ehb-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ehb_dev
+      # In production, enable auth:
+      # MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      # MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASS}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - ehb-network
+
+  # ── Redis 7 — cache + rate limiting + sessions ─────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: ehb-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ehb-network
+
+  # ── EHB API — Express backend ─────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: ehb-api
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongodb:27017/ehb_dev
+      REDIS_URL: redis://redis:6379
+      API_PORT: 5000
+      JWT_SECRET: ${JWT_SECRET:?must be set in .env}
+      SESSION_SECRET: ${SESSION_SECRET:?must be set in .env}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Affiliate v3.2 rates
+      AFFILIATE_PILOT_COUNTRY: ${AFFILIATE_PILOT_COUNTRY:-PK}
+      AFFILIATE_LIVE_COUNTRIES: ${AFFILIATE_LIVE_COUNTRIES:-PK}
+      # Bank rails — pass-through
+      JAZZCASH_MERCHANT_ID: ${JAZZCASH_MERCHANT_ID:-}
+      JAZZCASH_PASSWORD: ${JAZZCASH_PASSWORD:-}
+      HBL_API_KEY: ${HBL_API_KEY:-}
+      # KYC
+      NADRA_API_KEY: ${NADRA_API_KEY:-}
+      JUMIO_API_TOKEN: ${JUMIO_API_TOKEN:-}
+      # USDT
+      TRON_PRIVATE_KEY_HOT: ${TRON_PRIVATE_KEY_HOT:-}
+      # OpenAI
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Sentry
+      SENTRY_DSN: ${SENTRY_DSN:-}
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ehb-network
+
+  # ── EHB Web — Next.js frontend ─────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api:5000}
+        NEXT_PUBLIC_AI_URL: ${NEXT_PUBLIC_AI_URL:-http://localhost:8080}
+        NEXT_PUBLIC_DEFAULT_COUNTRY: ${NEXT_PUBLIC_DEFAULT_COUNTRY:-PK}
+    container_name: ehb-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      WEB_PORT: 3000
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - ehb-network
+
+  # ── (Phase 2) — observability stack ─────────────────────────────────────
+  # Uncomment when adding OpenTelemetry + Prometheus + Grafana
+  #
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: ehb-prometheus
+  #   ports: ["9090:9090"]
+  #   volumes:
+  #     - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks: [ehb-network]
+  #
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: ehb-grafana
+  #   ports: ["3001:3000"]
+  #   networks: [ehb-network]
+
+volumes:
+  mongo_data:
+    driver: local
+  mongo_config:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  ehb-network:
+    driver: bridge

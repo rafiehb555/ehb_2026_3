@@ -1,0 +1,977 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DMO Control Center · EHB Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===================================================================
+   EHB Technologies — DMO Control Center
+   Dark glassmorphism per design-system/EHB-UIUX-SYSTEM.md §1–§7
+   =================================================================== */
+
+:root{
+  --bg-root:#0C0E1A;
+  --bg-card:#13162A;
+  --bg-card-nested:#1A1D33;
+  --bg-glass:rgba(19,22,42,.92);
+  --bg-glass-soft:rgba(19,22,42,.72);
+  --purple:#7B6EF6;
+  --purple-light:#A098F8;
+  --teal:#2BBFA0;
+  --amber:#F0A030;
+  --red:#F05858;
+  --green:#38C878;
+  --fg:#E7EAF7;
+  --fg-muted:#C8CCDF;
+  --fg-meta:#8890B0;
+  --fg-dim:#555A78;
+  --border:rgba(255,255,255,.08);
+  --border-strong:rgba(255,255,255,.14);
+  --divider:rgba(255,255,255,.07);
+  --grad-primary:linear-gradient(135deg,#7B6EF6 0%,#2BBFA0 100%);
+  --grad-critical:linear-gradient(135deg,#F05858 0%,#F0A030 100%);
+  --grad-trust:linear-gradient(135deg,#2BBFA0 0%,#38C878 100%);
+  --grad-ai:linear-gradient(135deg,#A098F8 0%,#7B6EF6 50%,#2BBFA0 100%);
+  --shadow-card:0 10px 28px rgba(20,26,48,.28),0 1px 0 rgba(255,255,255,.15) inset;
+  --shadow-raised:0 14px 36px rgba(20,26,48,.36),0 1px 0 rgba(255,255,255,.18) inset;
+  --shadow-critical:0 0 24px rgba(240,88,88,.35),0 10px 28px rgba(240,88,88,.22);
+  --shadow-verified:0 0 20px rgba(43,191,160,.28);
+  --r-chip:5px;--r-btn:8px;--r-card:14px;--r-hero:16px;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg-root);
+  color:var(--fg);
+  font-size:13px;
+  line-height:1.5;
+  letter-spacing:-.1px;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Background aurora */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 18% 8%,rgba(123,110,246,.18),transparent 60%),
+    radial-gradient(ellipse 50% 35% at 85% 18%,rgba(43,191,160,.14),transparent 60%),
+    radial-gradient(ellipse 70% 40% at 50% 95%,rgba(123,110,246,.10),transparent 60%);
+}
+
+/* ---------- LAYOUT ---------- */
+.app{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+  position:relative;
+  z-index:1;
+}
+
+/* ---------- SIDEBAR ---------- */
+.sidebar{
+  position:sticky;top:0;height:100vh;
+  background:linear-gradient(180deg,rgba(19,22,42,.96),rgba(19,22,42,.88));
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-right:1px solid var(--border);
+  padding:18px 14px;
+  display:flex;flex-direction:column;gap:14px;
+  overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:3px}
+
+.brand{
+  display:flex;align-items:center;gap:10px;padding:6px 8px 14px;
+  border-bottom:1px solid var(--divider);
+}
+.brand-mark{
+  width:34px;height:34px;border-radius:10px;
+  background:var(--grad-primary);
+  display:grid;place-items:center;
+  font-weight:800;color:#0C0E1A;font-size:13px;
+  box-shadow:var(--shadow-card);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-text strong{font-size:13px;letter-spacing:-.2px}
+.brand-text span{font-size:9px;color:var(--fg-meta);letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+
+.nav-label{
+  font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--fg-dim);padding:10px 10px 4px;
+  display:flex;align-items:center;gap:8px;
+}
+.nav-label::after{content:"";flex:1;height:1px;background:var(--divider)}
+
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;
+  color:var(--fg-muted);text-decoration:none;
+  font-size:12px;font-weight:500;
+  border:1px solid transparent;
+  transition:all .18s ease;
+}
+.nav a .icn{
+  width:22px;height:22px;display:grid;place-items:center;
+  border-radius:6px;font-size:13px;
+  background:rgba(255,255,255,.04);
+  transition:all .18s ease;
+}
+.nav a:hover{background:rgba(123,110,246,.08);color:#fff;transform:translateX(2px)}
+.nav a:hover .icn{background:rgba(123,110,246,.18)}
+.nav a.active{
+  background:linear-gradient(135deg,rgba(123,110,246,.22),rgba(43,191,160,.14));
+  color:#fff;
+  border-color:rgba(123,110,246,.35);
+  box-shadow:0 0 18px rgba(123,110,246,.18);
+}
+.nav a.active .icn{background:var(--grad-primary);color:#0C0E1A}
+.nav .badge{
+  margin-left:auto;font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:10px;
+  background:rgba(240,88,88,.18);color:#FF8A8A;
+  border:1px solid rgba(240,88,88,.32);
+}
+
+.user-card{
+  margin-top:auto;
+  background:var(--bg-glass);
+  border:1px solid var(--border-strong);
+  border-radius:12px;padding:12px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:var(--shadow-card);
+}
+.avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--grad-ai);
+  display:grid;place-items:center;font-weight:700;color:#0C0E1A;
+  position:relative;
+}
+.avatar::after{
+  content:"";position:absolute;right:-2px;bottom:-2px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--green);border:2px solid var(--bg-card);
+}
+.user-meta{display:flex;flex-direction:column;line-height:1.2;flex:1;min-width:0}
+.user-meta strong{font-size:12px}
+.user-meta span{font-size:9px;color:var(--fg-meta);letter-spacing:.08em;text-transform:uppercase}
+.logout{
+  background:rgba(240,88,88,.12);
+  border:1px solid rgba(240,88,88,.28);
+  color:#FF8A8A;width:28px;height:28px;border-radius:7px;
+  display:grid;place-items:center;cursor:pointer;transition:.18s;
+}
+.logout:hover{background:rgba(240,88,88,.22)}
+
+/* ---------- MAIN ---------- */
+main{padding:22px clamp(14px,2vw,28px) 40px;min-width:0}
+
+.topbar{
+  display:flex;align-items:center;gap:14px;margin-bottom:22px;
+}
+.topbar h1{
+  font-size:clamp(18px,2.2vw,24px);
+  font-weight:700;letter-spacing:-.4px;margin:0;
+}
+.topbar .crumb{font-size:10px;color:var(--fg-meta);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.topbar .crumb em{color:var(--purple-light);font-style:normal;font-weight:600}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search{
+  background:var(--bg-glass);border:1px solid var(--border);
+  border-radius:10px;padding:8px 12px;min-width:260px;
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--fg-meta);
+}
+.search input{
+  background:transparent;border:none;outline:none;color:#fff;
+  font-family:inherit;font-size:12px;flex:1;
+}
+.pulse{
+  display:flex;align-items:center;gap:7px;padding:7px 12px;
+  background:rgba(43,191,160,.10);border:1px solid rgba(43,191,160,.32);
+  border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--teal);
+}
+.pulse .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:pulse 1.6s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-primary{
+  background:var(--grad-primary);color:#0C0E1A;
+  border:none;font-family:inherit;font-weight:700;font-size:11px;
+  letter-spacing:.05em;padding:9px 16px;border-radius:9px;cursor:pointer;
+  box-shadow:0 8px 20px rgba(123,110,246,.28);transition:.2s;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(123,110,246,.38)}
+
+/* ---------- STAT HERO ROW ---------- */
+.stat-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;
+}
+.stat{
+  background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border-strong);border-radius:var(--r-card);
+  padding:16px 18px;box-shadow:var(--shadow-card);
+  position:relative;overflow:hidden;cursor:pointer;transition:.2s;
+}
+.stat::before{
+  content:"";position:absolute;inset:0;opacity:0;transition:.25s;
+  background:radial-gradient(ellipse at top right,rgba(123,110,246,.12),transparent 60%);
+}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-raised);border-color:rgba(123,110,246,.3)}
+.stat:hover::before{opacity:1}
+.stat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.stat-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:grid;place-items:center;font-size:17px;
+  background:rgba(123,110,246,.14);border:1px solid rgba(123,110,246,.24);
+}
+.stat.success .stat-icon{background:rgba(43,191,160,.12);border-color:rgba(43,191,160,.28);color:var(--teal)}
+.stat.warn .stat-icon{background:rgba(240,160,48,.12);border-color:rgba(240,160,48,.28);color:var(--amber)}
+.stat.critical .stat-icon{background:rgba(240,88,88,.12);border-color:rgba(240,88,88,.28);color:var(--red)}
+.stat-delta{
+  font-size:10px;font-weight:700;padding:3px 7px;border-radius:999px;
+  background:rgba(56,200,120,.12);color:var(--green);
+  border:1px solid rgba(56,200,120,.28);
+}
+.stat-delta.down{background:rgba(240,88,88,.12);color:var(--red);border-color:rgba(240,88,88,.28)}
+.stat-value{font-size:28px;font-weight:800;letter-spacing:-.8px;line-height:1;margin:6px 0 4px}
+.stat-label{font-size:10px;color:var(--fg-meta);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.stat-sub{font-size:11px;color:var(--fg-muted);margin-top:8px;display:flex;align-items:center;gap:6px}
+
+/* ---------- GRID LAYOUT ---------- */
+.grid{display:grid;gap:14px;margin-bottom:18px}
+.grid.g-2-1{grid-template-columns:2fr 1fr}
+.grid.g-1-1-1{grid-template-columns:1fr 1fr 1fr}
+.grid.g-3-2{grid-template-columns:3fr 2fr}
+
+/* ---------- CARD BASE ---------- */
+.card{
+  background:var(--bg-glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--border-strong);border-radius:var(--r-card);
+  padding:18px;box-shadow:var(--shadow-card);
+}
+.card-head{
+  display:flex;align-items:center;gap:10px;margin-bottom:14px;
+}
+.card-head h3{margin:0;font-size:13px;font-weight:700;letter-spacing:-.2px}
+.card-head .sub{font-size:10px;color:var(--fg-meta);letter-spacing:.08em;text-transform:uppercase;margin-left:4px}
+.card-head .action{margin-left:auto;font-size:10px;color:var(--purple-light);text-decoration:none;font-weight:600;letter-spacing:.05em;text-transform:uppercase;display:flex;align-items:center;gap:4px;cursor:pointer}
+.card-head .action:hover{color:#fff}
+
+/* ---------- CHART CARD ---------- */
+.chart-card{min-height:300px}
+.chart-svg{width:100%;height:240px;display:block}
+.chart-legend{display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--fg-muted)}
+.chart-legend span{display:flex;align-items:center;gap:6px}
+.chart-legend span::before{content:"";width:8px;height:8px;border-radius:50%}
+.chart-legend .lg-pss::before{background:var(--purple)}
+.chart-legend .lg-crb::before{background:var(--teal)}
+.chart-range{margin-left:auto;display:flex;gap:4px}
+.chart-range button{
+  background:transparent;border:1px solid var(--border);color:var(--fg-meta);
+  font-family:inherit;font-size:9px;font-weight:700;letter-spacing:.08em;
+  padding:5px 10px;border-radius:6px;cursor:pointer;transition:.15s;
+}
+.chart-range button.active{background:rgba(123,110,246,.18);border-color:rgba(123,110,246,.4);color:#fff}
+
+/* ---------- UP-GUARD FEED ---------- */
+.feed{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto}
+.feed::-webkit-scrollbar{width:4px}
+.feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+.alert{
+  display:flex;gap:10px;padding:10px 12px;border-radius:10px;
+  background:var(--bg-card-nested);border:1px solid var(--border);
+  cursor:pointer;transition:.18s;
+}
+.alert:hover{transform:translateX(2px);border-color:rgba(123,110,246,.24)}
+.alert-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.alert.critical{border-left:3px solid var(--red);background:linear-gradient(90deg,rgba(240,88,88,.08),var(--bg-card-nested) 30%)}
+.alert.critical .alert-dot{background:var(--red);box-shadow:0 0 8px var(--red)}
+.alert.warn{border-left:3px solid var(--amber);background:linear-gradient(90deg,rgba(240,160,48,.08),var(--bg-card-nested) 30%)}
+.alert.warn .alert-dot{background:var(--amber)}
+.alert.info{border-left:3px solid var(--purple);background:linear-gradient(90deg,rgba(123,110,246,.08),var(--bg-card-nested) 30%)}
+.alert.info .alert-dot{background:var(--purple)}
+.alert-body{flex:1;min-width:0}
+.alert-body strong{display:block;font-size:12px;font-weight:600;letter-spacing:-.1px}
+.alert-body p{margin:2px 0 0;font-size:10.5px;color:var(--fg-meta);line-height:1.4}
+.alert-meta{font-size:9px;color:var(--fg-dim);margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- STL LADDER ---------- */
+.stl-ladder{display:flex;flex-direction:column;gap:6px}
+.stl-row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  padding:8px 10px;border-radius:8px;
+  background:var(--bg-card-nested);border:1px solid var(--border);
+  transition:.18s;cursor:pointer;
+}
+.stl-row:hover{transform:translateX(3px);border-color:rgba(123,110,246,.28)}
+.stl-badge{
+  width:36px;padding:4px 0;border-radius:6px;text-align:center;
+  font-weight:800;font-size:10px;letter-spacing:.04em;
+}
+.stl-name{display:flex;flex-direction:column;line-height:1.2}
+.stl-name strong{font-size:12px}
+.stl-name span{font-size:9px;color:var(--fg-meta);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+.stl-count{font-size:12px;font-weight:700;color:var(--fg-muted)}
+.stl-count span{font-size:9px;color:var(--fg-meta);display:block;letter-spacing:.08em;text-transform:uppercase}
+/* 10-level color mapping */
+.stl-1 .stl-badge{background:rgba(120,130,160,.2);color:#B0B6CF}
+.stl-2 .stl-badge{background:rgba(120,130,160,.28);color:#CBD0E4}
+.stl-3 .stl-badge{background:rgba(43,191,160,.14);color:var(--teal)}
+.stl-4 .stl-badge{background:rgba(43,191,160,.22);color:#4DDBB8}
+.stl-5 .stl-badge{background:rgba(56,200,120,.22);color:var(--green)}
+.stl-6 .stl-badge{background:rgba(160,152,248,.22);color:var(--purple-light)}
+.stl-7 .stl-badge{background:rgba(123,110,246,.28);color:#B0A7FF}
+.stl-8 .stl-badge{background:rgba(240,160,48,.22);color:var(--amber)}
+.stl-9 .stl-badge{background:rgba(240,88,88,.22);color:#FF8A8A}
+.stl-10 .stl-badge{background:var(--grad-ai);color:#0C0E1A;box-shadow:var(--shadow-verified)}
+
+/* ---------- REVENUE DONUT ---------- */
+.donut-wrap{display:flex;align-items:center;gap:18px}
+.donut{width:150px;height:150px;position:relative;flex-shrink:0}
+.donut-center{
+  position:absolute;inset:0;display:grid;place-items:center;
+  text-align:center;line-height:1.1;
+}
+.donut-center strong{font-size:22px;font-weight:800;display:block;letter-spacing:-.5px}
+.donut-center span{font-size:9px;color:var(--fg-meta);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.donut-legend{flex:1;display:flex;flex-direction:column;gap:10px}
+.donut-legend-row{display:flex;align-items:center;gap:10px;font-size:11px}
+.donut-legend-row .swatch{width:10px;height:10px;border-radius:3px}
+.donut-legend-row strong{font-weight:700;font-size:12px}
+.donut-legend-row span{color:var(--fg-meta);margin-left:auto}
+
+/* ---------- TRUST CHAIN (signature widget) ---------- */
+.trust-chain{
+  background:linear-gradient(135deg,rgba(240,88,88,.08),rgba(123,110,246,.08));
+  border:1px solid rgba(240,88,88,.24);
+}
+.chain-title{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.chain-title .icn-lg{
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:var(--grad-critical);font-size:16px;box-shadow:var(--shadow-critical);
+}
+.chain-title h3{margin:0;font-size:13px;font-weight:700}
+.chain-title p{margin:2px 0 0;font-size:10px;color:var(--fg-meta);letter-spacing:.06em;text-transform:uppercase}
+.chain-rows{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.chain-row{
+  display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:center;
+  padding:8px 12px;border-radius:8px;background:var(--bg-card-nested);
+  border:1px solid var(--border);position:relative;
+}
+.chain-row.weak{
+  border-color:rgba(240,88,88,.42);
+  box-shadow:0 0 14px rgba(240,88,88,.18),inset 0 0 0 1px rgba(240,88,88,.14);
+  background:linear-gradient(90deg,rgba(240,88,88,.12),var(--bg-card-nested) 40%);
+}
+.chain-row.weak::after{
+  content:"BLOCKING";position:absolute;right:86px;top:50%;transform:translateY(-50%);
+  font-size:8px;font-weight:800;letter-spacing:.14em;color:var(--red);
+  background:rgba(240,88,88,.18);padding:2px 6px;border-radius:4px;
+  border:1px solid rgba(240,88,88,.38);
+}
+.chain-layer{font-size:10px;color:var(--fg-meta);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.chain-name{font-size:12px;font-weight:600}
+.chain-level{
+  padding:4px 8px;border-radius:6px;font-size:10px;font-weight:800;
+  background:rgba(43,191,160,.18);color:var(--teal);min-width:54px;text-align:center;
+}
+.chain-row.weak .chain-level{background:rgba(240,88,88,.22);color:#FF8A8A}
+.chain-final{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px;margin-top:6px;border-radius:10px;
+  background:var(--grad-critical);color:#0C0E1A;font-weight:700;
+  box-shadow:var(--shadow-critical);
+}
+.chain-final strong{font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.chain-final span{font-size:16px;font-weight:800}
+
+/* ---------- ACTIVITY FEED ---------- */
+.activity{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto}
+.activity::-webkit-scrollbar{width:4px}
+.activity::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+.act{
+  display:flex;gap:11px;padding:10px;border-radius:9px;
+  background:var(--bg-card-nested);border:1px solid var(--border);
+  transition:.18s;
+}
+.act:hover{border-color:rgba(123,110,246,.24)}
+.act-icon{
+  width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  display:grid;place-items:center;font-size:14px;
+  background:rgba(123,110,246,.14);border:1px solid rgba(123,110,246,.22);
+}
+.act.t-teal .act-icon{background:rgba(43,191,160,.14);border-color:rgba(43,191,160,.28)}
+.act.t-amber .act-icon{background:rgba(240,160,48,.14);border-color:rgba(240,160,48,.28)}
+.act.t-red .act-icon{background:rgba(240,88,88,.14);border-color:rgba(240,88,88,.28)}
+.act-body{flex:1;min-width:0}
+.act-body strong{display:block;font-size:12px;font-weight:600}
+.act-body p{margin:2px 0;font-size:10.5px;color:var(--fg-meta);line-height:1.4}
+.act-time{font-size:9px;color:var(--fg-dim);letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- 18 DMO MODULES BENTO ---------- */
+.modules{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(175px,1fr));
+  gap:12px;
+}
+.module{
+  background:var(--bg-glass);border:1px solid var(--border-strong);
+  border-radius:12px;padding:14px;cursor:pointer;
+  transition:.2s;position:relative;overflow:hidden;
+}
+.module::before{
+  content:"";position:absolute;inset:0;background:var(--grad-primary);
+  opacity:0;transition:.25s;mix-blend-mode:screen;
+}
+.module:hover{transform:translateY(-3px);border-color:rgba(123,110,246,.4);box-shadow:var(--shadow-raised)}
+.module:hover::before{opacity:.08}
+.mod-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.mod-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:grid;place-items:center;font-size:16px;
+  background:rgba(123,110,246,.14);border:1px solid rgba(123,110,246,.24);
+}
+.mod-chip{
+  font-size:8px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 7px;border-radius:4px;
+  background:rgba(43,191,160,.14);color:var(--teal);
+  border:1px solid rgba(43,191,160,.28);
+}
+.mod-chip.warn{background:rgba(240,160,48,.14);color:var(--amber);border-color:rgba(240,160,48,.28)}
+.mod-chip.crit{background:rgba(240,88,88,.14);color:var(--red);border-color:rgba(240,88,88,.28)}
+.module h4{margin:6px 0 2px;font-size:12px;font-weight:700;letter-spacing:-.1px}
+.module p{margin:0;font-size:10px;color:var(--fg-meta);line-height:1.45}
+
+/* ---------- DRAWER ---------- */
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(8,10,20,.6);backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;transition:.22s;z-index:90;
+}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;right:0;top:0;bottom:0;width:min(420px,92vw);
+  background:linear-gradient(180deg,rgba(19,22,42,.98),rgba(12,14,26,.98));
+  border-left:1px solid var(--border-strong);
+  box-shadow:-20px 0 40px rgba(0,0,0,.4);
+  transform:translateX(100%);transition:.3s cubic-bezier(.2,.8,.2,1);
+  z-index:100;padding:24px;display:flex;flex-direction:column;gap:14px;
+  overflow-y:auto;
+}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--divider)}
+.drawer-head .d-icon{
+  width:44px;height:44px;border-radius:11px;display:grid;place-items:center;
+  background:var(--grad-primary);font-size:20px;
+}
+.drawer-head h2{margin:0;font-size:16px;font-weight:700}
+.drawer-head p{margin:2px 0 0;font-size:10px;color:var(--fg-meta);letter-spacing:.08em;text-transform:uppercase}
+.drawer-close{
+  margin-left:auto;width:30px;height:30px;border-radius:8px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);
+  color:var(--fg-muted);cursor:pointer;font-size:16px;
+}
+.drawer-body h4{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-meta);margin:14px 0 8px}
+.drawer-body ul{margin:0;padding-left:16px;font-size:12px;color:var(--fg-muted);line-height:1.7}
+
+/* ---------- FOOTER ---------- */
+.foot{
+  margin-top:28px;padding-top:16px;border-top:1px solid var(--divider);
+  display:flex;align-items:center;gap:12px;font-size:10px;color:var(--fg-dim);
+  letter-spacing:.06em;
+}
+.foot .foot-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal)}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:1280px){
+  .stat-row{grid-template-columns:repeat(2,1fr)}
+  .grid.g-2-1,.grid.g-3-2{grid-template-columns:1fr}
+  .grid.g-1-1-1{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:-280px;z-index:50;width:260px;transition:.25s}
+  .sidebar.open{left:0}
+  .grid.g-1-1-1{grid-template-columns:1fr}
+  .search{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- ===================== SIDEBAR ===================== -->
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">E</div>
+    <div class="brand-text">
+      <strong>EHB Technologies</strong>
+      <span>DMO Control Center</span>
+    </div>
+  </div>
+
+  <div class="nav-label">Overview</div>
+  <nav class="nav">
+    <a class="active" href="#"><span class="icn">📊</span> Dashboard</a>
+    <a href="#"><span class="icn">⚡</span> Activity Engine</a>
+    <a href="#"><span class="icn">💎</span> STL Management</a>
+  </nav>
+
+  <div class="nav-label">Verification</div>
+  <nav class="nav">
+    <a href="#"><span class="icn">🛡️</span> PSS Monitoring <span class="badge">14</span></a>
+    <a href="#"><span class="icn">📋</span> CRB Monitoring</a>
+    <a href="#"><span class="icn">📜</span> Certificates</a>
+  </nav>
+
+  <div class="nav-label">Operations</div>
+  <nav class="nav">
+    <a href="#"><span class="icn">👥</span> Users</a>
+    <a href="#"><span class="icn">🏢</span> Companies</a>
+    <a href="#"><span class="icn">🌐</span> Franchise</a>
+    <a href="#"><span class="icn">📝</span> Applications <span class="badge">63</span></a>
+    <a href="#"><span class="icn">💰</span> Earnings Engine</a>
+    <a href="#"><span class="icn">🔒</span> Wallet Control</a>
+  </nav>
+
+  <div class="nav-label">Intelligence</div>
+  <nav class="nav">
+    <a href="#"><span class="icn">🚨</span> Up-Guard <span class="badge">3</span></a>
+    <a href="#"><span class="icn">🤖</span> AI Assistant</a>
+    <a href="#"><span class="icn">⛓️</span> Blockchain</a>
+    <a href="#"><span class="icn">📈</span> Analytics</a>
+    <a href="#"><span class="icn">🔔</span> Notifications</a>
+    <a href="#"><span class="icn">⚙️</span> Settings</a>
+  </nav>
+
+  <div class="user-card">
+    <div class="avatar">MR</div>
+    <div class="user-meta">
+      <strong>Muhammad Rafi</strong>
+      <span>DMO Director · L10</span>
+    </div>
+    <button class="logout" title="Logout">↩</button>
+  </div>
+</aside>
+
+<!-- ===================== MAIN ===================== -->
+<main>
+  <header class="topbar">
+    <div>
+      <div class="crumb">DMO <span>›</span> <em>Dashboard</em></div>
+      <h1>Control Center · Live Pulse</h1>
+    </div>
+    <div class="topbar-right">
+      <div class="search">🔍 <input placeholder="Search users, orders, complaints..." /></div>
+      <div class="pulse"><span class="dot"></span> Live · 14 systems healthy</div>
+      <button class="btn-primary">+ New Action</button>
+    </div>
+  </header>
+
+  <!-- STAT HERO ROW -->
+  <section class="stat-row">
+    <div class="stat" data-drawer="users">
+      <div class="stat-head">
+        <div class="stat-icon">👥</div>
+        <div class="stat-delta">+26 ↑</div>
+      </div>
+      <div class="stat-value">1,502</div>
+      <div class="stat-label">Total Users</div>
+      <div class="stat-sub">▌▌▌▌▌▌▌▌░░ 78% PSS verified</div>
+    </div>
+
+    <div class="stat success" data-drawer="providers">
+      <div class="stat-head">
+        <div class="stat-icon">🔧</div>
+        <div class="stat-delta">+9 ↑</div>
+      </div>
+      <div class="stat-value">382</div>
+      <div class="stat-label">Service Providers</div>
+      <div class="stat-sub">▌▌▌▌▌▌▌░░░ 64% CRB certified</div>
+    </div>
+
+    <div class="stat warn" data-drawer="apps">
+      <div class="stat-head">
+        <div class="stat-icon">📝</div>
+        <div class="stat-delta down">−4 ↓</div>
+      </div>
+      <div class="stat-value">63</div>
+      <div class="stat-label">Pending Applications</div>
+      <div class="stat-sub">▌▌▌▌░░░░░░ SLA avg 18h</div>
+    </div>
+
+    <div class="stat critical" data-drawer="upguard">
+      <div class="stat-head">
+        <div class="stat-icon">🚨</div>
+        <div class="stat-delta down">+3 ↑</div>
+      </div>
+      <div class="stat-value">3</div>
+      <div class="stat-label">Up-Guard Alerts</div>
+      <div class="stat-sub">▌▌▌▌▌▌▌▌▌░ Action required</div>
+    </div>
+  </section>
+
+  <!-- ROW 2: GROWTH CHART + UP-GUARD FEED -->
+  <section class="grid g-2-1">
+    <div class="card chart-card">
+      <div class="card-head">
+        <h3>Trust Stack Growth</h3>
+        <span class="sub">PSS vs CRB verification rate</span>
+        <div class="chart-range">
+          <button>1W</button>
+          <button class="active">1M</button>
+          <button>6M</button>
+          <button>1Y</button>
+        </div>
+      </div>
+      <svg class="chart-svg" viewBox="0 0 720 240" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="gPss" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#7B6EF6" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#7B6EF6" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="gCrb" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#2BBFA0" stop-opacity=".5"/>
+            <stop offset="100%" stop-color="#2BBFA0" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid lines -->
+        <g stroke="rgba(255,255,255,0.05)" stroke-dasharray="3 4">
+          <line x1="0" y1="40" x2="720" y2="40"/>
+          <line x1="0" y1="90" x2="720" y2="90"/>
+          <line x1="0" y1="140" x2="720" y2="140"/>
+          <line x1="0" y1="190" x2="720" y2="190"/>
+        </g>
+        <!-- PSS area -->
+        <path d="M0,170 L60,155 L120,142 L180,130 L240,115 L300,110 L360,90 L420,85 L480,72 L540,60 L600,48 L660,42 L720,35 L720,240 L0,240 Z"
+              fill="url(#gPss)"/>
+        <path d="M0,170 L60,155 L120,142 L180,130 L240,115 L300,110 L360,90 L420,85 L480,72 L540,60 L600,48 L660,42 L720,35"
+              fill="none" stroke="#7B6EF6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- CRB area -->
+        <path d="M0,195 L60,188 L120,175 L180,168 L240,160 L300,150 L360,138 L420,128 L480,116 L540,110 L600,98 L660,88 L720,80 L720,240 L0,240 Z"
+              fill="url(#gCrb)"/>
+        <path d="M0,195 L60,188 L120,175 L180,168 L240,160 L300,150 L360,138 L420,128 L480,116 L540,110 L600,98 L660,88 L720,80"
+              fill="none" stroke="#2BBFA0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- X labels -->
+        <g fill="#555A78" font-family="DM Sans" font-size="10" text-anchor="middle">
+          <text x="60"  y="232">Wk1</text>
+          <text x="180" y="232">Wk2</text>
+          <text x="300" y="232">Wk3</text>
+          <text x="420" y="232">Wk4</text>
+          <text x="540" y="232">Wk5</text>
+          <text x="660" y="232">Wk6</text>
+        </g>
+      </svg>
+      <div class="chart-legend">
+        <span class="lg-pss">PSS Verified · 1,171</span>
+        <span class="lg-crb">CRB Certified · 846</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Up-Guard Live Feed</h3>
+        <span class="sub">Fraud detection</span>
+        <a class="action" href="#">View all →</a>
+      </div>
+      <div class="feed">
+        <div class="alert critical" data-drawer="upguard">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>10× earning spike detected</strong>
+            <p>Seller <em>asif.k@ehb</em> earned 12,400 EHBGC in 2h vs 30d avg 1,100. Signal confidence 94%.</p>
+            <div class="alert-meta">Franchise: LHR-03 · 4 min ago</div>
+          </div>
+        </div>
+        <div class="alert critical">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>Device fingerprint collision</strong>
+            <p>3 separate accounts ("peru_s", "saad_r", "rayan_t") operating from same device ID across 2 cities.</p>
+            <div class="alert-meta">PSS flag · 17 min ago</div>
+          </div>
+        </div>
+        <div class="alert warn">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>Wallet velocity anomaly</strong>
+            <p>Round-trip loop: 14 transfers of 500 EHBGC between 3 wallets in 22 minutes.</p>
+            <div class="alert-meta">Auto-frozen · 38 min ago</div>
+          </div>
+        </div>
+        <div class="alert warn">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>Duplicate CRB proof</strong>
+            <p>Identical repair-demo video uploaded by 2 sellers. Metadata confirms reuse.</p>
+            <div class="alert-meta">Pending review · 1h ago</div>
+          </div>
+        </div>
+        <div class="alert info">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>STL upgrade request</strong>
+            <p><em>adeel.furniture</em> qualifies for L7 PRO — awaiting DMO officer confirmation.</p>
+            <div class="alert-meta">Normal path · 2h ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROW 3: STL LADDER + REVENUE DONUT + TRUST CHAIN -->
+  <section class="grid g-1-1-1">
+
+    <div class="card">
+      <div class="card-head">
+        <h3>STL Ladder</h3>
+        <span class="sub">L1 → L10</span>
+      </div>
+      <div class="stl-ladder">
+        <div class="stl-row stl-1"><div class="stl-badge">L1</div><div class="stl-name"><strong>FREE</strong><span>0 lock</span></div><div class="stl-count">348<span>users</span></div></div>
+        <div class="stl-row stl-2"><div class="stl-badge">L2</div><div class="stl-name"><strong>BASIC</strong><span>20 lock</span></div><div class="stl-count">284<span>users</span></div></div>
+        <div class="stl-row stl-3"><div class="stl-badge">L3</div><div class="stl-name"><strong>NORMAL</strong><span>40 lock</span></div><div class="stl-count">312<span>users</span></div></div>
+        <div class="stl-row stl-4"><div class="stl-badge">L4</div><div class="stl-name"><strong>STANDARD</strong><span>100 lock</span></div><div class="stl-count">201<span>users</span></div></div>
+        <div class="stl-row stl-5"><div class="stl-badge">L5</div><div class="stl-name"><strong>ADVANCED</strong><span>200 lock</span></div><div class="stl-count">156<span>users</span></div></div>
+        <div class="stl-row stl-6"><div class="stl-badge">L6</div><div class="stl-name"><strong>HIGH</strong><span>400 lock</span></div><div class="stl-count">104<span>users</span></div></div>
+        <div class="stl-row stl-7"><div class="stl-badge">L7</div><div class="stl-name"><strong>PRO</strong><span>800 lock</span></div><div class="stl-count">58<span>users</span></div></div>
+        <div class="stl-row stl-8"><div class="stl-badge">L8</div><div class="stl-name"><strong>VIP</strong><span>2000 lock</span></div><div class="stl-count">27<span>users</span></div></div>
+        <div class="stl-row stl-9"><div class="stl-badge">L9</div><div class="stl-name"><strong>ELITE</strong><span>4000 lock</span></div><div class="stl-count">9<span>users</span></div></div>
+        <div class="stl-row stl-10"><div class="stl-badge">L10</div><div class="stl-name"><strong>SUPREME</strong><span>10 000+ lock</span></div><div class="stl-count">3<span>users</span></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Revenue Split</h3>
+        <span class="sub">Last 7 days · $42,180</span>
+      </div>
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg viewBox="0 0 160 160" width="150" height="150">
+            <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="22"/>
+            <!-- Seller 70% -->
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#7B6EF6" stroke-width="22"
+                    stroke-dasharray="263.9 377" transform="rotate(-90 80 80)"/>
+            <!-- Rider 10% -->
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#2BBFA0" stroke-width="22"
+                    stroke-dasharray="37.7 377" stroke-dashoffset="-263.9" transform="rotate(-90 80 80)"/>
+            <!-- Franchise 10% -->
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#F0A030" stroke-width="22"
+                    stroke-dasharray="37.7 377" stroke-dashoffset="-301.6" transform="rotate(-90 80 80)"/>
+            <!-- Platform 10% -->
+            <circle cx="80" cy="80" r="60" fill="none" stroke="#38C878" stroke-width="22"
+                    stroke-dasharray="37.7 377" stroke-dashoffset="-339.3" transform="rotate(-90 80 80)"/>
+          </svg>
+          <div class="donut-center"><strong>$42.1K</strong><span>Net volume</span></div>
+        </div>
+        <div class="donut-legend">
+          <div class="donut-legend-row"><div class="swatch" style="background:#7B6EF6"></div><strong>Seller</strong><span>70%</span></div>
+          <div class="donut-legend-row"><div class="swatch" style="background:#2BBFA0"></div><strong>Rider</strong><span>10%</span></div>
+          <div class="donut-legend-row"><div class="swatch" style="background:#F0A030"></div><strong>Franchise</strong><span>10%</span></div>
+          <div class="donut-legend-row"><div class="swatch" style="background:#38C878"></div><strong>Platform</strong><span>10%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card trust-chain">
+      <div class="chain-title">
+        <div class="icn-lg">🛡️</div>
+        <div>
+          <h3>STL Anti-Fraud Chain</h3>
+          <p>MIN rule live validator</p>
+        </div>
+      </div>
+      <div class="chain-rows">
+        <div class="chain-row"><div class="chain-layer">Product</div><div class="chain-name">Smart Home Kit</div><div class="chain-level">L7</div></div>
+        <div class="chain-row"><div class="chain-layer">Seller</div><div class="chain-name">asif.k · Lahore</div><div class="chain-level">L6</div></div>
+        <div class="chain-row weak"><div class="chain-layer">Company</div><div class="chain-name">BrightSky Ltd.</div><div class="chain-level">L4</div></div>
+        <div class="chain-row"><div class="chain-layer">Owner</div><div class="chain-name">M. Adeel</div><div class="chain-level">L6</div></div>
+      </div>
+      <div class="chain-final">
+        <strong>Final STL = MIN(chain)</strong>
+        <span>L4 · STANDARD</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ROW 4: ACTIVITY FEED + PENDING APPS -->
+  <section class="grid g-3-2">
+    <div class="card">
+      <div class="card-head">
+        <h3>Recent Activity</h3>
+        <span class="sub">Cross-module</span>
+        <a class="action" href="#">Full audit log →</a>
+      </div>
+      <div class="activity">
+        <div class="act t-teal"><div class="act-icon">✅</div><div class="act-body"><strong>PSS Fully Verified — Ayesha Malik</strong><p>Face match 98% · Address proof approved · STL eligibility raised to L3.</p><div class="act-time">• 2 min ago · franchise LHR-02</div></div></div>
+        <div class="act"><div class="act-icon">💎</div><div class="act-body"><strong>STL upgrade — adeel.furniture → L7 PRO</strong><p>CRB advanced exam passed, coin lock 820 EHBGC, complaints 0 in 90d.</p><div class="act-time">• 14 min ago · auto-approved</div></div></div>
+        <div class="act t-red"><div class="act-icon">🚨</div><div class="act-body"><strong>Wallet frozen — saad_r (Up-Guard)</strong><p>Round-trip loop detected. Pending earnings held. Awaiting L8 officer review.</p><div class="act-time">• 38 min ago · Up-Guard auto</div></div></div>
+        <div class="act t-amber"><div class="act-icon">📜</div><div class="act-body"><strong>CRB refill missed — rayan_tech</strong><p>Q2 refill window closed without submission. Downgrade queued (L5 → L4) in 24h.</p><div class="act-time">• 52 min ago · CRB scheduler</div></div></div>
+        <div class="act"><div class="act-icon">🏢</div><div class="act-body"><strong>New company registered — NovaParts Pvt.</strong><p>Bulk seller · 47 SKUs · pending CRB physical verification from LHR-03.</p><div class="act-time">• 1h ago · GoSellr</div></div></div>
+        <div class="act t-teal"><div class="act-icon">💰</div><div class="act-body"><strong>Revenue split distributed — order #48201</strong><p>$182 → seller $127.40 · rider $18.20 · franchise $18.20 · platform $18.20.</p><div class="act-time">• 1h ago · on-chain</div></div></div>
+        <div class="act"><div class="act-icon">⛓️</div><div class="act-body"><strong>Blockchain anchor batch #1149</strong><p>423 STL deltas + 68 CRB certs hashed to BSC block 38,291,044.</p><div class="act-time">• 2h ago · Merkle batch</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h3>Pending Applications</h3>
+        <span class="sub">SLA window</span>
+        <a class="action" href="#">Review all →</a>
+      </div>
+      <div class="feed">
+        <div class="alert info">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>Al Dewrien · Company license</strong>
+            <p>GoSellr bulk seller · docs complete · awaiting CRB physical.</p>
+            <div class="alert-meta">SLA 14h left</div>
+          </div>
+        </div>
+        <div class="alert info">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>Dew Jast · Service provider cert</strong>
+            <p>Electrician · passed theory, practical pending.</p>
+            <div class="alert-meta">SLA 22h left</div>
+          </div>
+        </div>
+        <div class="alert warn">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>Ruby Smith · Franchise (City)</strong>
+            <p>Lock 18k EHBGC, need 20k min. Complaint rate on record.</p>
+            <div class="alert-meta">SLA 4h left</div>
+          </div>
+        </div>
+        <div class="alert info">
+          <div class="alert-dot"></div>
+          <div class="alert-body">
+            <strong>prithatn.studios · Co. license</strong>
+            <p>Media content company · awaiting EHB Tube reviewer.</p>
+            <div class="alert-meta">SLA 31h left</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18 DMO MODULES BENTO GRID -->
+  <section>
+    <div class="card-head" style="margin-bottom:14px">
+      <h3 style="font-size:14px">18 DMO Modules</h3>
+      <span class="sub">Quick launch</span>
+      <a class="action" href="#">Customize layout →</a>
+    </div>
+    <div class="modules">
+      <div class="module"><div class="mod-head"><div class="mod-icon">📊</div><span class="mod-chip">LIVE</span></div><h4>Dashboard</h4><p>Real-time control pulse across all systems.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">💎</div><span class="mod-chip">LIVE</span></div><h4>STL Management</h4><p>L1–L10 ladder, upgrade queue, MIN-chain audits.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🛡️</div><span class="mod-chip warn">14 PEND</span></div><h4>PSS Monitoring</h4><p>KYC, liveness, complaints, trust score inputs.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">📋</div><span class="mod-chip">LIVE</span></div><h4>CRB Monitoring</h4><p>Exams, verification, refill adherence.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">⚡</div><span class="mod-chip">LIVE</span></div><h4>Activity Engine</h4><p>Behaviour scoring, streaks, category signals.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🎯</div><span class="mod-chip">LIVE</span></div><h4>Task System</h4><p>Auto-assigned tasks to keep sellers active.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">💰</div><span class="mod-chip">LIVE</span></div><h4>Earnings Engine</h4><p>Pending → approved ledger, revenue split.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🚨</div><span class="mod-chip crit">3 ALERT</span></div><h4>Up-Guard</h4><p>Fraud detection (spike / loop / fingerprint).</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🤖</div><span class="mod-chip">LIVE</span></div><h4>AI Assistant</h4><p>Decision engine across 6 AI models.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">⛓️</div><span class="mod-chip">BSC</span></div><h4>Blockchain Control</h4><p>Anchor batches, Merkle roots, BSC bridge.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🔒</div><span class="mod-chip">LIVE</span></div><h4>Wallet Control</h4><p>Coin lock ladder, freeze / thaw, custody.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">📝</div><span class="mod-chip warn">63 PEND</span></div><h4>Applications / Approvals</h4><p>License, cert, franchise queue with SLA.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">📣</div><span class="mod-chip">LIVE</span></div><h4>Complaints</h4><p>Tier 1–6 routing, resolution SLA, false-report log.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🔁</div><span class="mod-chip">LIVE</span></div><h4>Refill Management</h4><p>Quarterly cadence, auto-downgrade queue.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🌐</div><span class="mod-chip">LIVE</span></div><h4>Franchise Control</h4><p>Country / City / State / Online tiers.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">📈</div><span class="mod-chip">LIVE</span></div><h4>Analytics</h4><p>Cohorts, retention, trust-chain breakdown.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">🔔</div><span class="mod-chip">LIVE</span></div><h4>Notifications</h4><p>User + officer alerts, penalty dispatch.</p></div>
+      <div class="module"><div class="mod-head"><div class="mod-icon">⚙️</div><span class="mod-chip">LIVE</span></div><h4>Settings</h4><p>RBAC, kill-switches, policy editor.</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span class="foot-dot"></span>
+    EHB Technologies (Pvt.) Ltd. · DMO v1.2 prototype · dark glass · 10-level STL · MIN-chain validator · built from <code>design-system/EHB-UIUX-SYSTEM.md</code>
+  </footer>
+
+</main>
+
+<!-- ===================== DRAWER ===================== -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="d-icon">🚨</div>
+    <div>
+      <h2 id="drawer-title">Up-Guard Alert</h2>
+      <p id="drawer-sub">Fraud detection · live feed</p>
+    </div>
+    <button class="drawer-close" id="drawer-close">✕</button>
+  </div>
+  <div class="drawer-body">
+    <h4>Signal summary</h4>
+    <ul>
+      <li>Earning spike: 12,400 EHBGC in 2 h vs 30-day avg 1,100</li>
+      <li>Signal confidence: 94%</li>
+      <li>Seller: asif.k@ehb · L6 HIGH · Lahore</li>
+      <li>Franchise coverage: LHR-03</li>
+    </ul>
+    <h4>Recommended actions</h4>
+    <ul>
+      <li>Freeze pending earnings (auto-queued)</li>
+      <li>Request multimedia proof for last 5 orders</li>
+      <li>Escalate to CRB physical re-verification</li>
+      <li>Notify franchise officer LHR-03</li>
+    </ul>
+    <h4>Impact on STL chain</h4>
+    <ul>
+      <li>Seller STL L6 → risk flag (cap at L5 until cleared)</li>
+      <li>Company chain MIN re-computed hourly</li>
+    </ul>
+  </div>
+</aside>
+
+<script>
+/* ---------- Simple interactivity ---------- */
+const overlay = document.getElementById('drawer-overlay');
+const drawer  = document.getElementById('drawer');
+const close   = document.getElementById('drawer-close');
+document.querySelectorAll('[data-drawer], .alert.critical, .chain-row.weak').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+  });
+});
+close.addEventListener('click', closeDrawer);
+overlay.addEventListener('click', closeDrawer);
+function closeDrawer(){drawer.classList.remove('open');overlay.classList.remove('open')}
+document.addEventListener('keydown', e=>{if(e.key==='Escape')closeDrawer()});
+
+/* Chart-range pill toggle */
+document.querySelectorAll('.chart-range button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('.chart-range button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+/* Animate stat values on load */
+document.querySelectorAll('.stat-value').forEach(el=>{
+  const target = parseInt(el.textContent.replace(/,/g,''),10);
+  if(!target) return;
+  let cur = 0, step = Math.max(1, Math.floor(target/40));
+  const t = setInterval(()=>{
+    cur += step;
+    if(cur >= target){cur = target; clearInterval(t)}
+    el.textContent = cur.toLocaleString();
+  }, 22);
+});
+</script>
+
+</body>
+</html>

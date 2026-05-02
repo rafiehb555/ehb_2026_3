@@ -1,0 +1,78 @@
+# Industry: EFS — EHB Financial Services
+
+> **Status:** Canonical v1.0 · 2026-04-30
+> **Tier:** Tier 1 · **DMO Mode:** CRITICAL · **Min STL to list:** L3 · **Industry Multiplier:** 2.0×
+
+## 1. Description
+
+Payments, financial tools, investments · regulated finance
+
+## 2. Franchise hierarchy (5-tier)
+
+| Tier | Role |
+|---|---|
+| Country | Financial system control |
+| Master | Regional finance hubs |
+| Corporate | Banks / firms |
+| Sub | Agents |
+| Micro | Freelance advisors |
+
+## 3. CRB checklist (industry-specific)
+
+- ID + KYC (universal)
+- Industry-specific license / certification
+- Practical exam (where applicable)
+- Multimedia proof (photo/video)
+- CRITICAL mode = CRITICAL approval depth
+
+## 4. AI prompts (domain)
+
+AI advisors for this industry need:
+- Domain vocabulary
+- Common transaction patterns
+- Industry-specific fraud signals
+- Compliance prompts
+- Pricing intelligence
+
+## 5. UI fields (industry-specific)
+
+Standard fields PLUS:
+- Industry-specific listing fields
+- Required certifications display
+- Industry-specific filters in search
+
+## 6. Compliance (per country)
+
+Country-specific rules apply. See `9-legal/KYC-LAWS.md` + `9-legal/FINANCIAL-COMPLIANCE.md`.
+
+## 7. Listing rules
+
+- Min STL to list: L3
+- EHBGC lock: per industry multiplier 2.0×
+- DMO mode: CRITICAL
+- Per industry: see `4-flows/INDUSTRY-RULES.md`
+
+## 8. Earnings model
+
+- Order commission split (70/10/10/10) per universal rule
+- Per-tier franchise share per `11-franchise/FRANCHISE-EARNINGS.md`
+- Industry-specific verification fees + premiums
+
+## 9. Common complaints + handling
+
+Per universal dispute flow (`4-flows/DISPUTE-FLOW.md`).
+Industry-specific severity + handling per local custom.
+
+## 10. Cross-references
+
+- Industries master: `3-departments/Industries.md`
+- Industry mapping: `4-flows/INDUSTRY-MAPPING.md`
+- Industry rules: `4-flows/INDUSTRY-RULES.md`
+- Industry × Franchise map: `11-franchise/EHB-INDUSTRY-FRANCHISE-MAP.md`
+- Core Engine: `_settings/EHB-CORE-ENGINE.md`
+
+## Changelog
+
+| Date | Version | Change |
+|---|---|---|
+| 2026-04-30 | 1.0 | Initial industry sub-spec |

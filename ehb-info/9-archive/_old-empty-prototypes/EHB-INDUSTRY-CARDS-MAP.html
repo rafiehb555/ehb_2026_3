@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHB Industry Cards Map + GoSellr Product Card</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: #0C0E1A; color: #F3F4F6; min-height: 100vh; padding: 30px 20px; }
+
+  .page-title { text-align: center; font-size: 26px; font-weight: 800; background: linear-gradient(135deg, #7B6EF6, #2BBFA0, #F0A030); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+  .page-sub { text-align: center; color: #9CA3AF; font-size: 13px; margin-bottom: 30px; }
+
+  /* === TABS === */
+  .tab-row { display: flex; gap: 4px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+  .tab-btn { padding: 8px 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: #9CA3AF; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .tab-btn:hover, .tab-btn.active { background: rgba(123,110,246,0.15); border-color: rgba(123,110,246,0.4); color: #A098F8; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* === SECTION HEADERS === */
+  .section-header { display: flex; align-items: center; gap: 12px; margin: 30px 0 16px; padding: 12px 16px; background: rgba(123,110,246,0.06); border: 1px solid rgba(123,110,246,0.15); border-radius: 12px; }
+  .section-icon { font-size: 28px; }
+  .section-info h3 { font-size: 16px; font-weight: 700; color: #A098F8; }
+  .section-info p { font-size: 11px; color: #6B7280; margin-top: 2px; }
+  .section-badge { margin-left: auto; padding: 3px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; background: rgba(43,191,160,0.12); color: #2BBFA0; border: 1px solid rgba(43,191,160,0.2); }
+
+  /* === INDUSTRY TAG LIST === */
+  .industry-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+  .ind-tag { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 5px; display: flex; align-items: center; gap: 4px; }
+
+  /* === CARD GRID === */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; max-width: 1500px; margin: 0 auto; }
+
+  /* === BASE STL CARD === */
+  .stl-card { position: relative; background: #13162A; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+  .stl-card:hover { border-color: rgba(123,110,246,0.35); box-shadow: 0 8px 32px rgba(123,110,246,0.12); transform: translateY(-2px); }
+
+  /* Trust strip */
+  .trust-strip { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 5px 8px; border-radius: 7px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); }
+  .trust-strip .ts-label { font-size: 9px; font-weight: 600; color: #6B7280; text-transform: uppercase; letter-spacing: 0.4px; white-space: nowrap; }
+  .trust-strip .ts-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .trust-strip .ts-fill { height: 100%; border-radius: 2px; }
+  .trust-strip .ts-word { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  /* Trust word colors */
+  .ts-word.weak { background: rgba(240,88,88,0.12); color: #F05858; }
+  .ts-word.basic { background: rgba(240,160,48,0.12); color: #F0A030; }
+  .ts-word.moderate { background: rgba(41,171,226,0.12); color: #29ABE2; }
+  .ts-word.trusted { background: rgba(43,191,160,0.12); color: #2BBFA0; }
+  .ts-word.strong { background: rgba(123,110,246,0.12); color: #A098F8; }
+  .ts-word.excellent { background: rgba(56,200,120,0.12); color: #38C878; }
+  .ts-fill.weak { background: #F05858; } .ts-fill.basic { background: #F0A030; }
+  .ts-fill.moderate { background: #29ABE2; } .ts-fill.trusted { background: #2BBFA0; }
+  .ts-fill.strong { background: #7B6EF6; } .ts-fill.excellent { background: #38C878; }
+
+  /* Card top */
+  .card-top { display: flex; align-items: center; gap: 12px; }
+  .card-avatar { width: 46px; height: 46px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; position: relative; }
+  .card-avatar .v-check { position: absolute; bottom: -2px; right: -2px; width: 16px; height: 16px; background: #2BBFA0; border-radius: 50%; border: 2px solid #13162A; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+  .card-info { flex: 1; min-width: 0; }
+  .card-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-role { font-size: 11px; color: #9CA3AF; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+  .role-tag { font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+
+  /* Ring badge */
+  .ring-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .ring-box { position: relative; width: 72px; height: 72px; }
+  .ring-svg { width: 72px; height: 72px; transform: rotate(-90deg); }
+  @keyframes pulse { 0%,100% { filter: drop-shadow(0 0 4px var(--glow)); } 50% { filter: drop-shadow(0 0 10px var(--glow)); } }
+  .ring-svg { animation: pulse 3s ease-in-out infinite; }
+  .ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 3; }
+  .ring-fg { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 195; stroke-dashoffset: 195; transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1); }
+  .ring-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-inner .ri-icon { font-size: 12px; }
+  .ring-inner .ri-level { font-size: 16px; font-weight: 800; }
+  .ring-inner .ri-label { font-size: 5.5px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.3px; }
+  .ring-inner .ri-pct { font-size: 7px; font-weight: 600; color: rgba(255,255,255,0.3); margin-top: 1px; }
+  .ring-tier { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: #9CA3AF; margin-top: 3px; }
+
+  /* Mini dims */
+  .mini-dims { display: flex; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+  .md-item { flex: 1; text-align: center; }
+  .md-label { font-size: 9px; font-weight: 600; margin-bottom: 3px; }
+  .md-label.pss { color: #29ABE2; } .md-label.crb { color: #F0A030; } .md-label.dmo { color: #38C878; }
+  .md-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .md-fill { height: 100%; border-radius: 2px; }
+  .md-fill.pss { background: linear-gradient(90deg, #1a4a6a, #29ABE2); }
+  .md-fill.crb { background: linear-gradient(90deg, #5a3a0a, #F0A030); }
+  .md-fill.dmo { background: linear-gradient(90deg, #0a3a1a, #38C878); }
+  .md-val { font-size: 9px; color: #9CA3AF; margin-top: 2px; }
+
+  /* Meta strip */
+  .meta-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 4px; margin-top: 8px; padding: 8px 6px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 8px; }
+  .meta-item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .mi-icon { font-size: 12px; }
+  .mi-val { font-size: 10px; font-weight: 700; }
+  .mi-label { font-size: 7px; font-weight: 600; color: #6B7280; text-transform: uppercase; }
+  .stars { display: flex; gap: 1px; font-size: 9px; }
+  .stars .on { color: #F0A030; } .stars .off { color: #374151; }
+  .exam-chip { font-size: 9px; font-weight: 700; display: flex; gap: 2px; align-items: center; }
+  .exam-chip .cnt { color: #A098F8; }
+  .exam-chip .grade { padding: 1px 4px; border-radius: 3px; font-size: 8px; font-weight: 800; }
+  .grade.a-plus { background: rgba(56,200,120,0.15); color: #38C878; }
+  .grade.a { background: rgba(43,191,160,0.15); color: #2BBFA0; }
+  .grade.b { background: rgba(240,160,48,0.15); color: #F0A030; }
+  .refill-v { font-size: 10px; font-weight: 700; color: #2BBFA0; }
+
+  /* Quick row */
+  .quick-row { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+  .q-btn { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 5px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: #9CA3AF; display: flex; align-items: center; gap: 3px; }
+  .q-btn .ql { font-weight: 800; }
+  .ql.high { color: #2BBFA0; } .ql.mid { color: #F0A030; } .ql.low { color: #F05858; }
+
+  /* === INDUSTRY-SPECIFIC FIELD (extra row) === */
+  .field-row { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+  .field-chip { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 5px; display: flex; align-items: center; gap: 3px; }
+
+  /* === DIFFERENCE CALLOUT === */
+  .diff-callout { margin-top: 8px; padding: 6px 10px; border-radius: 6px; font-size: 10px; display: flex; align-items: center; gap: 6px; }
+  .diff-callout .diff-icon { font-size: 14px; }
+  .diff-callout .diff-text { color: #9CA3AF; line-height: 1.4; }
+  .diff-callout .diff-text strong { color: #F3F4F6; }
+
+  /* Color palettes per industry */
+  .ind-ecom { background: rgba(123,110,246,0.12); color: #A098F8; border: 1px solid rgba(123,110,246,0.2); }
+  .ind-legal { background: rgba(240,88,88,0.12); color: #F05858; border: 1px solid rgba(240,88,88,0.2); }
+  .ind-medical { background: rgba(41,171,226,0.12); color: #29ABE2; border: 1px solid rgba(41,171,226,0.2); }
+  .ind-edu { background: rgba(56,200,120,0.12); color: #38C878; border: 1px solid rgba(56,200,120,0.2); }
+  .ind-travel { background: rgba(240,160,48,0.12); color: #F0A030; border: 1px solid rgba(240,160,48,0.2); }
+  .ind-food { background: rgba(240,160,48,0.12); color: #F0A030; border: 1px solid rgba(240,160,48,0.2); }
+  .ind-realestate { background: rgba(43,191,160,0.12); color: #2BBFA0; border: 1px solid rgba(43,191,160,0.2); }
+  .ind-finance { background: rgba(123,110,246,0.12); color: #A098F8; border: 1px solid rgba(123,110,246,0.2); }
+  .ind-logistics { background: rgba(240,160,48,0.12); color: #F0A030; border: 1px solid rgba(240,160,48,0.2); }
+  .ind-digital { background: rgba(41,171,226,0.12); color: #29ABE2; border: 1px solid rgba(41,171,226,0.2); }
+  .ind-govt { background: rgba(240,88,88,0.12); color: #F05858; border: 1px solid rgba(240,88,88,0.2); }
+  .ind-venue { background: rgba(160,152,248,0.12); color: #A098F8; border: 1px solid rgba(160,152,248,0.2); }
+  .ind-industrial { background: rgba(107,114,128,0.15); color: #9CA3AF; border: 1px solid rgba(107,114,128,0.2); }
+
+  /* === PRODUCT CARD === */
+  .product-card { background: #13162A; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.3s; }
+  .product-card:hover { border-color: rgba(123,110,246,0.35); box-shadow: 0 8px 32px rgba(123,110,246,0.12); transform: translateY(-2px); }
+  .product-img { width: 100%; height: 180px; background: linear-gradient(135deg, #1A1D33, #13162A); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative; }
+  .product-img .p-stl-badge { position: absolute; top: 10px; right: 10px; display: flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; }
+  .product-img .p-stl-badge.high { background: rgba(43,191,160,0.2); border: 1px solid rgba(43,191,160,0.3); color: #2BBFA0; }
+  .product-img .p-stl-badge.mid { background: rgba(240,160,48,0.2); border: 1px solid rgba(240,160,48,0.3); color: #F0A030; }
+  .product-img .p-stl-badge.low { background: rgba(240,88,88,0.2); border: 1px solid rgba(240,88,88,0.3); color: #F05858; }
+  .product-img .p-verified { position: absolute; top: 10px; left: 10px; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; background: rgba(43,191,160,0.2); color: #2BBFA0; border: 1px solid rgba(43,191,160,0.3); display: flex; align-items: center; gap: 3px; }
+  .product-body { padding: 14px 16px; }
+  .product-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .product-price { font-size: 18px; font-weight: 800; color: #2BBFA0; margin-bottom: 8px; }
+  .product-price .old-price { font-size: 12px; color: #6B7280; text-decoration: line-through; margin-left: 6px; font-weight: 400; }
+  .product-seller-strip { display: flex; align-items: center; gap: 8px; padding: 8px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 8px; }
+  .product-seller-strip .ps-avatar { width: 32px; height: 32px; border-radius: 8px; background: rgba(123,110,246,0.15); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .product-seller-strip .ps-info { flex: 1; }
+  .product-seller-strip .ps-name { font-size: 11px; font-weight: 600; }
+  .product-seller-strip .ps-stl { font-size: 9px; color: #9CA3AF; }
+  .product-seller-strip .ps-stl span { font-weight: 700; color: #2BBFA0; }
+  .product-meta-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+  .pm-chip { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 5px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); color: #9CA3AF; display: flex; align-items: center; gap: 3px; }
+  .pm-chip .pm-v { font-weight: 800; }
+  /* MIN Chain */
+  .min-chain { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: rgba(123,110,246,0.05); border: 1px solid rgba(123,110,246,0.12); border-radius: 8px; margin-top: 8px; }
+  .min-node { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .min-node .mn-label { font-size: 8px; color: #6B7280; }
+  .min-node .mn-level { font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 5px; }
+  .min-node .mn-level.high { background: rgba(43,191,160,0.12); color: #2BBFA0; }
+  .min-node .mn-level.mid { background: rgba(240,160,48,0.12); color: #F0A030; }
+  .min-node .mn-level.low { background: rgba(240,88,88,0.12); color: #F05858; }
+  .min-arrow { color: #6B7280; font-size: 14px; }
+  .min-result { margin-left: auto; display: flex; flex-direction: column; align-items: center; }
+  .min-result .mr-eq { font-size: 8px; color: #6B7280; }
+  .min-result .mr-final { font-size: 14px; font-weight: 800; color: #2BBFA0; }
+
+  /* === GUARANTEE + REPLACEMENT STRIP === */
+  .guarantee-strip { display: flex; gap: 6px; margin-top: 8px; margin-bottom: 8px; }
+  .g-chip { flex: 1; display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 8px; }
+  .g-chip .g-icon { font-size: 18px; }
+  .g-chip .g-info { display: flex; flex-direction: column; }
+  .g-chip .g-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+  .g-chip .g-time { font-size: 13px; font-weight: 800; }
+  .g-chip.money-back { background: rgba(56,200,120,0.08); border: 1px solid rgba(56,200,120,0.2); }
+  .g-chip.money-back .g-title { color: #38C878; }
+  .g-chip.money-back .g-time { color: #38C878; }
+  .g-chip.replacement { background: rgba(41,171,226,0.08); border: 1px solid rgba(41,171,226,0.2); }
+  .g-chip.replacement .g-title { color: #29ABE2; }
+  .g-chip.replacement .g-time { color: #29ABE2; }
+  .g-chip.no-guarantee { background: rgba(240,88,88,0.06); border: 1px solid rgba(240,88,88,0.15); }
+  .g-chip.no-guarantee .g-title { color: #F05858; }
+  .g-chip.no-guarantee .g-time { color: #F05858; font-size: 10px; }
+
+  /* === PRODUCT PSS/CRB/DMO BARS === */
+  .product-trust-bars { display: flex; gap: 6px; margin-top: 8px; padding: 8px 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; }
+  .ptb-item { flex: 1; }
+  .ptb-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .ptb-label { font-size: 9px; font-weight: 700; }
+  .ptb-label.pss { color: #29ABE2; } .ptb-label.crb { color: #F0A030; } .ptb-label.dmo { color: #38C878; }
+  .ptb-val { font-size: 9px; font-weight: 800; color: #F3F4F6; }
+  .ptb-bar { width: 100%; height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
+  .ptb-fill { height: 100%; border-radius: 2px; }
+  .ptb-fill.pss { background: linear-gradient(90deg, #1a4a6a, #29ABE2); }
+  .ptb-fill.crb { background: linear-gradient(90deg, #5a3a0a, #F0A030); }
+  .ptb-fill.dmo { background: linear-gradient(90deg, #0a3a1a, #38C878); }
+
+  /* === POPUP === */
+  .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; justify-content: center; align-items: flex-start; padding: 40px 20px; overflow-y: auto; }
+  .popup-overlay.active { display: flex; }
+  .popup-box { background: #13162A; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 600px; padding: 24px; }
+  .popup-close { float: right; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #9CA3AF; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .popup-close:hover { background: rgba(240,88,88,0.1); color: #F05858; }
+  .popup-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .popup-section h4 { font-size: 12px; font-weight: 700; color: #A098F8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* HIDDEN SVG DEFS */
+  .svg-defs { position: absolute; width: 0; height: 0; }
+</style>
+</head>
+<body>
+
+<svg class="svg-defs">
+  <defs>
+    <linearGradient id="g-purple" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7B6EF6"/><stop offset="100%" stop-color="#F0A030"/></linearGradient>
+    <linearGradient id="g-blue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#29ABE2"/><stop offset="100%" stop-color="#7B6EF6"/></linearGradient>
+    <linearGradient id="g-teal" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2BBFA0"/><stop offset="100%" stop-color="#7B6EF6"/></linearGradient>
+    <linearGradient id="g-amber" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F0A030"/><stop offset="100%" stop-color="#F05858"/></linearGradient>
+    <linearGradient id="g-red" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F05858"/><stop offset="100%" stop-color="#7B6EF6"/></linearGradient>
+    <linearGradient id="g-green" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#38C878"/><stop offset="100%" stop-color="#2BBFA0"/></linearGradient>
+    <linearGradient id="g-gray" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4B5563"/><stop offset="100%" stop-color="#6B7280"/></linearGradient>
+  </defs>
+</svg>
+
+<div class="page-title">EHB 32 Industries — Card Type Map + GoSellr Product Card</div>
+<div class="page-sub">Har industry ka card kaisa dikhega — same groups + unique differences + Product STL card</div>
+
+<div class="tab-row">
+  <div class="tab-btn active" onclick="showTab('groupmap')">📊 Industry Groups</div>
+  <div class="tab-btn" onclick="showTab('product')">📦 GoSellr Product Card</div>
+  <div class="tab-btn" onclick="showTab('differences')">🔄 Key Differences</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 1: INDUSTRY GROUPS                             -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="tab-content active" id="tab-groupmap">
+
+  <!-- GROUP A: Product Sellers -->
+  <div class="section-header">
+    <div class="section-icon">🛍️</div>
+    <div class="section-info">
+      <h3>Group A — Product Sellers (GoSellr Card)</h3>
+      <p>Physical/digital products sell karte hain — same Seller card template</p>
+    </div>
+    <div class="section-badge">8 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-ecom">🛒 E-commerce (GoSellr)</span>
+    <span class="ind-tag ind-food">🍕 Food & Beverage</span>
+    <span class="ind-tag ind-ecom">👗 Fashion</span>
+    <span class="ind-tag ind-ecom">💄 Beauty</span>
+    <span class="ind-tag ind-ecom">🐾 Pets</span>
+    <span class="ind-tag ind-ecom">🎮 Gaming (Products)</span>
+    <span class="ind-tag ind-ecom">🚗 Automotive (Parts)</span>
+    <span class="ind-tag ind-ecom">💻 Technology (Products)</span>
+  </div>
+  <div class="card-grid">
+    <!-- Example: Fashion Seller -->
+    <div class="stl-card">
+      <div class="trust-strip">
+        <span class="ts-label">🔰 Trust</span>
+        <div class="ts-bar"><div class="ts-fill strong" style="width:70%"></div></div>
+        <span class="ts-word strong">Strong</span>
+      </div>
+      <div class="card-top">
+        <div class="card-avatar" style="background:rgba(123,110,246,0.15)">👗<div class="v-check">✓</div></div>
+        <div class="card-info">
+          <div class="card-name">Zara Collection PK</div>
+          <div class="card-role"><span class="role-tag ind-ecom">Fashion Seller</span> Lahore</div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg class="ring-svg" viewBox="0 0 68 68" style="--glow:rgba(123,110,246,0.4)"><circle class="ring-bg" cx="34" cy="34" r="31"/><circle class="ring-fg" cx="34" cy="34" r="31" stroke="url(#g-purple)" data-pct="70"/></svg>
+            <div class="ring-inner"><span class="ri-icon">🛡️</span><span class="ri-level" style="background:linear-gradient(135deg,#7B6EF6,#F0A030);-webkit-background-clip:text;-webkit-text-fill-color:transparent">L7</span><span class="ri-label">EHB-STL-LEVEL</span><span class="ri-pct">70%</span></div>
+          </div>
+          <div class="ring-tier">PRO</div>
+        </div>
+      </div>
+      <div class="mini-dims">
+        <div class="md-item"><div class="md-label pss">PSS</div><div class="md-bar"><div class="md-fill pss" style="width:80%"></div></div><div class="md-val">L8</div></div>
+        <div class="md-item"><div class="md-label crb">CRB</div><div class="md-bar"><div class="md-fill crb" style="width:70%"></div></div><div class="md-val">L7</div></div>
+        <div class="md-item"><div class="md-label dmo">DMO</div><div class="md-bar"><div class="md-fill dmo" style="width:60%"></div></div><div class="md-val">L6</div></div>
+      </div>
+      <div class="meta-strip">
+        <div class="meta-item"><span class="mi-icon">🆔</span><span class="mi-val">EHB-2210</span><span class="mi-label">Rule #</span></div>
+        <div class="meta-item"><span class="mi-icon">⭐</span><div class="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="off">★</span></div><span class="mi-label">4.3</span></div>
+        <div class="meta-item"><span class="mi-icon">🔄</span><span class="refill-v">3x</span><span class="mi-label">Refill</span></div>
+        <div class="meta-item"><span class="mi-icon">📝</span><div class="exam-chip"><span class="cnt">4x</span><span class="grade a-plus">A+</span></div><span class="mi-label">Exam</span></div>
+      </div>
+      <div class="quick-row">
+        <div class="q-btn">📦 Products <span class="ql high">L7</span></div>
+        <div class="q-btn">👤 Personal <span class="ql high">L7</span></div>
+        <div class="q-btn">🏢 Company <span class="ql mid">L5</span></div>
+      </div>
+      <div class="diff-callout" style="background:rgba(123,110,246,0.04);border:1px solid rgba(123,110,246,0.1);border-radius:6px">
+        <span class="diff-icon">📌</span>
+        <span class="diff-text"><strong>Same card for all 8:</strong> Seller card + Products STL + CRB inspection. Only <strong>category tags</strong> and <strong>CRB checklist</strong> change per industry.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROUP B: Professional Service Providers -->
+  <div class="section-header">
+    <div class="section-icon">🩺</div>
+    <div class="section-info">
+      <h3>Group B — Professional Service Providers</h3>
+      <p>Apni field mein service dete hain — CRB + Exam MANDATORY, Wallet Lock required</p>
+    </div>
+    <div class="section-badge">7 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-medical">🩺 Medical (WMS)</span>
+    <span class="ind-tag ind-legal">⚖️ Legal (OLS)</span>
+    <span class="ind-tag ind-edu">🎓 Education (HPS/OBS)</span>
+    <span class="ind-tag ind-finance">💰 Finance (Advisory)</span>
+    <span class="ind-tag ind-digital">💻 Consulting</span>
+    <span class="ind-tag ind-digital">🔧 Technology (Services)</span>
+    <span class="ind-tag ind-medical">🏥 Fitness (Trainers)</span>
+  </div>
+  <div class="card-grid">
+    <!-- Example: Lawyer -->
+    <div class="stl-card">
+      <div class="trust-strip">
+        <span class="ts-label">🔰 Trust</span>
+        <div class="ts-bar"><div class="ts-fill excellent" style="width:80%"></div></div>
+        <span class="ts-word excellent">Excellent</span>
+      </div>
+      <div class="card-top">
+        <div class="card-avatar" style="background:rgba(240,88,88,0.15)">⚖️<div class="v-check">✓</div></div>
+        <div class="card-info">
+          <div class="card-name">Adv. Fatima Noor</div>
+          <div class="card-role"><span class="role-tag ind-legal">Lawyer · OLS</span> Islamabad</div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg class="ring-svg" viewBox="0 0 68 68" style="--glow:rgba(56,200,120,0.4)"><circle class="ring-bg" cx="34" cy="34" r="31"/><circle class="ring-fg" cx="34" cy="34" r="31" stroke="url(#g-green)" data-pct="80"/></svg>
+            <div class="ring-inner"><span class="ri-icon">🛡️</span><span class="ri-level" style="background:linear-gradient(135deg,#38C878,#2BBFA0);-webkit-background-clip:text;-webkit-text-fill-color:transparent">L8</span><span class="ri-label">EHB-STL-LEVEL</span><span class="ri-pct">80%</span></div>
+          </div>
+          <div class="ring-tier">VIP</div>
+        </div>
+      </div>
+      <div class="mini-dims">
+        <div class="md-item"><div class="md-label pss">PSS</div><div class="md-bar"><div class="md-fill pss" style="width:90%"></div></div><div class="md-val">L9</div></div>
+        <div class="md-item"><div class="md-label crb">CRB</div><div class="md-bar"><div class="md-fill crb" style="width:80%"></div></div><div class="md-val">L8</div></div>
+        <div class="md-item"><div class="md-label dmo">DMO</div><div class="md-bar"><div class="md-fill dmo" style="width:80%"></div></div><div class="md-val">L8</div></div>
+      </div>
+      <div class="meta-strip">
+        <div class="meta-item"><span class="mi-icon">🆔</span><span class="mi-val">EHB-0891</span><span class="mi-label">Rule #</span></div>
+        <div class="meta-item"><span class="mi-icon">⭐</span><div class="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span></div><span class="mi-label">4.9</span></div>
+        <div class="meta-item"><span class="mi-icon">🔄</span><span class="refill-v">5x</span><span class="mi-label">Refill</span></div>
+        <div class="meta-item"><span class="mi-icon">📝</span><div class="exam-chip"><span class="cnt">7x</span><span class="grade a-plus">A+</span></div><span class="mi-label">Exam</span></div>
+      </div>
+      <div class="quick-row">
+        <div class="q-btn">⚖️ Cases <span class="ql high">L8</span></div>
+        <div class="q-btn">👤 Personal <span class="ql high">L8</span></div>
+        <div class="q-btn">💰 Lock <span class="ql mid">5K</span></div>
+        <div class="q-btn">📜 License <span class="ql high">Verified</span></div>
+      </div>
+      <div class="diff-callout" style="background:rgba(240,88,88,0.04);border:1px solid rgba(240,88,88,0.1);border-radius:6px">
+        <span class="diff-icon">⚠️</span>
+        <span class="diff-text"><strong>Difference from Group A:</strong> Mandatory <strong>License verification</strong> via CRB, <strong>Wallet Lock required</strong>, 6-month <strong>field exam mandatory</strong>, and extra <strong>"Cases/Services" STL</strong> button instead of Products.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROUP C: Physical Location / Venue -->
+  <div class="section-header">
+    <div class="section-icon">🏨</div>
+    <div class="section-info">
+      <h3>Group C — Physical Location / Venue Providers</h3>
+      <p>Physical jagah offer karte hain — CRB HEAVY (building inspection), location-based</p>
+    </div>
+    <div class="section-badge">7 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-realestate">🏠 Real Estate</span>
+    <span class="ind-tag ind-venue">🏨 Hospitality (Hotels)</span>
+    <span class="ind-tag ind-venue">🏗️ Construction</span>
+    <span class="ind-tag ind-venue">🎭 Entertainment (Venues)</span>
+    <span class="ind-tag ind-venue">🏟️ Sports (Facilities)</span>
+    <span class="ind-tag ind-venue">💒 Weddings</span>
+    <span class="ind-tag ind-venue">🎪 Events</span>
+  </div>
+  <div class="card-grid">
+    <div class="stl-card">
+      <div class="trust-strip">
+        <span class="ts-label">🔰 Trust</span>
+        <div class="ts-bar"><div class="ts-fill trusted" style="width:60%"></div></div>
+        <span class="ts-word trusted">Trusted</span>
+      </div>
+      <div class="card-top">
+        <div class="card-avatar" style="background:rgba(43,191,160,0.15)">🏨<div class="v-check">✓</div></div>
+        <div class="card-info">
+          <div class="card-name">Pearl Continental</div>
+          <div class="card-role"><span class="role-tag ind-venue">Hotel · Hospitality</span> Lahore</div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg class="ring-svg" viewBox="0 0 68 68" style="--glow:rgba(43,191,160,0.4)"><circle class="ring-bg" cx="34" cy="34" r="31"/><circle class="ring-fg" cx="34" cy="34" r="31" stroke="url(#g-teal)" data-pct="60"/></svg>
+            <div class="ring-inner"><span class="ri-icon">🛡️</span><span class="ri-level" style="background:linear-gradient(135deg,#2BBFA0,#7B6EF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">L6</span><span class="ri-label">EHB-STL-LEVEL</span><span class="ri-pct">60%</span></div>
+          </div>
+          <div class="ring-tier">HIGH</div>
+        </div>
+      </div>
+      <div class="mini-dims">
+        <div class="md-item"><div class="md-label pss">PSS</div><div class="md-bar"><div class="md-fill pss" style="width:70%"></div></div><div class="md-val">L7</div></div>
+        <div class="md-item"><div class="md-label crb">CRB</div><div class="md-bar"><div class="md-fill crb" style="width:60%"></div></div><div class="md-val">L6</div></div>
+        <div class="md-item"><div class="md-label dmo">DMO</div><div class="md-bar"><div class="md-fill dmo" style="width:60%"></div></div><div class="md-val">L6</div></div>
+      </div>
+      <div class="meta-strip">
+        <div class="meta-item"><span class="mi-icon">🆔</span><span class="mi-val">EHB-0156</span><span class="mi-label">Rule #</span></div>
+        <div class="meta-item"><span class="mi-icon">⭐</span><div class="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="off">★</span></div><span class="mi-label">4.2</span></div>
+        <div class="meta-item"><span class="mi-icon">🔄</span><span class="refill-v">4x</span><span class="mi-label">Refill</span></div>
+        <div class="meta-item"><span class="mi-icon">📝</span><div class="exam-chip"><span class="cnt">3x</span><span class="grade a">A</span></div><span class="mi-label">Exam</span></div>
+      </div>
+      <div class="quick-row">
+        <div class="q-btn">📍 Location <span class="ql high">Verified</span></div>
+        <div class="q-btn">🏢 Property <span class="ql high">L6</span></div>
+        <div class="q-btn">🔍 CRB <span class="ql mid">Last 2mo</span></div>
+        <div class="q-btn">👥 Capacity <span class="ql mid">200</span></div>
+      </div>
+      <div class="diff-callout" style="background:rgba(43,191,160,0.04);border:1px solid rgba(43,191,160,0.1);border-radius:6px">
+        <span class="diff-icon">🏗️</span>
+        <span class="diff-text"><strong>Unique:</strong> Extra <strong>Location Verified</strong> badge, <strong>Property STL</strong> (building inspection), <strong>Capacity</strong> indicator, and <strong>CRB inspection recency</strong>. CRB weight is 45% (higher than normal 35%).</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROUP D: Content/Digital Creators -->
+  <div class="section-header">
+    <div class="section-icon">🎬</div>
+    <div class="section-info">
+      <h3>Group D — Content / Digital Creators</h3>
+      <p>Digital content create karte hain — NO CRB needed, PSS + DMO only</p>
+    </div>
+    <div class="section-badge">4 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-digital">📺 Media</span>
+    <span class="ind-tag ind-digital">🎵 Music</span>
+    <span class="ind-tag ind-digital">🎮 Gaming (Content)</span>
+    <span class="ind-tag ind-digital">🎭 Entertainment (Digital)</span>
+  </div>
+  <div class="card-grid">
+    <div class="stl-card">
+      <div class="trust-strip">
+        <span class="ts-label">🔰 Trust</span>
+        <div class="ts-bar"><div class="ts-fill moderate" style="width:45%"></div></div>
+        <span class="ts-word moderate">Moderate</span>
+      </div>
+      <div class="card-top">
+        <div class="card-avatar" style="background:rgba(41,171,226,0.15)">🎬<div class="v-check">✓</div></div>
+        <div class="card-info">
+          <div class="card-name">Ali Media Studio</div>
+          <div class="card-role"><span class="role-tag ind-digital">Content Creator</span> Karachi</div>
+        </div>
+        <div class="ring-wrap">
+          <div class="ring-box">
+            <svg class="ring-svg" viewBox="0 0 68 68" style="--glow:rgba(41,171,226,0.4)"><circle class="ring-bg" cx="34" cy="34" r="31"/><circle class="ring-fg" cx="34" cy="34" r="31" stroke="url(#g-blue)" data-pct="45"/></svg>
+            <div class="ring-inner"><span class="ri-icon">🛡️</span><span class="ri-level" style="background:linear-gradient(135deg,#29ABE2,#7B6EF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent">L4</span><span class="ri-label">EHB-STL-LEVEL</span><span class="ri-pct">45%</span></div>
+          </div>
+          <div class="ring-tier">STANDARD</div>
+        </div>
+      </div>
+      <div class="mini-dims">
+        <div class="md-item"><div class="md-label pss">PSS</div><div class="md-bar"><div class="md-fill pss" style="width:50%"></div></div><div class="md-val">L5</div></div>
+        <div class="md-item"><div class="md-label crb">CRB</div><div class="md-bar"><div class="md-fill crb" style="width:5%"></div></div><div class="md-val">N/A</div></div>
+        <div class="md-item"><div class="md-label dmo">DMO</div><div class="md-bar"><div class="md-fill dmo" style="width:50%"></div></div><div class="md-val">L5</div></div>
+      </div>
+      <div class="meta-strip">
+        <div class="meta-item"><span class="mi-icon">🆔</span><span class="mi-val">EHB-3320</span><span class="mi-label">Rule #</span></div>
+        <div class="meta-item"><span class="mi-icon">⭐</span><div class="stars"><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="on">★</span><span class="off">★</span></div><span class="mi-label">3.8</span></div>
+        <div class="meta-item"><span class="mi-icon">🔄</span><span class="refill-v">1x</span><span class="mi-label">Refill</span></div>
+        <div class="meta-item"><span class="mi-icon">📝</span><div class="exam-chip"><span class="cnt">2x</span><span class="grade a">A</span></div><span class="mi-label">Exam</span></div>
+      </div>
+      <div class="quick-row">
+        <div class="q-btn">🎬 Content <span class="ql high">142 videos</span></div>
+        <div class="q-btn">👤 Personal <span class="ql mid">L4</span></div>
+        <div class="q-btn">📊 Engagement <span class="ql mid">High</span></div>
+      </div>
+      <div class="diff-callout" style="background:rgba(41,171,226,0.04);border:1px solid rgba(41,171,226,0.1);border-radius:6px">
+        <span class="diff-icon">🎯</span>
+        <span class="diff-text"><strong>No CRB needed.</strong> STL = <strong>PSS×55% + DMO×45%</strong>. Shows <strong>Content count</strong> and <strong>Engagement</strong> instead of Products. Copyright compliance tracked by DMO.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GROUP E: Logistics/Transport -->
+  <div class="section-header">
+    <div class="section-icon">🚛</div>
+    <div class="section-info">
+      <h3>Group E — Logistics / Transport</h3>
+      <p>Movement-based — same as Rider card with fleet additions</p>
+    </div>
+    <div class="section-badge">2 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-logistics">📦 Logistics</span>
+    <span class="ind-tag ind-travel">✈️ Travel (AGTS)</span>
+  </div>
+  <div class="diff-callout" style="background:rgba(240,160,48,0.04);border:1px solid rgba(240,160,48,0.1);border-radius:8px;padding:12px 16px">
+    <span class="diff-icon">🏍️</span>
+    <span class="diff-text"><strong>Same as Rider card.</strong> Logistics adds <strong>Fleet Size</strong> and <strong>Route STL</strong>. Travel (AGTS) adds <strong>Destination Verified</strong> badge and <strong>Booking Count</strong>. Core STL formula same: PSS×45% + DMO×35% + RPS×20%.</span>
+  </div>
+
+  <!-- GROUP F: B2B/Industrial -->
+  <div class="section-header">
+    <div class="section-icon">🏭</div>
+    <div class="section-info">
+      <h3>Group F — B2B / Industrial</h3>
+      <p>Company-level cards — CRB factory inspection, bulk operations</p>
+    </div>
+    <div class="section-badge">4 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-industrial">🏭 Manufacturing</span>
+    <span class="ind-tag ind-industrial">⚡ Energy</span>
+    <span class="ind-tag ind-industrial">🌾 Agriculture</span>
+    <span class="ind-tag ind-industrial">📡 Telecom</span>
+  </div>
+  <div class="diff-callout" style="background:rgba(107,114,128,0.06);border:1px solid rgba(107,114,128,0.15);border-radius:8px;padding:12px 16px">
+    <span class="diff-icon">🏢</span>
+    <span class="diff-text"><strong>Same as Seller card but COMPANY-LEVEL.</strong> Shows <strong>Factory Inspection</strong> (CRB heavy — 45% weight), <strong>Compliance Cert</strong>, <strong>Bulk Order STL</strong>, and <strong>Supply Chain STL</strong> (every link in chain has own STL). MIN rule: FINAL = MIN(Product, Factory, Company, Owner).</span>
+  </div>
+
+  <!-- GROUP G: Government/NGO -->
+  <div class="section-header">
+    <div class="section-icon">🏛️</div>
+    <div class="section-info">
+      <h3>Group G — Government / NGO / Special</h3>
+      <p>Special verification — government license mandatory, different CRB</p>
+    </div>
+    <div class="section-badge">2 Industries</div>
+  </div>
+  <div class="industry-tags">
+    <span class="ind-tag ind-govt">🏛️ Government</span>
+    <span class="ind-tag ind-govt">🤝 NGO</span>
+  </div>
+  <div class="diff-callout" style="background:rgba(240,88,88,0.04);border:1px solid rgba(240,88,88,0.1);border-radius:8px;padding:12px 16px">
+    <span class="diff-icon">🏛️</span>
+    <span class="diff-text"><strong>Unique card:</strong> Shows <strong>Government License #</strong>, <strong>Registration Authority</strong>, <strong>Audit Report</strong> link. CRB = <strong>Government Audit</strong> (not regular inspection). <strong>Cannot be lower than L5</strong> (government entities have minimum floor). Extra: <strong>Transparency Score</strong> (public accountability metric).</span>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 2: GOSELLR PRODUCT CARD                        -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-product">
+
+  <div class="section-header">
+    <div class="section-icon">📦</div>
+    <div class="section-info">
+      <h3>GoSellr Product Card — STL Integrated</h3>
+      <p>Product card with trust level — click karo to full breakdown popup</p>
+    </div>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- PRODUCT 1: High Trust -->
+    <div class="product-card" onclick="openPopup('product1')">
+      <div class="product-img">
+        📱
+        <div class="p-verified">✓ CRB Inspected</div>
+        <div class="p-stl-badge high">🛡️ STL L7 · PRO</div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">Samsung Galaxy S25 Ultra — 256GB</div>
+        <div class="product-price">PKR 245,000 <span class="old-price">PKR 280,000</span></div>
+        <div class="product-seller-strip">
+          <div class="ps-avatar">🏪</div>
+          <div class="ps-info">
+            <div class="ps-name">Ahmed Electronics · L7 PRO</div>
+            <div class="ps-stl">Seller STL: <span>L7</span> · Rating: ⭐ 4.2 · Refills: 3x</div>
+          </div>
+        </div>
+        <div class="guarantee-strip">
+          <div class="g-chip money-back">
+            <span class="g-icon">💰</span>
+            <div class="g-info"><span class="g-title">Money Back Guarantee</span><span class="g-time">30 Days</span></div>
+          </div>
+          <div class="g-chip replacement">
+            <span class="g-icon">🔄</span>
+            <div class="g-info"><span class="g-title">Replacement</span><span class="g-time">15 Days</span></div>
+          </div>
+        </div>
+        <div class="product-meta-row">
+          <div class="pm-chip">📦 Stock <span class="pm-v" style="color:#2BBFA0;font-weight:800">In Stock</span></div>
+          <div class="pm-chip">🔍 CRB <span class="pm-v" style="color:#2BBFA0;font-weight:800">Inspected</span></div>
+          <div class="pm-chip">⭐ Rating <span class="pm-v" style="color:#F0A030;font-weight:800">4.5</span></div>
+          <div class="pm-chip">📝 Warranty <span class="pm-v" style="color:#29ABE2;font-weight:800">1 Year</span></div>
+        </div>
+        <div class="product-trust-bars">
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label pss">PSS</span><span class="ptb-val">L8</span></div><div class="ptb-bar"><div class="ptb-fill pss" style="width:80%"></div></div></div>
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label crb">CRB</span><span class="ptb-val">L7</span></div><div class="ptb-bar"><div class="ptb-fill crb" style="width:70%"></div></div></div>
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label dmo">DMO</span><span class="ptb-val">L6</span></div><div class="ptb-bar"><div class="ptb-fill dmo" style="width:60%"></div></div></div>
+        </div>
+        <div class="min-chain">
+          <div class="min-node"><span class="mn-label">Product</span><span class="mn-level high">L7</span></div>
+          <span class="min-arrow">≥</span>
+          <div class="min-node"><span class="mn-label">Seller</span><span class="mn-level high">L7</span></div>
+          <span class="min-arrow">≥</span>
+          <div class="min-node"><span class="mn-label">Company</span><span class="mn-level mid">L5</span></div>
+          <span class="min-arrow">≥</span>
+          <div class="min-node"><span class="mn-label">Owner</span><span class="mn-level high">L7</span></div>
+          <div class="min-result"><span class="mr-eq">FINAL =</span><span class="mr-final">L5</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT 2: Medium Trust -->
+    <div class="product-card">
+      <div class="product-img" style="font-size:50px">
+        👟
+        <div class="p-stl-badge mid">🛡️ STL L4 · STD</div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">Nike Air Max 270 — All Black</div>
+        <div class="product-price">PKR 18,500</div>
+        <div class="product-seller-strip">
+          <div class="ps-avatar">👟</div>
+          <div class="ps-info">
+            <div class="ps-name">Foot Locker PK · L4 STANDARD</div>
+            <div class="ps-stl">Seller STL: <span>L4</span> · Rating: ⭐ 3.8 · Refills: 1x</div>
+          </div>
+        </div>
+        <div class="guarantee-strip">
+          <div class="g-chip money-back">
+            <span class="g-icon">💰</span>
+            <div class="g-info"><span class="g-title">Money Back Guarantee</span><span class="g-time">7 Days</span></div>
+          </div>
+          <div class="g-chip replacement">
+            <span class="g-icon">🔄</span>
+            <div class="g-info"><span class="g-title">Replacement</span><span class="g-time">7 Days</span></div>
+          </div>
+        </div>
+        <div class="product-meta-row">
+          <div class="pm-chip">📦 Stock <span class="pm-v" style="color:#2BBFA0;font-weight:800">12 left</span></div>
+          <div class="pm-chip">🔍 CRB <span class="pm-v" style="color:#F0A030;font-weight:800">Pending</span></div>
+          <div class="pm-chip">⭐ Rating <span class="pm-v" style="color:#F0A030;font-weight:800">3.5</span></div>
+          <div class="pm-chip">📝 Return <span class="pm-v" style="color:#29ABE2;font-weight:800">7 Days</span></div>
+        </div>
+        <div class="product-trust-bars">
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label pss">PSS</span><span class="ptb-val">L5</span></div><div class="ptb-bar"><div class="ptb-fill pss" style="width:50%"></div></div></div>
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label crb">CRB</span><span class="ptb-val">L3</span></div><div class="ptb-bar"><div class="ptb-fill crb" style="width:30%"></div></div></div>
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label dmo">DMO</span><span class="ptb-val">L4</span></div><div class="ptb-bar"><div class="ptb-fill dmo" style="width:40%"></div></div></div>
+        </div>
+        <div class="min-chain">
+          <div class="min-node"><span class="mn-label">Product</span><span class="mn-level mid">L4</span></div>
+          <span class="min-arrow">≥</span>
+          <div class="min-node"><span class="mn-label">Seller</span><span class="mn-level mid">L4</span></div>
+          <span class="min-arrow">≥</span>
+          <div class="min-node"><span class="mn-label">Company</span><span class="mn-level low">L3</span></div>
+          <div class="min-result"><span class="mr-eq">FINAL =</span><span class="mr-final" style="color:#F0A030">L3</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCT 3: Low Trust -->
+    <div class="product-card">
+      <div class="product-img" style="font-size:50px">
+        🎧
+        <div class="p-stl-badge low">🛡️ STL L2 · BASIC</div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">Wireless Earbuds — Budget Pack</div>
+        <div class="product-price">PKR 1,200</div>
+        <div class="product-seller-strip">
+          <div class="ps-avatar" style="background:rgba(240,88,88,0.15)">🆕</div>
+          <div class="ps-info">
+            <div class="ps-name">New Seller Shop · L2 BASIC</div>
+            <div class="ps-stl">Seller STL: <span style="color:#F05858">L2</span> · Rating: ⭐ N/A · Refills: 0x</div>
+          </div>
+        </div>
+        <div class="guarantee-strip">
+          <div class="g-chip no-guarantee">
+            <span class="g-icon">❌</span>
+            <div class="g-info"><span class="g-title">Money Back</span><span class="g-time">Not Offered</span></div>
+          </div>
+          <div class="g-chip no-guarantee">
+            <span class="g-icon">❌</span>
+            <div class="g-info"><span class="g-title">Replacement</span><span class="g-time">Not Offered</span></div>
+          </div>
+        </div>
+        <div class="product-meta-row">
+          <div class="pm-chip">📦 Stock <span class="pm-v" style="color:#F0A030;font-weight:800">5 left</span></div>
+          <div class="pm-chip">🔍 CRB <span class="pm-v" style="color:#F05858;font-weight:800">Not Yet</span></div>
+          <div class="pm-chip">⭐ Rating <span class="pm-v" style="color:#6B7280;font-weight:800">N/A</span></div>
+          <div class="pm-chip">⚠️ Trust <span class="pm-v" style="color:#F05858;font-weight:800">Low</span></div>
+        </div>
+        <div class="product-trust-bars">
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label pss">PSS</span><span class="ptb-val">L2</span></div><div class="ptb-bar"><div class="ptb-fill pss" style="width:20%"></div></div></div>
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label crb">CRB</span><span class="ptb-val">N/A</span></div><div class="ptb-bar"><div class="ptb-fill crb" style="width:5%"></div></div></div>
+          <div class="ptb-item"><div class="ptb-top"><span class="ptb-label dmo">DMO</span><span class="ptb-val">L2</span></div><div class="ptb-bar"><div class="ptb-fill dmo" style="width:20%"></div></div></div>
+        </div>
+        <div class="min-chain">
+          <div class="min-node"><span class="mn-label">Product</span><span class="mn-level low">L2</span></div>
+          <span class="min-arrow">≥</span>
+          <div class="min-node"><span class="mn-label">Seller</span><span class="mn-level low">L2</span></div>
+          <div class="min-result"><span class="mr-eq">FINAL =</span><span class="mr-final" style="color:#F05858">L2</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TAB 3: KEY DIFFERENCES TABLE                       -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="tab-content" id="tab-differences">
+  <div class="section-header">
+    <div class="section-icon">🔄</div>
+    <div class="section-info">
+      <h3>Complete Difference Matrix — All 7 Card Groups</h3>
+      <p>Har group mein kia same hai aur kia different hai</p>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;margin-top:16px">
+    <table style="width:100%;border-collapse:collapse;font-size:11px">
+      <thead>
+        <tr style="background:rgba(123,110,246,0.08)">
+          <th style="padding:10px;text-align:left;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">Feature</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">A: Sellers</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">B: Service</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">C: Venue</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">D: Digital</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">E: Logistics</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">F: B2B</th>
+          <th style="padding:10px;text-align:center;color:#A098F8;border-bottom:1px solid rgba(255,255,255,0.1)">G: Govt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">PSS Weight</td>
+          <td style="padding:8px;text-align:center">40%</td><td style="padding:8px;text-align:center">40%</td><td style="padding:8px;text-align:center">35%</td><td style="padding:8px;text-align:center;color:#F0A030">55%</td><td style="padding:8px;text-align:center;color:#F0A030">45%</td><td style="padding:8px;text-align:center">40%</td><td style="padding:8px;text-align:center">35%</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">CRB Weight</td>
+          <td style="padding:8px;text-align:center">35%</td><td style="padding:8px;text-align:center">35%</td><td style="padding:8px;text-align:center;color:#F0A030">45%</td><td style="padding:8px;text-align:center;color:#F05858">0%</td><td style="padding:8px;text-align:center;color:#F05858">0%</td><td style="padding:8px;text-align:center;color:#F0A030">45%</td><td style="padding:8px;text-align:center;color:#F0A030">40%</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">DMO Weight</td>
+          <td style="padding:8px;text-align:center">25%</td><td style="padding:8px;text-align:center">25%</td><td style="padding:8px;text-align:center">20%</td><td style="padding:8px;text-align:center;color:#F0A030">45%</td><td style="padding:8px;text-align:center;color:#F0A030">35%</td><td style="padding:8px;text-align:center">15%</td><td style="padding:8px;text-align:center">25%</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">CRB Required?</td>
+          <td style="padding:8px;text-align:center;color:#2BBFA0">✓ Product</td><td style="padding:8px;text-align:center;color:#2BBFA0">✓ License</td><td style="padding:8px;text-align:center;color:#F0A030">✓✓ Building</td><td style="padding:8px;text-align:center;color:#F05858">✗</td><td style="padding:8px;text-align:center;color:#F05858">✗</td><td style="padding:8px;text-align:center;color:#F0A030">✓✓ Factory</td><td style="padding:8px;text-align:center;color:#F0A030">✓ Govt Audit</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">Wallet Lock</td>
+          <td style="padding:8px;text-align:center">Optional</td><td style="padding:8px;text-align:center;color:#F0A030">Mandatory</td><td style="padding:8px;text-align:center;color:#F0A030">Mandatory</td><td style="padding:8px;text-align:center">Optional</td><td style="padding:8px;text-align:center">Optional</td><td style="padding:8px;text-align:center;color:#F0A030">Mandatory</td><td style="padding:8px;text-align:center">N/A</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">Exam Focus</td>
+          <td style="padding:8px;text-align:center">Product Safety</td><td style="padding:8px;text-align:center;color:#F0A030">Field License</td><td style="padding:8px;text-align:center">Safety Code</td><td style="padding:8px;text-align:center">Copyright</td><td style="padding:8px;text-align:center">Safety/Route</td><td style="padding:8px;text-align:center">Compliance</td><td style="padding:8px;text-align:center">Policy</td>
+        </tr>
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+          <td style="padding:8px;color:#9CA3AF">Unique Button</td>
+          <td style="padding:8px;text-align:center">Products</td><td style="padding:8px;text-align:center;color:#A098F8">Cases/Services</td><td style="padding:8px;text-align:center;color:#A098F8">Location+Capacity</td><td style="padding:8px;text-align:center;color:#A098F8">Content+Engage</td><td style="padding:8px;text-align:center;color:#A098F8">Fleet+Route</td><td style="padding:8px;text-align:center;color:#A098F8">Supply Chain</td><td style="padding:8px;text-align:center;color:#A098F8">License+Audit</td>
+        </tr>
+        <tr>
+          <td style="padding:8px;color:#9CA3AF">MIN Rule</td>
+          <td style="padding:8px;text-align:center;font-size:9px">Prod≤Seller≤Co≤Owner</td><td style="padding:8px;text-align:center;font-size:9px">Service≤Provider≤Co</td><td style="padding:8px;text-align:center;font-size:9px">Venue≤Owner≤License</td><td style="padding:8px;text-align:center;font-size:9px">Content≤Creator</td><td style="padding:8px;text-align:center;font-size:9px">Route≤Rider≤Fleet</td><td style="padding:8px;text-align:center;font-size:9px">Prod≤Factory≤Co≤Owner</td><td style="padding:8px;text-align:center;font-size:9px">Service≤Dept≤Govt</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- PRODUCT POPUP (click Samsung card)                  -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="popup-overlay" id="popup-product1">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div style="font-size:20px;font-weight:700;margin-bottom:4px">📱 Samsung Galaxy S25 Ultra — 256GB</div>
+    <div style="font-size:22px;font-weight:800;color:#2BBFA0;margin-bottom:16px">PKR 245,000</div>
+
+    <div class="popup-section" style="margin-top:0;padding-top:0;border:0">
+      <h4>🛡️ Product Trust Breakdown (MIN Rule)</h4>
+      <div class="min-chain" style="flex-wrap:wrap">
+        <div class="min-node"><span class="mn-label">Product STL</span><span class="mn-level high">L7</span></div>
+        <span class="min-arrow">≥</span>
+        <div class="min-node"><span class="mn-label">Seller STL</span><span class="mn-level high">L7</span></div>
+        <span class="min-arrow">≥</span>
+        <div class="min-node"><span class="mn-label">Company STL</span><span class="mn-level mid" style="background:rgba(240,160,48,0.12);color:#F0A030">L5 ⚠️</span></div>
+        <span class="min-arrow">≥</span>
+        <div class="min-node"><span class="mn-label">Owner STL</span><span class="mn-level high">L7</span></div>
+        <div class="min-result"><span class="mr-eq">FINAL = MIN =</span><span class="mr-final" style="color:#F0A030;font-size:18px">L5</span></div>
+      </div>
+      <div style="font-size:10px;color:#F0A030;margin-top:6px;padding:6px 10px;background:rgba(240,160,48,0.06);border-radius:6px">⚠️ Bottleneck: Company STL (L5) is limiting this product. Seller needs to upgrade company verification.</div>
+    </div>
+
+    <div class="popup-section">
+      <h4>📦 Product Details</h4>
+      <div class="product-meta-row">
+        <div class="pm-chip">📱 Category <span class="pm-v" style="color:#A098F8;font-weight:800">Electronics</span></div>
+        <div class="pm-chip">🏭 Brand <span class="pm-v" style="color:#29ABE2;font-weight:800">Samsung</span></div>
+        <div class="pm-chip">📦 Stock <span class="pm-v" style="color:#2BBFA0;font-weight:800">45 units</span></div>
+        <div class="pm-chip">📅 Listed <span class="pm-v" style="color:#9CA3AF;font-weight:800">2026-03-15</span></div>
+      </div>
+      <div class="product-meta-row" style="margin-top:6px">
+        <div class="pm-chip">🔍 CRB Inspected <span class="pm-v" style="color:#2BBFA0;font-weight:800">2026-04-01</span></div>
+        <div class="pm-chip">📝 Warranty <span class="pm-v" style="color:#29ABE2;font-weight:800">1 Year Official</span></div>
+        <div class="pm-chip">↩️ Return <span class="pm-v" style="color:#2BBFA0;font-weight:800">7 Days</span></div>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <h4>🏪 Seller Trust Profile</h4>
+      <div style="display:flex;gap:12px;align-items:center;padding:10px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid rgba(255,255,255,0.05)">
+        <div style="width:48px;height:48px;border-radius:10px;background:rgba(123,110,246,0.15);display:flex;align-items:center;justify-content:center;font-size:24px">🏪</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">Ahmed Electronics</div>
+          <div style="font-size:11px;color:#9CA3AF">Seller · Lahore · Since 2025 · Rule# EHB-7421</div>
+          <div style="display:flex;gap:8px;margin-top:4px;font-size:10px">
+            <span style="color:#2BBFA0;font-weight:700">STL: L7 PRO</span>
+            <span style="color:#F0A030">⭐ 4.2</span>
+            <span style="color:#A098F8">Refills: 3x</span>
+            <span style="color:#38C878">Exam: 5x A+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <h4>⭐ Product Reviews</h4>
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:8px">
+        <div style="font-size:32px;font-weight:800;color:#F0A030">4.5</div>
+        <div>
+          <div style="font-size:14px;color:#F0A030">★★★★★</div>
+          <div style="font-size:10px;color:#6B7280">128 reviews</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:#9CA3AF;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;border:1px solid rgba(255,255,255,0.04)">
+        <div style="margin-bottom:4px"><strong style="color:#F3F4F6">Buyer (EHB-1089, L4):</strong> "Original product, fast delivery, well packed." — ⭐⭐⭐⭐⭐</div>
+        <div><strong style="color:#F3F4F6">Buyer (EHB-2301, L6):</strong> "Good quality but delivery took 3 days." — ⭐⭐⭐⭐</div>
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <h4>🚚 Delivery & Payment</h4>
+      <div class="product-meta-row">
+        <div class="pm-chip">🚚 Delivery <span class="pm-v" style="color:#2BBFA0;font-weight:800">1-2 Days</span></div>
+        <div class="pm-chip">💰 COD <span class="pm-v" style="color:#2BBFA0;font-weight:800">Available</span></div>
+        <div class="pm-chip">💳 Wallet <span class="pm-v" style="color:#A098F8;font-weight:800">EHBGC</span></div>
+        <div class="pm-chip">🔒 Escrow <span class="pm-v" style="color:#2BBFA0;font-weight:800">Protected</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tabs
+function showTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Popup
+function openPopup(id) {
+  document.getElementById('popup-' + id).classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closePopup() {
+  document.querySelectorAll('.popup-overlay').forEach(el => el.classList.remove('active'));
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
+
+// Animate rings
+document.addEventListener('DOMContentLoaded', () => {
+  const circ = 2 * Math.PI * 31;
+  document.querySelectorAll('.ring-fg').forEach(el => {
+    const pct = parseInt(el.dataset.pct) || 0;
+    el.style.strokeDasharray = circ;
+    el.style.strokeDashoffset = circ;
+    setTimeout(() => { el.style.strokeDashoffset = circ - (circ * pct / 100); }, 400);
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "title": "EHB · STL Trust",
+  "uid": "ehb-stl",
+  "tags": ["ehb", "stl", "trust"],
+  "schemaVersion": 39,
+  "panels": [
+    { "title": "Avg Platform STL", "type": "stat", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "avg(ehb_user_stl_level)" }] },
+    { "title": "L4+ Users %", "type": "stat", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "count(ehb_user_stl_level >= 4) / count(ehb_user_stl_level) * 100" }] },
+    { "title": "STL Recomputes (24h)", "type": "stat", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "increase(ehb_stl_recomputes_total[24h])" }] },
+    { "title": "Formula Drift", "type": "stat", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_stl_formula_version_mismatch" }], "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } },
+    { "title": "STL Distribution (L1-L10)", "type": "bar", "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "count(ehb_user_stl_level) by (level)" }] },
+    { "title": "Upgrades vs Downgrades", "type": "graph", "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }, "targets": [
+      { "expr": "rate(ehb_stl_upgrades_total[5m])", "legendFormat": "Upgrades" },
+      { "expr": "rate(ehb_stl_downgrades_total[5m])", "legendFormat": "Downgrades" }
+    ]},
+    { "title": "Avg STL by Industry", "type": "table", "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 }, "targets": [{ "expr": "avg(ehb_user_stl_level) by (industry)" }] },
+    { "title": "Slashing Events / Day", "type": "graph", "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 }, "targets": [{ "expr": "rate(ehb_slashing_events_total[1d])" }] }
+  ],
+  "time": { "from": "now-7d", "to": "now" },
+  "refresh": "5m"
+}

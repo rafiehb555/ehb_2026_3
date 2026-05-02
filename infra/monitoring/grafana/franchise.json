@@ -1,0 +1,17 @@
+{
+  "title": "EHB · Franchise Network",
+  "uid": "ehb-franchise",
+  "tags": ["ehb", "franchise"],
+  "schemaVersion": 39,
+  "panels": [
+    { "title": "Active Franchises", "type": "stat", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_franchises_active_total" }] },
+    { "title": "Total Revenue Forwarded (24h)", "type": "stat", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "increase(ehb_franchise_revenue_usd_total[24h])" }] },
+    { "title": "Pending Applications", "type": "stat", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_franchise_applications_pending" }] },
+    { "title": "Dormant Franchises", "type": "stat", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_franchises_dormant_14d_total" }] },
+    { "title": "Revenue by Country", "type": "bar", "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "rate(ehb_franchise_revenue_usd_total[1d]) by (country)" }] },
+    { "title": "Franchises by Tier", "type": "piechart", "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "ehb_franchises_active_total by (tier)" }] },
+    { "title": "Top 10 Sub Franchises by GMV", "type": "table", "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 }, "targets": [{ "expr": "topk(10, ehb_franchise_gmv_usd_total)" }] }
+  ],
+  "time": { "from": "now-7d", "to": "now" },
+  "refresh": "5m"
+}

@@ -1,0 +1,337 @@
+{
+  "$schema": "EHB Flow Schema v1.0 — DEPRECATED",
+  "_deprecated": true,
+  "_deprecated_at": "2026-04-30",
+  "_replacement": "FLOW-SCHEMA-V2.json",
+  "_reason": "v1 has 4-tier franchise split [40,25,20,15] — superseded by canonical 5-tier [40,15,25,15,5]. DO NOT USE for new code.",
+  "purpose": "[DEPRECATED] Machine-readable event-action map. v1 retained for legacy/audit reference only.",
+  "last_updated": "2026-04-30",
+  "version": "1.0-deprecated",
+
+  "events": {
+    "user.signup": {
+      "description": "New user signs up",
+      "actions": [
+        "wallet.create",
+        "stl.init_l1",
+        "auth.create_token",
+        "notification.welcome_email"
+      ],
+      "audit": "polkadot.anchor"
+    },
+    "user.kyc.approved": {
+      "description": "PSS verification completed",
+      "actions": [
+        "stl.recompute",
+        "user.upgrade_pss_level",
+        "notification.kyc_approved",
+        "polkadot.anchor"
+      ]
+    },
+    "order.submitted": {
+      "description": "Buyer placed order",
+      "actions": [
+        "validate.user_stl",
+        "validate.industry_min",
+        "validate.seller_active",
+        "wallet.escrow_lock",
+        "db.insert_order",
+        "notification.seller",
+        "polkadot.queue_for_anchor"
+      ],
+      "next_state": "PAYMENT_HELD"
+    },
+    "order.accepted": {
+      "description": "Seller accepted order",
+      "actions": [
+        "db.update_status",
+        "notification.buyer",
+        "timer.start_fulfillment_sla"
+      ],
+      "next_state": "ACCEPTED"
+    },
+    "order.fulfilled": {
+      "description": "Seller marked delivered",
+      "actions": [
+        "db.update_status",
+        "notification.buyer_review_window",
+        "timer.start_cooling_period"
+      ],
+      "next_state": "FULFILLED"
+    },
+    "order.reviewed": {
+      "description": "Buyer left review",
+      "actions": [
+        "db.insert_review",
+        "stl.update_seller",
+        "stl.update_buyer_bts",
+        "rating.recompute_seller",
+        "notification.seller"
+      ]
+    },
+    "order.settled": {
+      "description": "Cooling period ended, no dispute",
+      "actions": [
+        "wallet.release_escrow",
+        "wallet.split_70_10_10_10",
+        "db.transactions",
+        "polkadot.anchor",
+        "notification.all_parties"
+      ],
+      "next_state": "SETTLED"
+    },
+    "order.disputed": {
+      "description": "Complaint filed",
+      "actions": [
+        "wallet.hold_escrow",
+        "ai.pre_mediator",
+        "dmo.queue_triage",
+        "notification.both_parties"
+      ],
+      "next_state": "DISPUTE_OPEN"
+    },
+    "order.refund_requested": {
+      "description": "Refund initiated",
+      "actions": [
+        "validate.refund_eligibility",
+        "notification.seller_review",
+        "timer.48h_response"
+      ]
+    },
+    "order.refunded": {
+      "description": "Refund approved",
+      "actions": [
+        "wallet.reverse_escrow",
+        "stl.adjust_if_seller_fault",
+        "polkadot.anchor",
+        "notification.buyer"
+      ]
+    },
+    "stl.update": {
+      "description": "STL changed",
+      "actions": [
+        "db.update_user_stl",
+        "redis.invalidate_caches",
+        "socket.emit_stl_update",
+        "polkadot.anchor",
+        "badges.evaluate",
+        "notification.if_level_change"
+      ]
+    },
+    "lock.created": {
+      "description": "EHBGC locked",
+      "actions": [
+        "wallet.move_to_locked",
+        "smart_contract.lock",
+        "stl.recompute",
+        "yield.start_streaming",
+        "polkadot.anchor"
+      ]
+    },
+    "lock.unlocked_premature": {
+      "description": "Lock removed before grace period",
+      "actions": [
+        "validate.grace_period",
+        "if_after_grace: slash_15_percent",
+        "if_after_grace: stl.downgrade_2_levels",
+        "wallet.return_remainder",
+        "polkadot.anchor"
+      ]
+    },
+    "slash.executed": {
+      "description": "DMO slashed entity",
+      "actions": [
+        "wallet.burn_locked",
+        "stl.adjust",
+        "cascade.check_owned_entities",
+        "polkadot.anchor",
+        "notification.user_appeal_window",
+        "treasury.distribute_slashed"
+      ]
+    },
+    "refill.submitted": {
+      "description": "Franchise submitted quarterly refill",
+      "actions": [
+        "dmo.queue_review",
+        "stl.maintain",
+        "metrics.record"
+      ]
+    },
+    "refill.missed": {
+      "description": "Refill window expired",
+      "actions": [
+        "penalty.apply_per_count",
+        "if_first: warning",
+        "if_second: slash_5_stl_minus_1",
+        "if_third: slash_25_stl_minus_3",
+        "polkadot.anchor"
+      ]
+    },
+    "complaint.filed": {
+      "description": "User files complaint",
+      "actions": [
+        "ai.pre_mediator_suggest",
+        "dmo.queue_triage",
+        "validate.bts_not_abuser",
+        "notification.both_parties"
+      ]
+    },
+    "fraud.suspected": {
+      "description": "AI flagged fraud",
+      "actions": [
+        "up_guard.alert_dmo_senior",
+        "ai.cluster_check",
+        "block.user_temp",
+        "notification.dmo_senior"
+      ]
+    },
+    "fraud.confirmed": {
+      "description": "DMO confirmed fraud",
+      "actions": [
+        "slash.100_percent",
+        "user.permanent_ban",
+        "cascade.owned_entities",
+        "polkadot.anchor",
+        "audit.public_log"
+      ]
+    },
+    "franchise.applied": {
+      "description": "New franchise application",
+      "actions": [
+        "validate.user_stl_min",
+        "validate.capital",
+        "ai.background_screen",
+        "dmo.queue_interview"
+      ]
+    },
+    "industry.added": {
+      "description": "New industry launched",
+      "actions": [
+        "registry.add_industry",
+        "ui.regenerate_pages",
+        "ai.add_prompts",
+        "compliance.check_per_country",
+        "notification.eligible_users"
+      ]
+    }
+  },
+
+  "flow_state_machines": {
+    "order": {
+      "states": ["DRAFT", "SUBMITTED", "PAYMENT_HELD", "ACCEPTED", "IN_PROGRESS", "FULFILLED", "REVIEWED", "SETTLED", "ANCHORED", "CANCELLED", "DISPUTE_OPEN", "DISPUTE_RESOLVED", "REFUND_REQUESTED", "REFUND_APPROVED", "REFUNDED"],
+      "initial": "DRAFT",
+      "terminal": ["ANCHORED", "CANCELLED", "REFUNDED"],
+      "transitions": {
+        "DRAFT": ["SUBMITTED", "CANCELLED"],
+        "SUBMITTED": ["PAYMENT_HELD", "CANCELLED"],
+        "PAYMENT_HELD": ["ACCEPTED", "CANCELLED"],
+        "ACCEPTED": ["IN_PROGRESS"],
+        "IN_PROGRESS": ["FULFILLED", "DISPUTE_OPEN"],
+        "FULFILLED": ["REVIEWED", "DISPUTE_OPEN"],
+        "REVIEWED": ["SETTLED", "DISPUTE_OPEN"],
+        "SETTLED": ["ANCHORED"]
+      }
+    },
+    "lock": {
+      "states": ["NOT_LOCKED", "LOCKING", "LOCKED", "GRACE_PERIOD", "RELEASING", "RELEASED", "SLASHED", "BURNED"],
+      "initial": "NOT_LOCKED",
+      "terminal": ["RELEASED", "BURNED"]
+    },
+    "stl": {
+      "states": ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10"],
+      "transitions": "bidirectional (up/down based on events)"
+    }
+  },
+
+  "constants": {
+    "stl_formula": "MIN(Score / 1.2, lowest_component + 1)",
+    "min_chain": "MIN(productSTL, sellerSTL, companySTL, ownerSTL)",
+    "revenue_split": [70, 10, 10, 10],
+    "_franchise_split_4tier_DEPRECATED": [40, 25, 20, 15],
+    "franchise_split": [40, 15, 25, 15, 5],
+    "_franchise_split_meaning": "5-tier: [Sub, Corporate, Master, Country, HQ_buffer]",
+    "slashing": {
+      "fraud_T6": 100,
+      "complaint_unresolved_30d": 25,
+      "refill_miss_2x": 10,
+      "late_delivery_3x": 5,
+      "max_per_window": 50
+    },
+    "cooling_period_days": {
+      "fast": 7,
+      "balanced": 14,
+      "strict": 30,
+      "critical": 30
+    },
+    "yield_apy_range": [4, 6],
+    "premature_unlock": {
+      "grace_days": 15,
+      "post_grace_slash_pct": 15,
+      "stl_downgrade_levels": 2
+    }
+  },
+
+  "industry_multipliers": {
+    "WMS": 2.0,
+    "OLS": 2.0,
+    "FIN": 2.0,
+    "INS": 2.0,
+    "ELECTRICAL": 1.5,
+    "CONSTRUCTION": 1.5,
+    "CNS": 1.5,
+    "RES": 1.5,
+    "MFS": 1.5,
+    "LSM": 1.5,
+    "HCS": 1.5,
+    "SCS": 1.5,
+    "GSM": 1.3,
+    "ITS": 1.3,
+    "SOT": 1.3,
+    "HPS": 1.2,
+    "EDS": 1.2,
+    "ATS": 1.2,
+    "MAS": 1.2,
+    "TCS": 1.2,
+    "RRS": 1.2,
+    "PTS": 1.1,
+    "GSS": 1.1,
+    "_default": 1.0
+  },
+
+  "stl_lock_ladder": {
+    "L1": 0,
+    "L2": 20,
+    "L3": 40,
+    "L4": 100,
+    "L5": 200,
+    "L6": 400,
+    "L7": 800,
+    "L8": 2000,
+    "L9": 4000,
+    "L10": 10000
+  },
+
+  "dmo_modes_per_industry": {
+    "FAST": ["GSM", "FBS", "LDS", "PTS", "BCS", "ELS"],
+    "BALANCED": ["HPS", "OBS", "ERS", "EPS", "EAS", "ITS", "SOT", "HMS", "EHB_TUBE", "ATS", "FWS", "MAS", "GES", "EHB_MUSIC", "WES", "TCS", "EDS", "GSS", "RRS", "CMS"],
+    "STRICT": ["WMS", "OLS", "CNS", "RES", "LSM", "HCS", "MFS"],
+    "CRITICAL": ["FIN", "INS", "SCS", "EFS"]
+  },
+
+  "min_stl_per_industry": {
+    "GSM": 1, "WMS": 4, "HPS": 1, "OBS": 1, "OLS": 3, "LDS": 1,
+    "AGTS": 1, "HMS": 2, "ITS": 2, "SOT": 1, "ERS": 2, "EFS": 3,
+    "EPS": 1, "EAS": 1, "ELS": 1, "EHB_TUBE": 1,
+    "RES": 2, "FBS": 1, "ATS": 2, "CNS": 2, "BCS": 1, "FWS": 1,
+    "MAS": 2, "GES": 1, "EHB_MUSIC": 1, "PTS": 2, "WES": 1,
+    "FIN": 4, "TCS": 2, "MFS": 3, "EDS": 1, "GSS": 1,
+    "INS": 3, "LSM": 2, "HCS": 3, "SCS": 3, "RRS": 2, "CMS": 1
+  },
+
+  "usage_for_devs": {
+    "import": "import flowSchema from 'ehb-info/5-specs/FLOW-SCHEMA.json'",
+    "wire_up": "Iterate over flowSchema.events, register handlers in flow engine",
+    "validate": "Use flow_state_machines for state transition validation",
+    "constants": "Read constants for runtime config (admin can override via DMO settings)"
+  }
+}

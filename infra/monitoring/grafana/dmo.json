@@ -1,0 +1,23 @@
+{
+  "title": "EHB · DMO Operations",
+  "uid": "ehb-dmo",
+  "tags": ["ehb", "dmo"],
+  "schemaVersion": 39,
+  "panels": [
+    { "title": "Open Cases", "type": "stat", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_dmo_queue_open" }] },
+    { "title": "Resolved (24h)", "type": "stat", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "increase(ehb_dmo_resolved_total[24h])" }] },
+    { "title": "Median TTR (hours)", "type": "stat", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "histogram_quantile(0.5, ehb_dmo_resolution_seconds_bucket) / 3600" }] },
+    { "title": "SLA Breaches (24h)", "type": "stat", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "increase(ehb_dmo_sla_breaches_total[24h])" }], "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 5 }] } },
+    { "title": "Cases by Severity", "type": "piechart", "gridPos": { "x": 0, "y": 4, "w": 8, "h": 8 }, "targets": [{ "expr": "ehb_dmo_queue_count by (severity)" }] },
+    { "title": "Cases by Type", "type": "piechart", "gridPos": { "x": 8, "y": 4, "w": 8, "h": 8 }, "targets": [{ "expr": "ehb_dmo_queue_count by (type)" }] },
+    { "title": "Cases by Industry (top 10)", "type": "bar", "gridPos": { "x": 16, "y": 4, "w": 8, "h": 8 }, "targets": [{ "expr": "topk(10, ehb_dmo_queue_count by (industry))" }] },
+    { "title": "Resolution Outcome", "type": "graph", "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 }, "targets": [
+      { "expr": "rate(ehb_dmo_resolved_total{outcome=\"UPHELD\"}[5m])", "legendFormat": "Upheld" },
+      { "expr": "rate(ehb_dmo_resolved_total{outcome=\"REJECTED\"}[5m])", "legendFormat": "Rejected" },
+      { "expr": "rate(ehb_dmo_resolved_total{outcome=\"PARTIAL\"}[5m])", "legendFormat": "Partial" }
+    ]},
+    { "title": "Officer Workload (cases/day)", "type": "table", "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 }, "targets": [{ "expr": "rate(ehb_dmo_resolved_total[1d]) by (officer_id)" }] }
+  ],
+  "time": { "from": "now-24h", "to": "now" },
+  "refresh": "1m"
+}

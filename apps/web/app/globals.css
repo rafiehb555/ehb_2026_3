@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Legacy dark glass base (used outside DMO workspace) */
+  --bg: #0c0e1a;
+  --card: #13162a;
+  --nested: #1a1d33;
+  --purple: #7b6ef6;
+  --purple-light: #a098f8;
+  --teal: #2bbfa0;
+  --amber: #f0a030;
+  --ok: #38c878;
+  --fail: #f05858;
+  --text: #e8eaf5;
+  --text-muted: rgba(232, 234, 245, 0.5);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Plastic coat shimmer animation */
+@keyframes ehb-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.plastic-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 60%
+  );
+  animation: ehb-shimmer 4.5s infinite linear;
+  pointer-events: none;
+}
+
+/* ===========================================================================
+   THEME SYSTEM — iOS Classic (light plastic) vs Diamond (dark neon)
+   Applied via <html data-theme> attr from DmoThemeProvider.
+   =========================================================================== */
+
+[data-theme='diamond'] {
+  --ehb-bg: #04060e;
+  --ehb-card: #081420;
+  --ehb-nested: #060e1c;
+  --ehb-border: rgba(48, 208, 255, 0.12);
+  --ehb-text: #d8f4ff;
+  --ehb-text-secondary: #a0d8f0;
+  --ehb-text-muted: #5898b8;
+  --ehb-a1: #0080c8;
+  --ehb-a2: #00a8e8;
+  --ehb-a3: #30d0ff;
+  --ehb-a4: #b0f0ff;
+  --ehb-ok: #00b050;
+  --ehb-warn: #c89000;
+  --ehb-fail: #e04040;
+  background: var(--ehb-bg);
+  color: var(--ehb-text);
+}
+
+[data-theme='iosClassic'] {
+  --ehb-bg: #e8edf2;
+  --ehb-card: #bdd0e0;
+  --ehb-nested: #b5c8d8;
+  --ehb-border: rgba(24, 40, 58, 0.18);
+  --ehb-text: #18283a;
+  --ehb-text-secondary: #2a3c50;
+  --ehb-text-muted: #4a5c70;
+  --ehb-a1: #b8780a;
+  --ehb-a2: #d89020;
+  --ehb-a3: #f8b830;
+  --ehb-a4: #ffe090;
+  --ehb-ok: #1a7020;
+  --ehb-warn: #7a4a00;
+  --ehb-fail: #7a1010;
+  background: var(--ehb-bg) !important;
+  color: var(--ehb-text) !important;
+}
+
+/* Also apply to body + html when theme is set, ensures full-page effect */
+html[data-theme='iosClassic'] body,
+html[data-theme='iosClassic'] {
+  background: #e8edf2 !important;
+  color: #18283a !important;
+}
+html[data-theme='diamond'] body,
+html[data-theme='diamond'] {
+  background: #0c0e1a !important;
+  color: #e8eaf5 !important;
+}
+
+/* ---- iOS Classic overrides for hard-coded Tailwind classes ---- */
+
+[data-theme='iosClassic'] .bg-bg { background-color: var(--ehb-bg) !important; }
+[data-theme='iosClassic'] .bg-card { background-color: var(--ehb-card) !important; }
+[data-theme='iosClassic'] .bg-nested { background-color: var(--ehb-nested) !important; }
+
+/* Semi-transparent card variants */
+[data-theme='iosClassic'] .bg-card\/40 { background-color: rgba(189, 208, 224, 0.55) !important; }
+[data-theme='iosClassic'] .bg-card\/60 { background-color: rgba(189, 208, 224, 0.78) !important; }
+[data-theme='iosClassic'] .bg-nested\/40 { background-color: rgba(181, 200, 216, 0.55) !important; }
+[data-theme='iosClassic'] .bg-nested\/60 { background-color: rgba(181, 200, 216, 0.78) !important; }
+
+/* Borders */
+[data-theme='iosClassic'] .border-glass { border-color: var(--ehb-border) !important; }
+
+/* Text colors — convert white/gray scale → dark on light */
+[data-theme='iosClassic'] .text-white { color: var(--ehb-text) !important; }
+[data-theme='iosClassic'] .text-white\/90 { color: rgba(24, 40, 58, 0.9) !important; }
+[data-theme='iosClassic'] .text-white\/85 { color: rgba(24, 40, 58, 0.85) !important; }
+[data-theme='iosClassic'] .text-white\/80 { color: rgba(24, 40, 58, 0.82) !important; }
+[data-theme='iosClassic'] .text-white\/70 { color: var(--ehb-text-secondary) !important; }
+[data-theme='iosClassic'] .text-white\/60 { color: var(--ehb-text-secondary) !important; }
+[data-theme='iosClassic'] .text-white\/50 { color: var(--ehb-text-muted) !important; }
+[data-theme='iosClassic'] .text-white\/40 { color: var(--ehb-text-muted) !important; }
+[data-theme='iosClassic'] .text-white\/30 { color: rgba(74, 92, 112, 0.65) !important; }
+[data-theme='iosClassic'] .text-white\/20 { color: rgba(74, 92, 112, 0.45) !important; }
+[data-theme='iosClassic'] .text-white\/10 { color: rgba(74, 92, 112, 0.25) !important; }
+
+/* White fill overlays */
+[data-theme='iosClassic'] .bg-white\/5,
+[data-theme='iosClassic'] .hover\:bg-white\/5:hover { background-color: rgba(24, 40, 58, 0.05) !important; }
+[data-theme='iosClassic'] .bg-white\/10 { background-color: rgba(24, 40, 58, 0.08) !important; }
+[data-theme='iosClassic'] .bg-white\/15 { background-color: rgba(24, 40, 58, 0.12) !important; }
+
+/* Purple accent swapped to iOS gold in classic mode */
+[data-theme='iosClassic'] .bg-purple\/10,
+[data-theme='iosClassic'] .bg-purple\/15 { background-color: rgba(184, 120, 10, 0.14) !important; }
+[data-theme='iosClassic'] .bg-purple\/20 { background-color: rgba(184, 120, 10, 0.22) !important; }
+[data-theme='iosClassic'] .border-purple\/30 { border-color: rgba(184, 120, 10, 0.4) !important; }
+[data-theme='iosClassic'] .text-purple-light { color: var(--ehb-a1) !important; }
+[data-theme='iosClassic'] .border-purple-light { border-color: var(--ehb-a2) !important; }
+[data-theme='iosClassic'] .ring-purple\/40 { --tw-ring-color: rgba(184, 120, 10, 0.4) !important; }
+
+/* Sidebar active state — swap purple gradient to gold gradient */
+[data-theme='iosClassic'] .bg-gradient-to-r.from-purple\/30 {
+  background: linear-gradient(to right, rgba(216, 144, 32, 0.35), rgba(216, 144, 32, 0.1)) !important;
+  color: var(--ehb-text) !important;
+}
+
+/* Divides */
+[data-theme='iosClassic'] .divide-white\/5 > * + * { border-color: rgba(24, 40, 58, 0.08) !important; }
+
+/* Ok/Warn/Fail tone chips stay readable in both themes (no change needed) */
+
+/* Plastic card shadow — invert for light theme */
+[data-theme='iosClassic'] .plastic-shimmer::after {
+  background: linear-gradient(
+    110deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 60%
+  );
+}
+
+/* Hover highlights */
+[data-theme='iosClassic'] .hover\:border-purple-light:hover { border-color: var(--ehb-a2) !important; }

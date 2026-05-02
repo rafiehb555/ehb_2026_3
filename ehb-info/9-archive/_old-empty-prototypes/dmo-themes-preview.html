@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DMO Dashboard · 4 Theme Previews · EHB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg-root: #0C0E1A;
+    --bg-card: #13162A;
+    --bg-nested: #1A1D33;
+    --purple: #7B6EF6;
+    --purple-light: #A098F8;
+    --teal: #2BBFA0;
+    --amber: #F0A030;
+    --red: #F05858;
+    --green: #38C878;
+    --text: #EDEEF7;
+    --text-dim: #9AA0C0;
+    --text-mute: #6B6F90;
+    --border: rgba(255,255,255,0.08);
+    --border-soft: rgba(255,255,255,0.05);
+    --grad-primary: linear-gradient(135deg,#7B6EF6 0%,#A098F8 100%);
+    --grad-critical: linear-gradient(135deg,#F05858 0%,#F0A030 100%);
+    --grad-trust: linear-gradient(135deg,#2BBFA0 0%,#38C878 100%);
+    --grad-ai: linear-gradient(135deg,#7B6EF6 0%,#2BBFA0 100%);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg-root); color: var(--text); font-family: "DM Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(123,110,246,0.18), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(43,191,160,0.12), transparent 60%),
+      var(--bg-root);
+    padding: 48px 56px 120px;
+  }
+
+  /* ============ PAGE HEADER ============ */
+  .page-head { max-width: 1400px; margin: 0 auto 40px; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(123,110,246,0.15);
+    border: 1px solid rgba(123,110,246,0.35);
+    color: var(--purple-light);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--purple-light); box-shadow: 0 0 12px var(--purple-light); }
+  h1 { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; margin: 16px 0 10px; }
+  .sub { color: var(--text-dim); font-size: 16px; max-width: 720px; line-height: 1.6; }
+
+  /* ============ THEME GRID ============ */
+  .theme-grid {
+    max-width: 1400px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px;
+  }
+  @media (max-width: 1100px) { .theme-grid { grid-template-columns: 1fr; } }
+
+  .theme-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    display: flex; flex-direction: column;
+  }
+  .theme-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(123,110,246,0.4);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(123,110,246,0.2);
+  }
+  .theme-meta {
+    padding: 24px 26px 18px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  }
+  .theme-meta h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .theme-meta .mood { color: var(--text-dim); font-size: 13px; margin-top: 6px; }
+  .theme-num {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--grad-primary);
+    display: grid; place-items: center;
+    font-size: 18px; font-weight: 700; color: #fff;
+    box-shadow: 0 8px 24px rgba(123,110,246,0.35);
+    flex-shrink: 0;
+  }
+  .theme-card[data-theme="2"] .theme-num { background: linear-gradient(135deg,#d4d8e8 0%,#8b90a8 100%); box-shadow: 0 8px 24px rgba(180,184,200,0.3); }
+  .theme-card[data-theme="3"] .theme-num { background: var(--grad-critical); box-shadow: 0 8px 24px rgba(240,88,88,0.35); }
+  .theme-card[data-theme="4"] .theme-num { background: var(--grad-ai); box-shadow: 0 8px 24px rgba(43,191,160,0.35); }
+
+  /* ============ PREVIEW CANVAS ============ */
+  .preview {
+    aspect-ratio: 16/10;
+    position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .preview-inner {
+    position: absolute; inset: 0;
+    padding: 16px;
+    display: flex; gap: 10px;
+  }
+
+  /* ---- THEME 1: Dark Glass Command ---- */
+  .t1 { background: radial-gradient(600px 300px at 0 0, rgba(123,110,246,0.2), transparent 60%), radial-gradient(500px 260px at 100% 100%, rgba(43,191,160,0.15), transparent 60%), #0C0E1A; }
+  .t1 .sidebar { width: 80px; background: rgba(19,22,42,0.85); border: 1px solid var(--border); border-radius: 10px; padding: 10px 6px; display: flex; flex-direction: column; gap: 6px; }
+  .t1 .brand { width: 100%; height: 28px; border-radius: 6px; background: var(--grad-primary); }
+  .t1 .nav-i { height: 22px; border-radius: 5px; background: rgba(255,255,255,0.05); }
+  .t1 .nav-i.active { background: rgba(123,110,246,0.25); border: 1px solid rgba(123,110,246,0.4); }
+  .t1 .main { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .t1 .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  .t1 .stat { background: rgba(19,22,42,0.9); border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+  .t1 .stat .lbl { font-size: 8px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .t1 .stat .val { font-size: 18px; font-weight: 700; }
+  .t1 .stat .d { font-size: 8px; color: var(--green); }
+  .t1 .stat.warn .d { color: var(--amber); }
+  .t1 .stat.crit { border-color: rgba(240,88,88,0.35); }
+  .t1 .stat.crit .d { color: var(--red); }
+  .t1 .row { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; flex: 1; }
+  .t1 .chart { background: rgba(19,22,42,0.9); border: 1px solid var(--border); border-radius: 10px; padding: 10px; position: relative; overflow: hidden; }
+  .t1 .chart svg { width: 100%; height: 100%; }
+  .t1 .feed { background: rgba(19,22,42,0.9); border: 1px solid var(--border); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
+  .t1 .alert { padding: 4px 6px; border-radius: 5px; font-size: 8px; color: var(--text-dim); display: flex; align-items: center; gap: 4px; }
+  .t1 .alert::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+  .t1 .alert.r { background: rgba(240,88,88,0.12); color: #ff9a9a; }
+  .t1 .alert.r::before { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .t1 .alert.a { background: rgba(240,160,48,0.12); color: #ffc97c; }
+  .t1 .alert.a::before { background: var(--amber); }
+  .t1 .alert.t { background: rgba(43,191,160,0.12); color: #7ce4cb; }
+  .t1 .alert.t::before { background: var(--teal); }
+
+  /* ---- THEME 2: Silver 3D Premium ---- */
+  .t2 {
+    background:
+      radial-gradient(ellipse 800px 400px at 50% 0%, rgba(255,255,255,0.12), transparent 70%),
+      linear-gradient(180deg, #e8ebf2 0%, #c6cad8 50%, #a8adc0 100%);
+  }
+  .t2::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg, transparent 0 8px, rgba(255,255,255,0.04) 8px 9px),
+      repeating-linear-gradient(-45deg, transparent 0 12px, rgba(0,0,0,0.03) 12px 13px);
+    pointer-events: none;
+  }
+  .t2 .preview-inner { flex-direction: column; padding: 14px; }
+  .t2 .topbar { display: flex; justify-content: space-between; align-items: center; background: rgba(19,22,42,0.88); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 14px; }
+  .t2 .topbar .logo { display: flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; font-size: 11px; }
+  .t2 .topbar .logo::before { content: ''; width: 18px; height: 18px; border-radius: 5px; background: var(--grad-primary); }
+  .t2 .topnav { display: flex; gap: 10px; }
+  .t2 .topnav span { font-size: 8px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em; }
+  .t2 .topnav span.a { color: var(--purple-light); }
+  .t2 .hero { flex: 1; margin-top: 12px; display: grid; grid-template-columns: 1fr 280px; gap: 12px; }
+  .t2 .globe {
+    background: rgba(19,22,42,0.88); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    position: relative; overflow: hidden;
+    display: grid; place-items: center;
+  }
+  .t2 .globe-ring {
+    width: 140px; height: 140px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(123,110,246,0.6), rgba(43,191,160,0.3) 50%, transparent 70%);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 0 60px rgba(123,110,246,0.4), inset 0 0 40px rgba(43,191,160,0.2);
+    position: relative;
+  }
+  .t2 .globe-ring::before, .t2 .globe-ring::after {
+    content: ''; position: absolute; inset: -8px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .t2 .globe-ring::after { inset: -20px; }
+  .t2 .globe-label { position: absolute; bottom: 12px; left: 14px; color: #fff; font-size: 9px; }
+  .t2 .globe-label b { display: block; font-size: 14px; font-weight: 700; }
+  .t2 .side { display: flex; flex-direction: column; gap: 8px; }
+  .t2 .pcard {
+    background: rgba(19,22,42,0.88); backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+    padding: 10px 12px;
+    color: #fff;
+  }
+  .t2 .pcard .k { font-size: 8px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.06em; }
+  .t2 .pcard .v { font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .t2 .pcard .g { font-size: 9px; margin-top: 4px; }
+  .t2 .pcard .g.ok { color: var(--green); }
+
+  /* ---- THEME 3: Data-Dense Ops Console ---- */
+  .t3 { background: #07090F; font-family: "JetBrains Mono", monospace; }
+  .t3 .preview-inner { gap: 6px; padding: 10px; }
+  .t3 .iconbar { width: 44px; background: #0A0C14; border: 1px solid #1C1F3A; border-radius: 6px; display: flex; flex-direction: column; padding: 6px 4px; gap: 4px; }
+  .t3 .ic { height: 26px; border-radius: 4px; background: #13162A; }
+  .t3 .ic.a { background: var(--purple); }
+  .t3 .center { flex: 1; background: #0A0C14; border: 1px solid #1C1F3A; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+  .t3 .head { display: flex; justify-content: space-between; font-size: 8px; color: #6B6F90; text-transform: uppercase; letter-spacing: 0.1em; padding-bottom: 4px; border-bottom: 1px solid #1C1F3A; }
+  .t3 .head b { color: #EDEEF7; }
+  .t3 .tbl { display: flex; flex-direction: column; gap: 2px; font-size: 9px; }
+  .t3 .tbl .tr { display: grid; grid-template-columns: 70px 1fr 50px 40px; padding: 3px 4px; border-radius: 3px; color: #9AA0C0; }
+  .t3 .tbl .tr:hover { background: rgba(123,110,246,0.1); }
+  .t3 .tbl .tr .g { color: var(--green); }
+  .t3 .tbl .tr .a { color: var(--amber); }
+  .t3 .tbl .tr .r { color: var(--red); }
+  .t3 .tbl .tr .t { color: var(--teal); }
+  .t3 .tape { width: 170px; background: #0A0C14; border: 1px solid #1C1F3A; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+  .t3 .tape .tl { font-size: 8px; color: #6B6F90; text-transform: uppercase; letter-spacing: 0.1em; padding-bottom: 4px; border-bottom: 1px solid #1C1F3A; display: flex; justify-content: space-between; align-items: center; }
+  .t3 .tape .tl::after { content: '●'; color: var(--green); font-size: 6px; animation: pulse 1.5s ease-in-out infinite; }
+  .t3 .tape .ev { font-size: 8px; color: #9AA0C0; padding: 3px 5px; border-left: 2px solid var(--teal); display: flex; justify-content: space-between; }
+  .t3 .tape .ev.r { border-left-color: var(--red); color: #ff9a9a; }
+  .t3 .tape .ev.a { border-left-color: var(--amber); color: #ffc97c; }
+  .t3 .tape .ev .t { color: #6B6F90; }
+
+  /* ---- THEME 4: AI-First Conversational ---- */
+  .t4 {
+    background:
+      radial-gradient(800px 500px at 20% 30%, rgba(123,110,246,0.22), transparent 60%),
+      radial-gradient(600px 400px at 90% 90%, rgba(43,191,160,0.15), transparent 60%),
+      #0C0E1A;
+  }
+  .t4 .preview-inner { gap: 10px; }
+  .t4 .chat {
+    flex: 0 0 44%;
+    background: rgba(19,22,42,0.75); backdrop-filter: blur(20px);
+    border: 1px solid rgba(123,110,246,0.25);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 8px;
+    box-shadow: 0 0 40px rgba(123,110,246,0.15);
+  }
+  .t4 .chat-head { display: flex; align-items: center; gap: 6px; padding-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+  .t4 .chat-head .av { width: 22px; height: 22px; border-radius: 6px; background: var(--grad-ai); display: grid; place-items: center; font-size: 11px; }
+  .t4 .chat-head .t { font-size: 10px; font-weight: 600; }
+  .t4 .chat-head .t small { display: block; color: var(--text-mute); font-size: 7px; font-weight: 400; }
+  .t4 .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .t4 .tabs span { font-size: 7px; padding: 3px 6px; border-radius: 999px; background: rgba(255,255,255,0.05); color: var(--text-dim); }
+  .t4 .tabs span.a { background: rgba(123,110,246,0.25); color: var(--purple-light); border: 1px solid rgba(123,110,246,0.4); }
+  .t4 .msg { padding: 7px 9px; border-radius: 8px; font-size: 8px; line-height: 1.5; }
+  .t4 .msg.u { background: rgba(123,110,246,0.15); align-self: flex-end; max-width: 80%; color: #D6D1FA; }
+  .t4 .msg.ai { background: rgba(43,191,160,0.1); max-width: 90%; color: #a8e8d4; border-left: 2px solid var(--teal); }
+  .t4 .input { margin-top: auto; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 8px; color: var(--text-mute); }
+  .t4 .right { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .t4 .sgst {
+    background: rgba(19,22,42,0.85); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px; position: relative; overflow: hidden;
+  }
+  .t4 .sgst::before {
+    content: '🤖'; position: absolute; top: 8px; right: 10px; font-size: 12px;
+    filter: drop-shadow(0 0 8px rgba(123,110,246,0.6));
+  }
+  .t4 .sgst.crit { border-color: rgba(240,88,88,0.35); background: linear-gradient(135deg, rgba(240,88,88,0.1), rgba(19,22,42,0.85)); }
+  .t4 .sgst .t { font-size: 9px; color: var(--text-mute); text-transform: uppercase; letter-spacing: 0.05em; }
+  .t4 .sgst .h { font-size: 11px; font-weight: 600; margin-top: 3px; }
+  .t4 .sgst .d { font-size: 8px; color: var(--text-dim); margin-top: 4px; line-height: 1.4; }
+  .t4 .sgst .btns { display: flex; gap: 4px; margin-top: 6px; }
+  .t4 .sgst .btns span { font-size: 7px; padding: 3px 8px; border-radius: 5px; background: rgba(123,110,246,0.2); color: var(--purple-light); border: 1px solid rgba(123,110,246,0.35); }
+  .t4 .sgst .btns span.gh { background: transparent; color: var(--text-mute); border-color: var(--border); }
+
+  /* ============ PROS / CONS FOOTER ============ */
+  .pros {
+    padding: 18px 26px 22px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .pros .col { font-size: 12px; }
+  .pros .col b { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; color: var(--text-mute); }
+  .pros .col.pro b { color: var(--green); }
+  .pros .col.con b { color: var(--amber); }
+  .pros .col p { color: var(--text-dim); line-height: 1.5; }
+
+  .pick {
+    padding: 14px 26px;
+    background: rgba(123,110,246,0.08);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .pick .lbl { font-size: 11px; color: var(--text-dim); }
+  .pick .lbl b { color: var(--text); display: block; font-size: 13px; }
+  .pick button {
+    background: var(--grad-primary); color: #fff; border: none;
+    font-family: inherit; font-size: 12px; font-weight: 600;
+    padding: 9px 16px; border-radius: 8px; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(123,110,246,0.35);
+    transition: transform .2s ease;
+  }
+  .pick button:hover { transform: translateY(-1px); }
+
+  .foot {
+    max-width: 1400px; margin: 48px auto 0;
+    color: var(--text-mute); font-size: 12px; text-align: center;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="eyebrow">DMO Dashboard · Theme Showdown</div>
+  <h1>4 Design Directions</h1>
+  <p class="sub">Ek ko pick karo, ma os ko full interactive prototype bana k <code>ehb-info/prototypes/dmo-dashboard-v2.html</code> man de dun ga — same 18 modules, same drill-in drawer, same design tokens, bas theme switch.</p>
+</div>
+
+<div class="theme-grid">
+
+  <!-- =================== THEME 1 =================== -->
+  <div class="theme-card" data-theme="1">
+    <div class="theme-meta">
+      <div>
+        <h2>Dark Glass Command</h2>
+        <div class="mood">Stripe + Linear · Daily ops · Serious &amp; dense</div>
+      </div>
+      <div class="theme-num">01</div>
+    </div>
+    <div class="preview t1">
+      <div class="preview-inner">
+        <div class="sidebar">
+          <div class="brand"></div>
+          <div class="nav-i active"></div>
+          <div class="nav-i"></div>
+          <div class="nav-i"></div>
+          <div class="nav-i"></div>
+          <div class="nav-i"></div>
+          <div class="nav-i"></div>
+        </div>
+        <div class="main">
+          <div class="stats">
+            <div class="stat"><div class="lbl">Users</div><div class="val">1,502</div><div class="d">▲ 26</div></div>
+            <div class="stat"><div class="lbl">Providers</div><div class="val">382</div><div class="d">▲ 9</div></div>
+            <div class="stat warn"><div class="lbl">Pending</div><div class="val">63</div><div class="d">▼ 4</div></div>
+            <div class="stat crit"><div class="lbl">Up-Guard</div><div class="val">3</div><div class="d">● critical</div></div>
+          </div>
+          <div class="row">
+            <div class="chart">
+              <svg viewBox="0 0 200 80" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g1a" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#7B6EF6" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#7B6EF6" stop-opacity="0"/>
+                  </linearGradient>
+                  <linearGradient id="g1b" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#2BBFA0" stop-opacity="0.5"/>
+                    <stop offset="100%" stop-color="#2BBFA0" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,60 L30,50 L60,52 L90,35 L120,40 L150,22 L180,28 L200,15 L200,80 L0,80 Z" fill="url(#g1a)"/>
+                <path d="M0,60 L30,50 L60,52 L90,35 L120,40 L150,22 L180,28 L200,15" fill="none" stroke="#7B6EF6" stroke-width="1.5"/>
+                <path d="M0,70 L30,65 L60,58 L90,60 L120,48 L150,45 L180,38 L200,32 L200,80 L0,80 Z" fill="url(#g1b)"/>
+                <path d="M0,70 L30,65 L60,58 L90,60 L120,48 L150,45 L180,38 L200,32" fill="none" stroke="#2BBFA0" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="feed">
+              <div class="alert r">Up-Guard · 10x spike</div>
+              <div class="alert r">Device collision · 4</div>
+              <div class="alert a">STL drop L6→L4</div>
+              <div class="alert a">SLA breach · 2h</div>
+              <div class="alert t">New seller L7</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pros">
+      <div class="col pro"><b>Pros</b><p>Current prototype ka polish · data-dense · daily DMO ops k liye ideal · already 80% done.</p></div>
+      <div class="col con"><b>Trade-offs</b><p>Thoda standard admin-panel jaisa · founder demo man wow-factor kam.</p></div>
+    </div>
+    <div class="pick">
+      <div class="lbl">Best for <b>Daily DMO operations</b></div>
+      <button>Select Theme 1</button>
+    </div>
+  </div>
+
+  <!-- =================== THEME 2 =================== -->
+  <div class="theme-card" data-theme="2">
+    <div class="theme-meta">
+      <div>
+        <h2>Silver 3D Premium</h2>
+        <div class="mood">Apple keynote + Tesla · Investor demos · Founder-facing</div>
+      </div>
+      <div class="theme-num">02</div>
+    </div>
+    <div class="preview t2">
+      <div class="preview-inner">
+        <div class="topbar">
+          <div class="logo">EHB DMO</div>
+          <div class="topnav"><span class="a">Command</span><span>STL</span><span>PSS</span><span>Wallet</span><span>Franchise</span></div>
+        </div>
+        <div class="hero">
+          <div class="globe">
+            <div class="globe-ring"></div>
+            <div class="globe-label">Global Trust Heatmap<b>98.4%</b></div>
+          </div>
+          <div class="side">
+            <div class="pcard"><div class="k">Total Users</div><div class="v">1,502</div><div class="g ok">▲ 26 this week</div></div>
+            <div class="pcard"><div class="k">Revenue MTD</div><div class="v">$42.1K</div><div class="g ok">▲ 12.4%</div></div>
+            <div class="pcard"><div class="k">STL Avg</div><div class="v">L5.2</div><div class="g ok">▲ 0.3</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pros">
+      <div class="col pro"><b>Pros</b><p>Investor/partner demo k liye perfect · premium unboxing feel · 3D Trust Globe signature · "billion-dollar" vibe.</p></div>
+      <div class="col con"><b>Trade-offs</b><p>18 modules ek screen man tight · secondary nav chahiye · daily ops k liye over-designed.</p></div>
+    </div>
+    <div class="pick">
+      <div class="lbl">Best for <b>Investor / founder demos</b></div>
+      <button>Select Theme 2</button>
+    </div>
+  </div>
+
+  <!-- =================== THEME 3 =================== -->
+  <div class="theme-card" data-theme="3">
+    <div class="theme-meta">
+      <div>
+        <h2>Data-Dense Ops Console</h2>
+        <div class="mood">Bloomberg terminal + Superhuman · Power users · Max density</div>
+      </div>
+      <div class="theme-num">03</div>
+    </div>
+    <div class="preview t3">
+      <div class="preview-inner">
+        <div class="iconbar">
+          <div class="ic a"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div>
+        </div>
+        <div class="center">
+          <div class="head"><b>OPS_CONSOLE &gt; DMO.LIVE</b><span>UPT 99.98 · LAT 12ms</span></div>
+          <div class="tbl">
+            <div class="tr"><span>USR-1842</span><span>Verify L6→L7</span><span class="g">+12 EHB</span><span class="g">OK</span></div>
+            <div class="tr"><span>SEL-0093</span><span>STL recalc</span><span class="t">L5.8</span><span class="t">RUN</span></div>
+            <div class="tr"><span>UG-FLG-4</span><span>10x spike $8.2K</span><span class="r">-0.82</span><span class="r">HOLD</span></div>
+            <div class="tr"><span>CRB-7712</span><span>Refill due 3d</span><span class="a">≤72h</span><span class="a">WARN</span></div>
+            <div class="tr"><span>USR-2901</span><span>PSS basic→full</span><span class="g">+0.4</span><span class="g">OK</span></div>
+            <div class="tr"><span>FRN-CY-04</span><span>Corporate L5</span><span class="t">20K lock</span><span class="t">LIVE</span></div>
+            <div class="tr"><span>PAY-9841</span><span>Escrow release</span><span class="g">$142</span><span class="g">OK</span></div>
+            <div class="tr"><span>UG-FLG-5</span><span>Device match</span><span class="r">-1.0</span><span class="r">BLOCK</span></div>
+          </div>
+        </div>
+        <div class="tape">
+          <div class="tl">LIVE TAPE</div>
+          <div class="ev r"><span>10× SPIKE</span><span class="t">00:12</span></div>
+          <div class="ev"><span>STL L6→L7</span><span class="t">00:11</span></div>
+          <div class="ev a"><span>SLA BREACH</span><span class="t">00:11</span></div>
+          <div class="ev r"><span>DEVICE DUP</span><span class="t">00:10</span></div>
+          <div class="ev"><span>PSS UP</span><span class="t">00:09</span></div>
+          <div class="ev"><span>REFILL OK</span><span class="t">00:08</span></div>
+          <div class="ev a"><span>VELOCITY</span><span class="t">00:07</span></div>
+          <div class="ev"><span>NEW SEL</span><span class="t">00:06</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="pros">
+      <div class="col pro"><b>Pros</b><p>Max information density · ops teams k liye dream · no clicks needed · L8 officers 50 alerts/min handle kar sakte.</p></div>
+      <div class="col con"><b>Trade-offs</b><p>New users k liye overwhelming · visual softness kam · onboarding curve zyada.</p></div>
+    </div>
+    <div class="pick">
+      <div class="lbl">Best for <b>L8 officers &amp; power users</b></div>
+      <button>Select Theme 3</button>
+    </div>
+  </div>
+
+  <!-- =================== THEME 4 =================== -->
+  <div class="theme-card" data-theme="4">
+    <div class="theme-meta">
+      <div>
+        <h2>AI-First Conversational</h2>
+        <div class="mood">Perplexity + Notion AI · Intelligence-led · Proactive</div>
+      </div>
+      <div class="theme-num">04</div>
+    </div>
+    <div class="preview t4">
+      <div class="preview-inner">
+        <div class="chat">
+          <div class="chat-head">
+            <div class="av">✦</div>
+            <div class="t">Ask DMO<small>6 AI models · online</small></div>
+          </div>
+          <div class="tabs">
+            <span class="a">Risk</span><span>Verify</span><span>Workflow</span><span>STL</span><span>Compliance</span><span>Recommend</span>
+          </div>
+          <div class="msg u">Aaj kaun sellers risky hain?</div>
+          <div class="msg ai">3 sellers flagged: SEL-0093 (10× spike), SEL-1842 (device dup), SEL-2901 (velocity anomaly). Chahain to batch review karun?</div>
+          <div class="msg u">Haan show karo</div>
+          <div class="input">Type your question…</div>
+        </div>
+        <div class="right">
+          <div class="sgst crit">
+            <div class="t">Proactive Alert</div>
+            <div class="h">3 sellers need review</div>
+            <div class="d">Up-Guard flagged 10× earning spike, device collision, wallet velocity anomaly.</div>
+            <div class="btns"><span>Review All</span><span class="gh">Dismiss</span></div>
+          </div>
+          <div class="sgst">
+            <div class="t">AI Insight</div>
+            <div class="h">Revenue ▲ 12.4% this week</div>
+            <div class="d">Driven by L7+ sellers (64% of volume). Recommend boost incentive.</div>
+            <div class="btns"><span>Apply Boost</span><span class="gh">Later</span></div>
+          </div>
+          <div class="sgst">
+            <div class="t">STL Optimizer</div>
+            <div class="h">12 users eligible L5→L6</div>
+            <div class="d">Trigger upgrade review? Estimated +$2.1K weekly revenue.</div>
+            <div class="btns"><span>Run</span><span class="gh">Skip</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pros">
+      <div class="col pro"><b>Pros</b><p>EHB AI Department vision front-and-center · proactive (AI ap ko batata hai, ap pooch te nahi) · future-proof · Phase-1 differentiator.</p></div>
+      <div class="col con"><b>Trade-offs</b><p>Chat-first UX adjustment chahiye · traditional admin users ko seekhna · AI cost per query.</p></div>
+    </div>
+    <div class="pick">
+      <div class="lbl">Best for <b>AI-first Phase-1 launch</b></div>
+      <button>Select Theme 4</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">
+  Ek pick karo · ma full prototype 1 ghante man de dun ga · <b>dmo-themes-preview.html</b>
+</div>
+
+</body>
+</html>

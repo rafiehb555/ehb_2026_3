@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EHB Trust System — Complete Flow Diagram</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0C0E1A;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    padding: 40px 20px 20px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header p {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+  }
+
+  /* ===== SECTION TITLES ===== */
+  .section-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #A098F8;
+    margin: 30px 0 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .section-subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.4);
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+
+  /* ===== FLOW CONTAINER ===== */
+  .flow-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ===== PHASE BOXES ===== */
+  .phase-row {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .phase-box {
+    background: #13162A;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 160px;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  .phase-box:hover {
+    border-color: rgba(123,110,246,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(123,110,246,0.15);
+  }
+  .phase-box .box-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .phase-box .box-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== USER TYPES ROW ===== */
+  .user-type { border-top: 3px solid; }
+  .user-type.buyer { border-color: #2BBFA0; }
+  .user-type.seller { border-color: #7B6EF6; }
+  .user-type.rider { border-color: #F0A030; }
+  .user-type.inspector { border-color: #F05858; }
+  .user-type.franchise { border-color: #38C878; }
+  .user-type.admin { border-color: #A098F8; }
+  .user-type.jobseeker { border-color: #29ABE2; }
+
+  /* ===== ARROWS ===== */
+  .arrow-down {
+    text-align: center;
+    margin: 8px 0;
+    color: rgba(255,255,255,0.3);
+    font-size: 24px;
+    line-height: 1;
+  }
+  .arrow-down.glow-purple { color: #7B6EF6; }
+  .arrow-down.glow-teal { color: #2BBFA0; }
+  .arrow-down.glow-amber { color: #F0A030; }
+
+  /* ===== THREE PILLARS ===== */
+  .three-pillars {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin: 20px auto;
+    flex-wrap: wrap;
+  }
+  .pillar {
+    background: #13162A;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    width: 320px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  .pillar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  }
+  .pillar.pss { border-top: 4px solid #29ABE2; }
+  .pillar.crb { border-top: 4px solid #F0A030; }
+  .pillar.dmo { border-top: 4px solid #38C878; }
+
+  .pillar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .pillar-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .pss .pillar-icon { background: rgba(41,171,226,0.15); color: #29ABE2; }
+  .crb .pillar-icon { background: rgba(240,160,48,0.15); color: #F0A030; }
+  .dmo .pillar-icon { background: rgba(56,200,120,0.15); color: #38C878; }
+
+  .pillar-name {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .pillar-type {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+  .pillar-weight {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    font-weight: 700;
+    opacity: 0.2;
+  }
+
+  /* ===== LEVEL LADDER ===== */
+  .level-ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 12px;
+  }
+  .level-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    transition: all 0.2s;
+    cursor: pointer;
+    background: rgba(255,255,255,0.02);
+  }
+  .level-bar:hover {
+    background: rgba(255,255,255,0.06);
+  }
+  .level-num {
+    font-weight: 700;
+    min-width: 24px;
+    font-size: 12px;
+  }
+  .pss .level-num { color: #29ABE2; }
+  .crb .level-num { color: #F0A030; }
+  .dmo .level-num { color: #38C878; }
+
+  .level-name {
+    flex: 1;
+    color: rgba(255,255,255,0.7);
+  }
+  .level-desc {
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    max-width: 120px;
+    text-align: right;
+  }
+
+  /* ===== HYBRID FORMULA ===== */
+  .hybrid-section {
+    max-width: 900px;
+    margin: 30px auto;
+  }
+  .hybrid-box {
+    background: linear-gradient(135deg, rgba(123,110,246,0.1), rgba(43,191,160,0.1));
+    border: 2px solid rgba(123,110,246,0.3);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hybrid-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(123,110,246,0.05), transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  .hybrid-title {
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .formula-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+  }
+  .formula-step {
+    background: #1A1D33;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: left;
+    position: relative;
+  }
+  .step-number {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: #7B6EF6;
+    color: #fff;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #A098F8;
+    margin-bottom: 6px;
+  }
+  .step-detail {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+  .step-code {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #2BBFA0;
+    white-space: pre-wrap;
+  }
+
+  /* ===== ROLE FORMULAS ===== */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  .role-card {
+    background: #13162A;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s;
+  }
+  .role-card:hover {
+    border-color: rgba(123,110,246,0.3);
+    transform: translateY(-2px);
+  }
+  .role-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .role-emoji { font-size: 24px; }
+  .role-name { font-weight: 600; font-size: 15px; }
+  .role-formula {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #A098F8;
+    margin-bottom: 8px;
+  }
+  .role-dims {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .dim-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: 600;
+  }
+  .dim-pss { background: rgba(41,171,226,0.15); color: #29ABE2; border: 1px solid rgba(41,171,226,0.3); }
+  .dim-crb { background: rgba(240,160,48,0.15); color: #F0A030; border: 1px solid rgba(240,160,48,0.3); }
+  .dim-dmo { background: rgba(56,200,120,0.15); color: #38C878; border: 1px solid rgba(56,200,120,0.3); }
+  .dim-wallet { background: rgba(123,110,246,0.15); color: #A098F8; border: 1px solid rgba(123,110,246,0.3); }
+  .dim-rps { background: rgba(240,88,88,0.15); color: #F05858; border: 1px solid rgba(240,88,88,0.3); }
+  .dim-ips { background: rgba(240,88,88,0.15); color: #F05858; border: 1px solid rgba(240,88,88,0.3); }
+
+  /* ===== FINAL STL ===== */
+  .final-stl {
+    max-width: 900px;
+    margin: 30px auto;
+    text-align: center;
+  }
+  .stl-result {
+    background: linear-gradient(135deg, rgba(43,191,160,0.15), rgba(123,110,246,0.15));
+    border: 2px solid #2BBFA0;
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+  }
+  .stl-badge {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    box-shadow: 0 0 40px rgba(123,110,246,0.3);
+  }
+  .stl-label {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .stl-sublabel {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  /* ===== THRESHOLD TABLE ===== */
+  .threshold-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 20px auto;
+    max-width: 900px;
+    font-size: 13px;
+  }
+  .threshold-table th {
+    background: #1A1D33;
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 600;
+    color: #A098F8;
+    border-bottom: 2px solid rgba(123,110,246,0.3);
+  }
+  .threshold-table td {
+    padding: 8px 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.7);
+  }
+  .threshold-table tr:hover td {
+    background: rgba(123,110,246,0.05);
+  }
+
+  /* ===== EXAMPLE CALCULATOR ===== */
+  .calc-section {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .calc-box {
+    background: #13162A;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .calc-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #F0A030;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .slider-group {
+    margin-bottom: 16px;
+  }
+  .slider-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .slider-label span:first-child { font-weight: 600; }
+  .slider-label .val { color: #F0A030; font-weight: 700; }
+  input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .slider-pss input { background: linear-gradient(to right, #1a2a3a, #29ABE2); }
+  .slider-pss input::-webkit-slider-thumb { background: #29ABE2; }
+  .slider-crb input { background: linear-gradient(to right, #2a2010, #F0A030); }
+  .slider-crb input::-webkit-slider-thumb { background: #F0A030; }
+  .slider-dmo input { background: linear-gradient(to right, #102a18, #38C878); }
+  .slider-dmo input::-webkit-slider-thumb { background: #38C878; }
+
+  .calc-result {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .calc-result-level {
+    font-size: 48px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #7B6EF6, #2BBFA0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .calc-result-name {
+    font-size: 14px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+  }
+  .calc-detail {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .calc-detail-item {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.05);
+    color: rgba(255,255,255,0.6);
+  }
+  .calc-blocked {
+    color: #F05858;
+    font-weight: 600;
+    margin-top: 8px;
+    font-size: 13px;
+  }
+
+  /* ===== MIN RULE ===== */
+  .min-rule {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+  .min-rule-box {
+    background: #13162A;
+    border: 1px solid rgba(240,88,88,0.3);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+  }
+  .min-rule-title {
+    color: #F05858;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .min-chain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .chain-item {
+    background: #1A1D33;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  .chain-arrow { color: #F05858; font-weight: 700; font-size: 18px; }
+  .chain-equals { color: #2BBFA0; font-weight: 700; font-size: 20px; }
+
+  /* ===== COMPLETE FLOW ===== */
+  .complete-flow {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+  .flow-timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .flow-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #29ABE2, #F0A030, #38C878, #7B6EF6, #2BBFA0);
+  }
+  .flow-step {
+    position: relative;
+    margin-bottom: 20px;
+    background: #13162A;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.3s;
+  }
+  .flow-step:hover {
+    border-color: rgba(123,110,246,0.3);
+    transform: translateX(4px);
+  }
+  .flow-step::before {
+    content: '';
+    position: absolute;
+    left: -33px;
+    top: 20px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid;
+  }
+  .flow-step.step-pss::before { border-color: #29ABE2; background: rgba(41,171,226,0.3); }
+  .flow-step.step-crb::before { border-color: #F0A030; background: rgba(240,160,48,0.3); }
+  .flow-step.step-dmo::before { border-color: #38C878; background: rgba(56,200,120,0.3); }
+  .flow-step.step-hybrid::before { border-color: #7B6EF6; background: rgba(123,110,246,0.3); }
+  .flow-step.step-final::before { border-color: #2BBFA0; background: rgba(43,191,160,0.3); }
+
+  .flow-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .flow-step-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+  .flow-step-systems {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .sys-tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .sys-gosellr { background: rgba(41,171,226,0.15); color: #29ABE2; }
+  .sys-dmo { background: rgba(56,200,120,0.15); color: #38C878; }
+  .sys-franchise { background: rgba(240,160,48,0.15); color: #F0A030; }
+  .sys-pss { background: rgba(123,110,246,0.15); color: #A098F8; }
+  .sys-crb { background: rgba(240,88,88,0.15); color: #F05858; }
+  .sys-wallet { background: rgba(43,191,160,0.15); color: #2BBFA0; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255,255,255,0.3);
+    font-size: 12px;
+  }
+
+  /* ===== TAB SYSTEM ===== */
+  .tab-container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+  .tab-buttons {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .tab-btn {
+    background: #1A1D33;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { border-color: rgba(123,110,246,0.3); color: #fff; }
+  .tab-btn.active {
+    background: rgba(123,110,246,0.15);
+    border-color: #7B6EF6;
+    color: #A098F8;
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .three-pillars { flex-direction: column; align-items: center; }
+    .pillar { width: 100%; max-width: 400px; }
+    .role-grid { grid-template-columns: 1fr; }
+    .min-chain { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== HEADER ====== -->
+<div class="header">
+  <h1>EHB TRUST SYSTEM — COMPLETE FLOW</h1>
+  <p>3-Dimensional Multi-Layer Trust Architecture — PSS + CRB + DMO → HYBRID → EHB-STL</p>
+</div>
+
+<!-- ====== SECTION 1: USER TYPES ENTRY ====== -->
+<div class="section-title">Phase 1 — User Entry (JPS)</div>
+<div class="section-subtitle">Har user JPS (Job Profile System) se enter hota hai</div>
+
+<div class="flow-container">
+  <div class="phase-row">
+    <div class="phase-box user-type buyer">
+      <div class="box-title" style="color:#2BBFA0">Buyer</div>
+      <div class="box-sub">GoSellr Shopper</div>
+    </div>
+    <div class="phase-box user-type seller">
+      <div class="box-title" style="color:#7B6EF6">Seller</div>
+      <div class="box-sub">GoSellr / Service</div>
+    </div>
+    <div class="phase-box user-type rider">
+      <div class="box-title" style="color:#F0A030">Rider</div>
+      <div class="box-sub">Delivery Partner</div>
+    </div>
+    <div class="phase-box user-type inspector">
+      <div class="box-title" style="color:#F05858">Inspector</div>
+      <div class="box-sub">CRB Verifier</div>
+    </div>
+    <div class="phase-box user-type franchise">
+      <div class="box-title" style="color:#38C878">Franchise</div>
+      <div class="box-sub">Territory Owner</div>
+    </div>
+    <div class="phase-box user-type admin">
+      <div class="box-title" style="color:#A098F8">Admin</div>
+      <div class="box-sub">DMO Operator</div>
+    </div>
+    <div class="phase-box user-type jobseeker">
+      <div class="box-title" style="color:#29ABE2">Job Seeker</div>
+      <div class="box-sub">JPS Applicant</div>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down glow-purple">▼ ▼ ▼ ▼ ▼ ▼ ▼</div>
+
+<!-- ====== SECTION 2: THREE PILLARS ====== -->
+<div class="section-title">Phase 2 — 3 Trust Dimensions (Independent Scoring)</div>
+<div class="section-subtitle">Har dimension ka apna L1→L10 level hai — independently calculate hota hai</div>
+
+<div class="flow-container">
+  <div class="three-pillars">
+
+    <!-- PSS PILLAR -->
+    <div class="pillar pss">
+      <div class="pillar-weight">40%</div>
+      <div class="pillar-header">
+        <div class="pillar-icon">🔐</div>
+        <div>
+          <div class="pillar-name">PSS</div>
+          <div class="pillar-type">Identity Trust — "Yeh insaan KAUN hai?"</div>
+        </div>
+      </div>
+      <div class="level-ladder">
+        <div class="level-bar"><span class="level-num">L1</span><span class="level-name">Email Only</span><span class="level-desc">Email verified</span></div>
+        <div class="level-bar"><span class="level-num">L2</span><span class="level-name">Phone Verified</span><span class="level-desc">OTP confirmed</span></div>
+        <div class="level-bar"><span class="level-num">L3</span><span class="level-name">ID Uploaded</span><span class="level-desc">CNIC + NADRA check</span></div>
+        <div class="level-bar"><span class="level-num">L4</span><span class="level-name">Face Matched</span><span class="level-desc">Selfie vs ID photo</span></div>
+        <div class="level-bar"><span class="level-num">L5</span><span class="level-name">Address Verified</span><span class="level-desc">Utility bill proof</span></div>
+        <div class="level-bar"><span class="level-num">L6</span><span class="level-name">Liveness Passed</span><span class="level-desc">Anti-spoof check</span></div>
+        <div class="level-bar"><span class="level-num">L7</span><span class="level-name">Device Bound</span><span class="level-desc">One device = one ID</span></div>
+        <div class="level-bar"><span class="level-num">L8</span><span class="level-name">Video Verified</span><span class="level-desc">Live video call</span></div>
+        <div class="level-bar"><span class="level-num">L9</span><span class="level-name">Continuous Monitor</span><span class="level-desc">Ongoing AML watch</span></div>
+        <div class="level-bar"><span class="level-num">L10</span><span class="level-name">Fully Verified</span><span class="level-desc">All 27 features ✓</span></div>
+      </div>
+    </div>
+
+    <!-- CRB PILLAR -->
+    <div class="pillar crb">
+      <div class="pillar-weight">35%</div>
+      <div class="pillar-header">
+        <div class="pillar-icon">🏭</div>
+        <div>
+          <div class="pillar-name">CRB</div>
+          <div class="pillar-type">Physical Trust — "Yeh cheez ASLI hai?"</div>
+        </div>
+      </div>
+      <div class="level-ladder">
+        <div class="level-bar"><span class="level-num">L1</span><span class="level-name">None</span><span class="level-desc">No inspection</span></div>
+        <div class="level-bar"><span class="level-num">L2</span><span class="level-name">Basic</span><span class="level-desc">Document review</span></div>
+        <div class="level-bar"><span class="level-num">L3</span><span class="level-name">1 Pass</span><span class="level-desc">First inspection ✓</span></div>
+        <div class="level-bar"><span class="level-num">L4</span><span class="level-name">2 Passes</span><span class="level-desc">Consistent quality</span></div>
+        <div class="level-bar"><span class="level-num">L5</span><span class="level-name">Verified</span><span class="level-desc">Full CRB certified</span></div>
+        <div class="level-bar"><span class="level-num">L6</span><span class="level-name">Re-checked</span><span class="level-desc">6-month re-verify ✓</span></div>
+        <div class="level-bar"><span class="level-num">L7</span><span class="level-name">Multi-Category</span><span class="level-desc">2+ industry types</span></div>
+        <div class="level-bar"><span class="level-num">L8</span><span class="level-name">Dual Inspector</span><span class="level-desc">2 inspectors matched</span></div>
+        <div class="level-bar"><span class="level-num">L9</span><span class="level-name">Continuous Audit</span><span class="level-desc">Regular + surprise</span></div>
+        <div class="level-bar"><span class="level-num">L10</span><span class="level-name">Premium Verified</span><span class="level-desc">Zero fails + history</span></div>
+      </div>
+    </div>
+
+    <!-- DMO PILLAR -->
+    <div class="pillar dmo">
+      <div class="pillar-weight">25%</div>
+      <div class="pillar-header">
+        <div class="pillar-icon">📊</div>
+        <div>
+          <div class="pillar-name">DMO</div>
+          <div class="pillar-type">Behavioral Trust — "Yeh banda KAISA hai?"</div>
+        </div>
+      </div>
+      <div class="level-ladder">
+        <div class="level-bar"><span class="level-num">L1</span><span class="level-name">New</span><span class="level-desc">Just registered</span></div>
+        <div class="level-bar"><span class="level-num">L2</span><span class="level-name">Clean</span><span class="level-desc">No complaints</span></div>
+        <div class="level-bar"><span class="level-num">L3</span><span class="level-name">Active</span><span class="level-desc">Regular usage</span></div>
+        <div class="level-bar"><span class="level-num">L4</span><span class="level-name">Verified</span><span class="level-desc">DMO approved</span></div>
+        <div class="level-bar"><span class="level-num">L5</span><span class="level-name">Trusted</span><span class="level-desc">Good track record</span></div>
+        <div class="level-bar"><span class="level-num">L6</span><span class="level-name">Strong</span><span class="level-desc">High compliance</span></div>
+        <div class="level-bar"><span class="level-num">L7</span><span class="level-name">High Compliance</span><span class="level-desc">Excellent metrics</span></div>
+        <div class="level-bar"><span class="level-num">L8</span><span class="level-name">Elite</span><span class="level-desc">DMO review passed</span></div>
+        <div class="level-bar"><span class="level-num">L9</span><span class="level-name">Premium</span><span class="level-desc">Near-perfect record</span></div>
+        <div class="level-bar"><span class="level-num">L10</span><span class="level-name">Supreme</span><span class="level-desc">Board approved</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="arrow-down glow-purple" style="font-size:30px">⬇</div>
+
+<!-- ====== SECTION 3: HYBRID FORMULA ====== -->
+<div class="section-title">Phase 3 — HYBRID Formula (The Magic)</div>
+<div class="section-subtitle">Teeno dimensions COMBINE ho kar FINAL EHB-STL banate hain</div>
+
+<div class="hybrid-section" style="padding:0 20px">
+  <div class="hybrid-box">
+    <div class="hybrid-title">HYBRID COMBINATION FORMULA</div>
+    <div class="formula-steps">
+
+      <div class="formula-step">
+        <div class="step-number">1</div>
+        <div class="step-title">THRESHOLD CHECK — Gate Keeper</div>
+        <div class="step-detail">Kya teeno dimensions minimum requirement meet karte hain? Agar koi bhi LOW hai → BLOCK!</div>
+        <div class="step-code">Example: Target STL-L5 chahiye?
+→ PSS minimum L5 chahiye ✓
+→ CRB minimum L5 chahiye ✓
+→ DMO minimum L5 chahiye ✓
+Agar CRB sirf L3 hai → L5 BLOCKED! ✗</div>
+      </div>
+
+      <div class="formula-step">
+        <div class="step-number">2</div>
+        <div class="step-title">WEIGHTED CALCULATION — Score</div>
+        <div class="step-detail">Har dimension ka weight different hai:</div>
+        <div class="step-code">Standard Formula (Seller/Inspector/Franchise):
+  = (PSS × 40%) + (CRB × 35%) + (DMO × 25%)
+
+Example: PSS=L8, CRB=L5, DMO=L7
+  = (8 × 0.40) + (5 × 0.35) + (7 × 0.25)
+  = 3.2 + 1.75 + 1.75
+  = 6.7 → Round down → L6</div>
+      </div>
+
+      <div class="formula-step">
+        <div class="step-number">3</div>
+        <div class="step-title">CAP BY LOWEST +1 — Safety Net</div>
+        <div class="step-detail">Final STL kabhi bhi LOWEST sub-level se +1 zyada nahi ho sakta. Yeh prevent karta hai ke ek strong area weak area ko mask kare.</div>
+        <div class="step-code">Example: PSS=L9, CRB=L3, DMO=L8
+  Weighted = L6 (from calculation)
+  Lowest = CRB L3
+  Max allowed = L3 + 1 = L4
+  FINAL = L4 ← CAPPED! CRB is bottleneck</div>
+      </div>
+
+      <div class="formula-step">
+        <div class="step-number">4</div>
+        <div class="step-title">WALLET MULTIPLIER — Bonus</div>
+        <div class="step-detail">EHBGC lock karoge → trust boost milega. Wallet ek separate level nahi hai — yeh MULTIPLIER hai.</div>
+        <div class="step-code">No lock   → ×1.00 (no change)
+Small     → ×1.05 (+5%)
+Medium    → ×1.10 (+10%)
+High      → ×1.15 (+15%)
+Maximum   → ×1.20 (+20%)
+
+"Kitna paisa lagaya hai — skin in the game"</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down glow-teal" style="font-size:30px">⬇</div>
+
+<!-- ====== SECTION 4: ROLE-BASED FORMULAS ====== -->
+<div class="section-title">Phase 4 — Role-Based Formulas</div>
+<div class="section-subtitle">Har user type ka DIFFERENT formula hai — kyunke requirements different hain</div>
+
+<div class="role-grid">
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">🛒</span>
+      <span class="role-name">Buyer</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, DMO) — No CRB needed</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 55%</span>
+      <span class="dim-chip dim-dmo">DMO 45%</span>
+      <span class="dim-chip dim-wallet">Wallet Optional</span>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">🏪</span>
+      <span class="role-name">Seller</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, CRB, DMO)</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 40%</span>
+      <span class="dim-chip dim-crb">CRB 35%</span>
+      <span class="dim-chip dim-dmo">DMO 25%</span>
+      <span class="dim-chip dim-wallet">Wallet Optional</span>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">🛠️</span>
+      <span class="role-name">Service Provider</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, CRB, DMO, Wallet-Lock)</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 40%</span>
+      <span class="dim-chip dim-crb">CRB 35%</span>
+      <span class="dim-chip dim-dmo">DMO 25%</span>
+      <span class="dim-chip dim-wallet">Wallet MANDATORY</span>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">🏍️</span>
+      <span class="role-name">Rider</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, DMO, RPS)</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 45%</span>
+      <span class="dim-chip dim-dmo">DMO 35%</span>
+      <span class="dim-chip dim-rps">RPS 20%</span>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">🔍</span>
+      <span class="role-name">Inspector</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, CRB, DMO, IPS)</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 40%</span>
+      <span class="dim-chip dim-crb">CRB 35%</span>
+      <span class="dim-chip dim-dmo">DMO 25%</span>
+      <span class="dim-chip dim-ips">IPS Score</span>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">🏢</span>
+      <span class="role-name">Franchise Owner</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, CRB, DMO, Wallet, Perf)</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 40%</span>
+      <span class="dim-chip dim-crb">CRB 35%</span>
+      <span class="dim-chip dim-dmo">DMO 25%</span>
+      <span class="dim-chip dim-wallet">Wallet 50K-1M</span>
+    </div>
+  </div>
+
+  <div class="role-card">
+    <div class="role-header">
+      <span class="role-emoji">👨‍💼</span>
+      <span class="role-name">Admin / DMO Operator</span>
+    </div>
+    <div class="role-formula">STL = f(PSS, DMO) — Must be L8+</div>
+    <div class="role-dims">
+      <span class="dim-chip dim-pss">PSS 55%</span>
+      <span class="dim-chip dim-dmo">DMO 45%</span>
+    </div>
+  </div>
+</div>
+
+<div class="arrow-down glow-teal" style="font-size:30px">⬇</div>
+
+<!-- ====== SECTION 5: FINAL STL ====== -->
+<div class="section-title">Phase 5 — Final EHB-STL Level</div>
+<div class="section-subtitle">Sab combine ho kar FINAL trust level banta hai</div>
+
+<div class="final-stl" style="padding:0 20px">
+  <div class="stl-result">
+    <div class="stl-badge">STL</div>
+    <div class="stl-label">EHB Service Trust Level</div>
+    <div class="stl-sublabel">L1 (FREE) → L10 (SUPREME)</div>
+  </div>
+</div>
+
+<!-- Threshold Table -->
+<div style="padding:0 20px; max-width:920px; margin:20px auto; overflow-x:auto;">
+<table class="threshold-table">
+  <tr>
+    <th>Target STL</th>
+    <th>Min PSS</th>
+    <th>Min CRB</th>
+    <th>Min DMO</th>
+    <th>EHBGC Lock</th>
+    <th>Features</th>
+  </tr>
+  <tr><td><b style="color:#2BBFA0">L1 FREE</b></td><td>L1</td><td>L1</td><td>L1</td><td>0</td><td>Browse only</td></tr>
+  <tr><td><b style="color:#2BBFA0">L2 BASIC</b></td><td>L2</td><td>L1</td><td>L2</td><td>0</td><td>Can buy (limited)</td></tr>
+  <tr><td><b style="color:#29ABE2">L3 NORMAL</b></td><td>L3</td><td>L1</td><td>L3</td><td>100</td><td>Full buying, COD, basic selling</td></tr>
+  <tr><td><b style="color:#29ABE2">L4 STANDARD</b></td><td>L4</td><td>L3</td><td>L4</td><td>300</td><td>Full seller access</td></tr>
+  <tr><td><b style="color:#7B6EF6">L5 ADVANCED</b></td><td>L5</td><td>L5</td><td>L5</td><td>700</td><td>Extended categories, franchise eligible</td></tr>
+  <tr><td><b style="color:#7B6EF6">L6 HIGH</b></td><td>L6</td><td>L5</td><td>L6</td><td>1,500</td><td>Premium badge, priority support</td></tr>
+  <tr><td><b style="color:#F0A030">L7 PRO</b></td><td>L7</td><td>L7</td><td>L7</td><td>3,000</td><td>Elite seller, franchise owner rights</td></tr>
+  <tr><td><b style="color:#F0A030">L8 VIP</b></td><td>L8</td><td>L8</td><td>L8</td><td>7,000</td><td>Enterprise, multi-territory</td></tr>
+  <tr><td><b style="color:#F05858">L9 ELITE</b></td><td>L9</td><td>L9</td><td>L9</td><td>15,000</td><td>API access, custom integrations</td></tr>
+  <tr><td><b style="color:#F05858">L10 SUPREME</b></td><td>L10</td><td>L10</td><td>L10</td><td>30,000</td><td>DMO voting, white-label, unlimited</td></tr>
+</table>
+</div>
+
+<!-- ====== MIN RULE ====== -->
+<div class="min-rule">
+  <div class="min-rule-box">
+    <div class="min-rule-title">⚠️ MIN RULE — Chain Ki Sabse Kamzor Karhi</div>
+    <p style="color:rgba(255,255,255,0.6); font-size:13px; margin-bottom:12px">
+      Product ka final STL = sabse kamzor entity ka STL. Ek bhi link weak → sab weak.
+    </p>
+    <div class="min-chain">
+      <div class="chain-item">📦 Product STL<br><small style="color:#2BBFA0">L7</small></div>
+      <span class="chain-arrow">≤</span>
+      <div class="chain-item">🏪 Seller STL<br><small style="color:#7B6EF6">L5</small></div>
+      <span class="chain-arrow">≤</span>
+      <div class="chain-item">🏢 Company STL<br><small style="color:#F0A030">L6</small></div>
+      <span class="chain-arrow">≤</span>
+      <div class="chain-item">👤 Owner STL<br><small style="color:#38C878">L8</small></div>
+      <span class="chain-equals">=</span>
+      <div class="chain-item" style="border-color:#F05858; background:rgba(240,88,88,0.1)">
+        <b style="color:#F05858">FINAL: L5</b><br>
+        <small style="color:rgba(255,255,255,0.4)">Seller is weakest</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== INTERACTIVE CALCULATOR ====== -->
+<div class="section-title">Interactive Calculator</div>
+<div class="section-subtitle">PSS, CRB, DMO sliders move karein aur dekhen STL kaise change hota hai</div>
+
+<div class="calc-section">
+  <div class="calc-box">
+    <div class="calc-title">🧮 STL HYBRID Calculator</div>
+
+    <div style="margin-bottom:12px">
+      <label style="font-size:12px; color:rgba(255,255,255,0.5)">Select Role:</label>
+      <select id="roleSelect" onchange="recalculate()" style="background:#1A1D33; border:1px solid rgba(255,255,255,0.1); color:#fff; padding:6px 12px; border-radius:8px; font-family:'DM Sans'; font-size:13px; margin-left:8px;">
+        <option value="seller">Seller (PSS+CRB+DMO)</option>
+        <option value="buyer">Buyer (PSS+DMO only)</option>
+        <option value="rider">Rider (PSS+DMO+RPS)</option>
+        <option value="franchise">Franchise Owner</option>
+        <option value="inspector">Inspector</option>
+        <option value="admin">Admin/DMO</option>
+      </select>
+    </div>
+
+    <div class="slider-group slider-pss">
+      <div class="slider-label"><span style="color:#29ABE2">🔐 PSS Level (Identity)</span><span class="val" id="pssVal" style="color:#29ABE2">L5</span></div>
+      <input type="range" min="1" max="10" value="5" id="pssSlider" oninput="recalculate()">
+    </div>
+
+    <div class="slider-group slider-crb" id="crbGroup">
+      <div class="slider-label"><span style="color:#F0A030">🏭 CRB Level (Physical)</span><span class="val" id="crbVal" style="color:#F0A030">L5</span></div>
+      <input type="range" min="1" max="10" value="5" id="crbSlider" oninput="recalculate()">
+    </div>
+
+    <div class="slider-group slider-dmo">
+      <div class="slider-label"><span style="color:#38C878">📊 DMO Level (Behavioral)</span><span class="val" id="dmoVal" style="color:#38C878">L5</span></div>
+      <input type="range" min="1" max="10" value="5" id="dmoSlider" oninput="recalculate()">
+    </div>
+
+    <div class="calc-result">
+      <div style="font-size:12px; color:rgba(255,255,255,0.4); margin-bottom:4px">FINAL EHB-STL LEVEL</div>
+      <div class="calc-result-level" id="resultLevel">L5</div>
+      <div class="calc-result-name" id="resultName">ADVANCED</div>
+      <div class="calc-detail" id="calcDetails"></div>
+      <div class="calc-blocked" id="calcBlocked"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== COMPLETE USER FLOW (TABBED) ====== -->
+<div class="section-title">Complete User Flows — Step by Step</div>
+<div class="section-subtitle">Har user type ka flow dekhen — GoSellr + DMO + Franchise integration ke saath</div>
+
+<div class="tab-container">
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="showTab('buyer-flow')">🛒 Buyer</button>
+    <button class="tab-btn" onclick="showTab('seller-flow')">🏪 Seller</button>
+    <button class="tab-btn" onclick="showTab('rider-flow')">🏍️ Rider</button>
+    <button class="tab-btn" onclick="showTab('inspector-flow')">🔍 Inspector</button>
+    <button class="tab-btn" onclick="showTab('franchise-flow')">🏢 Franchise</button>
+  </div>
+
+  <!-- BUYER FLOW -->
+  <div class="tab-content active" id="buyer-flow">
+    <div class="flow-timeline">
+      <div class="flow-step step-pss">
+        <div class="flow-step-title">1. Register → JPS → PSS Verification</div>
+        <div class="flow-step-desc">Name + Phone + Email → OTP verify → PSS-L2 assigned → DMO-L1 (New) → STL = L1</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-pss">PSS</span><span class="sys-tag sys-dmo">DMO</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">2. Home Dashboard → AI Recommendations</div>
+        <div class="flow-step-desc">Personalized products, nearby sellers (sorted by STL), franchise territory content</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Analytics</span><span class="sys-tag sys-franchise">Franchise Zone</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">3. Browse Products → Trust Badges Visible</div>
+        <div class="flow-step-desc">Product cards show: Price, Rating⭐, Seller STL Badge🏅, CRB Verified badge, Delivery time</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Risk</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">4. Add to Cart → STL Eligibility Check</div>
+        <div class="flow-step-desc">COD allowed only if STL ≥ L3. High-value orders (>5K PKR) need STL ≥ L4. DMO checks compliance.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Compliance</span></div>
+      </div>
+      <div class="flow-step step-hybrid">
+        <div class="flow-step-title">5. Place Order → Escrow + Revenue Split</div>
+        <div class="flow-step-desc">Payment → Escrow hold → 2% service charge → DMO SLA timer starts → Franchise dashboard shows order → Revenue split: 50/30/15/3/2</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-wallet">Wallet Escrow</span><span class="sys-tag sys-dmo">DMO Finance</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">6. Delivery → OTP Confirm → Rider STL Visible</div>
+        <div class="flow-step-desc">Rider assigned from franchise zone → GPS tracking → OTP/photo at delivery → DMO tracks SLAs</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Ops</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+      <div class="flow-step step-final">
+        <div class="flow-step-title">7. Review + Complaint → STL Impact</div>
+        <div class="flow-step-desc">Rating → Seller STL affected. Complaint → AI auto-review → Franchise review → DMO Central. Valid complaint → seller STL drops. Fake complaint → buyer BSTL drops.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Decision</span><span class="sys-tag sys-franchise">Franchise</span><span class="sys-tag sys-wallet">Wallet Refund</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELLER FLOW -->
+  <div class="tab-content" id="seller-flow">
+    <div class="flow-timeline">
+      <div class="flow-step step-pss">
+        <div class="flow-step-title">1. Register → PSS Verification Journey</div>
+        <div class="flow-step-desc">PSS-L1 (Email) → L2 (Phone) → L3 (CNIC) → L4 (Face Match) = Minimum to start selling. Each step auto-upgrades PSS level.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-pss">PSS L1→L4</span><span class="sys-tag sys-dmo">DMO Decision</span></div>
+      </div>
+      <div class="flow-step step-crb">
+        <div class="flow-step-title">2. CRB Inspection → Physical Verification</div>
+        <div class="flow-step-desc">Inspector assigned from franchise zone (anti-corruption rotation) → visits seller → checklist (hygiene/stock/docs) → Pass/Conditional/Fail → CRB-L3 = first pass</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-crb">CRB</span><span class="sys-tag sys-dmo">DMO Decision</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+      <div class="flow-step step-hybrid">
+        <div class="flow-step-title">3. STL Calculated → Features Unlock</div>
+        <div class="flow-step-desc">PSS-L4 + CRB-L3 + DMO-L2 → HYBRID → STL-L3. Can now list products. Without CRB → stuck at L3 (threshold blocks L4+).</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-pss">PSS</span><span class="sys-tag sys-crb">CRB</span><span class="sys-tag sys-dmo">DMO</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">4. List Products → AI Content Check</div>
+        <div class="flow-step-desc">Add product → DMO checks content (no prohibited items) → Price anomaly detection → Product STL = MIN(product, seller) → Live in marketplace</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Compliance</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">5. Receive Orders → SLA Monitored</div>
+        <div class="flow-step-desc">Order notification → 30 min to accept → DMO tracks response time → Fast = DMO-Level ↑ → Slow = DMO-Level ↓</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Ops</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+      <div class="flow-step step-final">
+        <div class="flow-step-title">6. Payment → Escrow → Growth</div>
+        <div class="flow-step-desc">Delivery confirmed → 24h soft hold → 7d full release → Revenue split → Over time: PSS ↑, CRB ↑, DMO ↑ → STL grows → More features → More earnings</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-wallet">Wallet</span><span class="sys-tag sys-dmo">DMO Finance</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIDER FLOW -->
+  <div class="tab-content" id="rider-flow">
+    <div class="flow-timeline">
+      <div class="flow-step step-pss">
+        <div class="flow-step-title">1. Signup → PSS-L6 Minimum Required</div>
+        <div class="flow-step-desc">Email → Phone → CNIC → Face → Address → Liveness check (all required). Formula: STL = f(PSS, DMO, RPS) — No CRB standard.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-pss">PSS L6</span><span class="sys-tag sys-dmo">DMO</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">2. Accept Orders → 60 Second Window</div>
+        <div class="flow-step-desc">Order ping → 60 sec to accept → Max 3 declines/day → Acceptance rate feeds into RPS score</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Ops</span><span class="sys-tag sys-franchise">Franchise Zone</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">3. Pickup + Deliver → GPS Tracked</div>
+        <div class="flow-step-desc">Photo at pickup → OTP at delivery → COD cash collect → All tracked by DMO. On-time = RPS ↑, Late = RPS ↓</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-gosellr">GoSellr</span><span class="sys-tag sys-dmo">DMO Risk + Ops</span></div>
+      </div>
+      <div class="flow-step step-final">
+        <div class="flow-step-title">4. Earn → COD Deposit → Growth</div>
+        <div class="flow-step-desc">100-300 PKR base + distance + peak bonus. COD must deposit within 24h (strict). Higher STL = priority orders = more earnings.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-wallet">Wallet</span><span class="sys-tag sys-dmo">DMO Finance</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSPECTOR FLOW -->
+  <div class="tab-content" id="inspector-flow">
+    <div class="flow-timeline">
+      <div class="flow-step step-pss">
+        <div class="flow-step-title">1. Apply → PSS-L8 Required + Training</div>
+        <div class="flow-step-desc">JPS application → PSS-L8 (video verified) → 3-5 day training → 7 modules → Assessment ≥70% → Wallet bond 1K-5K EHBGC</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-pss">PSS L8</span><span class="sys-tag sys-crb">CRB Certified</span><span class="sys-tag sys-wallet">Wallet Bond</span></div>
+      </div>
+      <div class="flow-step step-crb">
+        <div class="flow-step-title">2. Assignment → Anti-Corruption Rotation</div>
+        <div class="flow-step-desc">Different inspector each time. Category matching (Food→food sellers). Zone-based within franchise territory. Prevents bribery.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-crb">CRB</span><span class="sys-tag sys-dmo">DMO Compliance</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+      <div class="flow-step step-crb">
+        <div class="flow-step-title">3. Inspect → GPS + Photos + Video (Mandatory)</div>
+        <div class="flow-step-desc">Visit seller → Category checklist → 10-30 min on-site → Evidence capture → Submit report: Pass / Conditional / Fail</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-crb">CRB</span><span class="sys-tag sys-dmo">DMO Ops</span></div>
+      </div>
+      <div class="flow-step step-final">
+        <div class="flow-step-title">4. Report → Seller CRB Level Changes</div>
+        <div class="flow-step-desc">Pass → Seller CRB ↑ → STL ↑. Fail → Seller CRB ↓ → STL ↓ (HYBRID cap). Inspector earns 300-800 PKR per inspection. IPS score tracked.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-crb">CRB</span><span class="sys-tag sys-dmo">DMO Decision</span><span class="sys-tag sys-wallet">Wallet</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRANCHISE FLOW -->
+  <div class="tab-content" id="franchise-flow">
+    <div class="flow-timeline">
+      <div class="flow-step step-pss">
+        <div class="flow-step-title">1. Purchase Franchise → Heavy Verification</div>
+        <div class="flow-step-desc">PSS-L8+ required. Full CRB verification. EHBGC lock: Sub=50K, Master=200K, Corporate=500K, Country=1M. DMO-L8 minimum.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-pss">PSS L8+</span><span class="sys-tag sys-crb">CRB Full</span><span class="sys-tag sys-wallet">Wallet Lock</span><span class="sys-tag sys-dmo">DMO L8</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">2. Setup → 7-Tab Dashboard Active</div>
+        <div class="flow-step-desc">Orders | Sellers | Riders | Complaints | Finance | CRB | Reports — Territory boundaries defined, team assigned</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-franchise">Franchise</span><span class="sys-tag sys-dmo">DMO Ops</span><span class="sys-tag sys-gosellr">GoSellr</span></div>
+      </div>
+      <div class="flow-step step-dmo">
+        <div class="flow-step-title">3. Daily Ops → Monitor + Manage + Resolve</div>
+        <div class="flow-step-desc">Daily alerts → Late orders, complaints, SLA breaches → Approve/reject escalated complaints → Manage sellers + riders → Track revenue</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-dmo">DMO All 7 Engines</span><span class="sys-tag sys-franchise">Franchise</span><span class="sys-tag sys-gosellr">GoSellr</span></div>
+      </div>
+      <div class="flow-step step-final">
+        <div class="flow-step-title">4. Earn → 50% of Territory Service Fee</div>
+        <div class="flow-step-desc">Every order in zone → 2% service charge → 50% goes to franchise. Weekly payout. High performance → territory expansion. Low → territory shrinks.</div>
+        <div class="flow-step-systems"><span class="sys-tag sys-wallet">Wallet</span><span class="sys-tag sys-dmo">DMO Finance</span><span class="sys-tag sys-franchise">Franchise</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  EHB Technologies (Pvt.) Ltd. — 3-Dimensional Trust System — World's First Multi-Layer Trust Architecture<br>
+  Based on EHB-MASTER-INFO.md v4.1 (91 Sections) — §84-§91
+</div>
+
+<script>
+const LEVEL_NAMES = ['', 'FREE', 'BASIC', 'NORMAL', 'STANDARD', 'ADVANCED', 'HIGH', 'PRO', 'VIP', 'ELITE', 'SUPREME'];
+
+const THRESHOLDS = {
+  1:  { pss: 1, crb: 1, dmo: 1 },
+  2:  { pss: 2, crb: 1, dmo: 2 },
+  3:  { pss: 3, crb: 1, dmo: 3 },
+  4:  { pss: 4, crb: 3, dmo: 4 },
+  5:  { pss: 5, crb: 5, dmo: 5 },
+  6:  { pss: 6, crb: 5, dmo: 6 },
+  7:  { pss: 7, crb: 7, dmo: 7 },
+  8:  { pss: 8, crb: 8, dmo: 8 },
+  9:  { pss: 9, crb: 9, dmo: 9 },
+  10: { pss: 10, crb: 10, dmo: 10 }
+};
+
+function recalculate() {
+  const role = document.getElementById('roleSelect').value;
+  const pss = parseInt(document.getElementById('pssSlider').value);
+  const crb = parseInt(document.getElementById('crbSlider').value);
+  const dmo = parseInt(document.getElementById('dmoSlider').value);
+
+  document.getElementById('pssVal').textContent = 'L' + pss;
+  document.getElementById('crbVal').textContent = 'L' + crb;
+  document.getElementById('dmoVal').textContent = 'L' + dmo;
+
+  // Show/hide CRB based on role
+  const crbGroup = document.getElementById('crbGroup');
+  const noCRB = (role === 'buyer' || role === 'admin' || role === 'rider');
+  crbGroup.style.opacity = noCRB ? '0.3' : '1';
+
+  const effectiveCRB = noCRB ? 10 : crb; // Buyers/admin don't need CRB
+
+  // Step 1: Find max threshold
+  let maxByThreshold = 1;
+  for (let t = 10; t >= 1; t--) {
+    const th = THRESHOLDS[t];
+    if (pss >= th.pss && effectiveCRB >= th.crb && dmo >= th.dmo) {
+      maxByThreshold = t;
+      break;
+    }
+  }
+
+  // Step 2: Weighted
+  let weighted;
+  if (role === 'buyer' || role === 'admin') {
+    weighted = (pss * 0.55) + (dmo * 0.45);
+  } else if (role === 'rider') {
+    weighted = (pss * 0.45) + (dmo * 0.35) + (7 * 0.20); // Assume RPS=70
+  } else {
+    weighted = (pss * 0.40) + (crb * 0.35) + (dmo * 0.25);
+  }
+  let level = Math.floor(weighted);
+
+  // Step 3: Cap by lowest + 1
+  let applicableLevels;
+  if (role === 'buyer' || role === 'admin') {
+    applicableLevels = [pss, dmo];
+  } else {
+    applicableLevels = [pss, crb, dmo];
+  }
+  const lowest = Math.min(...applicableLevels);
+  const capApplied = level > lowest + 1;
+  level = Math.min(level, lowest + 1);
+
+  // Step 4: Threshold cap
+  level = Math.min(level, maxByThreshold);
+  level = Math.max(1, Math.min(10, level));
+
+  // Find bottleneck
+  let bottleneck = '';
+  if (!noCRB) {
+    if (pss <= crb && pss <= dmo) bottleneck = 'PSS is bottleneck';
+    else if (crb <= pss && crb <= dmo) bottleneck = 'CRB is bottleneck';
+    else bottleneck = 'DMO is bottleneck';
+  } else {
+    bottleneck = pss <= dmo ? 'PSS is bottleneck' : 'DMO is bottleneck';
+  }
+
+  document.getElementById('resultLevel').textContent = 'L' + level;
+  document.getElementById('resultName').textContent = LEVEL_NAMES[level];
+
+  const details = document.getElementById('calcDetails');
+  details.innerHTML = `
+    <span class="calc-detail-item">Weighted: ${weighted.toFixed(1)}</span>
+    <span class="calc-detail-item">Lowest: L${lowest}</span>
+    <span class="calc-detail-item">${capApplied ? '⚠️ CAPPED' : '✅ No cap'}</span>
+    <span class="calc-detail-item">Max by threshold: L${maxByThreshold}</span>
+    <span class="calc-detail-item">${bottleneck}</span>
+  `;
+
+  const blocked = document.getElementById('calcBlocked');
+  if (capApplied) {
+    blocked.textContent = `⚠️ Level capped! ${bottleneck} — improve it to unlock higher STL`;
+  } else {
+    blocked.textContent = '';
+  }
+}
+
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Initial calculation
+recalculate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+# EHB · Multi-Region Deployment Plan
+# Cloud-agnostic spec; map to AWS / GCP / Azure / DO at deploy time.
+
+regions:
+  asia_primary:
+    name: Asia (Mumbai/Singapore)
+    zone: ap-south-1
+    serves_countries: [PK, IN, BD, LK, ID, MY, TH, VN]
+    primary_db: true
+    redis_cluster: true
+    cdn_pop: true
+    workers: true
+    purpose: "Phase 1 launch — primary"
+
+  middle_east:
+    name: Middle East (UAE)
+    zone: me-central-1
+    serves_countries: [AE, SA, QA, KW, OM, BH]
+    primary_db: false
+    db_replicas: 2
+    redis_cluster: true
+    cdn_pop: true
+    workers: true
+    purpose: "Phase 1-2 — second region for low latency"
+
+  europe:
+    name: Europe (Frankfurt)
+    zone: eu-central-1
+    serves_countries: [GB, DE, FR, ES, IT, NL, PL, TR, EG]
+    primary_db: false
+    db_replicas: 2
+    redis_cluster: true
+    cdn_pop: true
+    workers: true
+    purpose: "Phase 2-3 — Europe + Africa proximity"
+
+  north_america:
+    name: North America (Virginia)
+    zone: us-east-1
+    serves_countries: [US, CA, MX]
+    primary_db: false
+    db_replicas: 1
+    redis_cluster: true
+    cdn_pop: true
+    workers: true
+    purpose: "Phase 3 — US + Americas"
+
+routing:
+  strategy: geo_dns
+  primary_dns: cloudflare
+  rules:
+    - country_in: [PK, IN, BD, LK, ID, MY, TH]
+      route_to: asia_primary
+    - country_in: [AE, SA, QA, KW, OM, BH]
+      route_to: middle_east
+    - country_in: [GB, DE, FR, ES, IT, NL, PL, TR, EG]
+      route_to: europe
+    - country_in: [US, CA, MX]
+      route_to: north_america
+    - default: asia_primary
+
+failover:
+  health_check_interval: 30s
+  failover_threshold: 3 consecutive failures
+  fallback_chain:
+    asia_primary: [middle_east, europe]
+    middle_east: [asia_primary, europe]
+    europe: [middle_east, north_america]
+    north_america: [europe, middle_east]
+  rto: 5_minutes
+  rpo: 1_minute
+
+data_replication:
+  cross_region_db_replication: true
+  replication_lag_target_max: 1_second
+  conflict_resolution: last_write_wins (timestamp)
+  consensus_for_critical_writes: false
+  audit_anchors_replicated_to_all: true
+
+latency_targets:
+  same_region_p95: 100ms
+  cross_region_p95: 250ms
+  failover_user_impact: <60s
+
+deployment:
+  blue_green: true
+  gradual_rollout_pct: [10, 25, 50, 100]
+  canary_metrics:
+    - error_rate < 1%
+    - p95_latency stable
+    - no fraud spike
+  rollback_trigger: any canary metric breach for 5 min
+
+cost_estimate_monthly_usd:
+  phase_1_users_100k: ~5000
+  phase_2_users_1m: ~25000
+  phase_3_users_10m: ~150000
+  mature_users_100m: ~1500000

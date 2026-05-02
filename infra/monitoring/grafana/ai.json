@@ -1,0 +1,18 @@
+{
+  "title": "EHB · AI Performance",
+  "uid": "ehb-ai",
+  "tags": ["ehb", "ai"],
+  "schemaVersion": 39,
+  "panels": [
+    { "title": "Intent Volume (24h)", "type": "stat", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "increase(ehb_ai_intents_total[24h])" }] },
+    { "title": "Avg Confidence", "type": "gauge", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "avg(ehb_ai_intent_confidence)" }] },
+    { "title": "LLM Fallback Rate %", "type": "stat", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "rate(ehb_ai_llm_fallback_total[1h]) / rate(ehb_ai_intents_total[1h]) * 100" }] },
+    { "title": "Daily Cost (USD)", "type": "stat", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }, "targets": [{ "expr": "ehb_ai_daily_cost_usd" }], "thresholds": { "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 150 }, { "color": "red", "value": 200 }] } },
+    { "title": "Intents by Type", "type": "bar", "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "rate(ehb_ai_intents_total[5m]) by (intent)" }] },
+    { "title": "LLM Latency p95", "type": "graph", "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 }, "targets": [{ "expr": "histogram_quantile(0.95, ehb_ai_llm_duration_seconds_bucket)" }] },
+    { "title": "429 Rate Limits", "type": "graph", "gridPos": { "x": 0, "y": 12, "w": 12, "h": 6 }, "targets": [{ "expr": "rate(ehb_ai_429_responses_total[5m])" }] },
+    { "title": "Cost by Model", "type": "table", "gridPos": { "x": 12, "y": 12, "w": 12, "h": 6 }, "targets": [{ "expr": "ehb_ai_daily_cost_usd by (model)" }] }
+  ],
+  "time": { "from": "now-24h", "to": "now" },
+  "refresh": "1m"
+}

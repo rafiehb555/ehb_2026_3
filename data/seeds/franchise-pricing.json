@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-04-21",
+  "source": "ehb-info/departments/Franchise.md v2.0",
+  "subFranchises": [
+    { "code": "L1", "type": "sub", "name": "Basic",        "usd": 5000,  "ehbgc": 5000,  "commissionCapPerDayUsd": 200,   "targetMarket": "Mini zones, 1–2K users",   "series": "Foundation" },
+    { "code": "L2", "type": "sub", "name": "Standard",     "usd": 8000,  "ehbgc": 8000,  "commissionCapPerDayUsd": 350,   "targetMarket": "Small areas, 3–5K users",  "series": "Foundation" },
+    { "code": "L3", "type": "sub", "name": "Enhanced",     "usd": 12000, "ehbgc": 12000, "commissionCapPerDayUsd": 500,   "targetMarket": "Medium zones, 5–10K users", "series": "Foundation" },
+    { "code": "L4", "type": "sub", "name": "Professional", "usd": 16000, "ehbgc": 16000, "commissionCapPerDayUsd": 750,   "targetMarket": "Urban zones, 10–20K users", "series": "Growth" },
+    { "code": "L5", "type": "sub", "name": "Advanced",     "usd": 20000, "ehbgc": 20000, "commissionCapPerDayUsd": 1500,  "targetMarket": "Multi-zone, 20–35K users",  "series": "Growth" },
+    { "code": "L6", "type": "sub", "name": "Superior",     "usd": 25000, "ehbgc": 25000, "commissionCapPerDayUsd": 2250,  "targetMarket": "Whole sector, 35–50K users","series": "Growth" },
+    { "code": "L7", "type": "sub", "name": "Excellence",   "usd": 30000, "ehbgc": 30000, "commissionCapPerDayUsd": 3500,  "targetMarket": "Large district, 50–75K users","series": "Growth" },
+    { "code": "L8", "type": "sub", "name": "Premium",      "usd": 35000, "ehbgc": 35000, "commissionCapPerDayUsd": "unlimited", "targetMarket": "Metro area, 75–100K users", "series": "Elite" },
+    { "code": "L9", "type": "sub", "name": "Elite",        "usd": 40000, "ehbgc": 40000, "commissionCapPerDayUsd": "unlimited", "targetMarket": "Large metro, 100–150K users", "series": "Elite" },
+    { "code": "L10","type": "sub", "name": "Supreme",      "usd": 50000, "ehbgc": 50000, "commissionCapPerDayUsd": "unlimited", "targetMarket": "Mega city, 150K+ users",   "series": "Elite" }
+  ],
+  "onlineFranchises": [
+    { "code": "OF1", "type": "online", "name": "Digital Starter",      "usd": 100,  "ehbgc": 500,  "commissionCapPerDayUsd": 50,  "directCommissionRatePct": 3, "targetMarket": "Individual digital seller" },
+    { "code": "OF2", "type": "online", "name": "Digital Growth",       "usd": 250,  "ehbgc": 1000, "commissionCapPerDayUsd": 150, "directCommissionRatePct": 4, "targetMarket": "Small agency (5–10 sellers)" },
+    { "code": "OF3", "type": "online", "name": "Digital Professional", "usd": 750,  "ehbgc": 2000, "commissionCapPerDayUsd": 300, "directCommissionRatePct": 5, "targetMarket": "Medium team, 25+ orders/day" },
+    { "code": "OF4", "type": "online", "name": "Digital Elite",        "usd": 1500, "ehbgc": 3000, "commissionCapPerDayUsd": 500, "directCommissionRatePct": 6, "targetMarket": "Enterprise tier" }
+  ],
+  "higherTiers": [
+    { "code": "M",  "type": "master",    "name": "Master Franchise",    "usdMin": 10000,  "usdMax": 50000,  "capSubs": 25,     "activationGate": "PSS L6 + STL High" },
+    { "code": "C",  "type": "corporate", "name": "Corporate Franchise", "usdMin": 50000,  "usdMax": 150000, "capMasters": 25,  "activationGate": "PSS L7 + STL VIP" },
+    { "code": "C1", "type": "country",   "name": "Country Franchise",   "usdMin": 100000, "usdMax": 500000, "capCorporates": 25, "activationGate": "PSS L8 + STL Elite + DMO board approval" }
+  ],
+  "revenueSplit": {
+    "platformCutPct": 2.0,
+    "split": { "company": 40, "sub": 25, "master": 20, "corporate": 15 }
+  }
+}
