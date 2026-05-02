@@ -62,6 +62,8 @@
 - Read `design-system/EHB-UIUX-SYSTEM.md` + `ai-behavior.md` before any UI work
 - Keep every new UI "auto-upgraded": glass card + icon + chip + motion + drill-in drawer
 - Check `ehb-status.json` at session start for current week's priorities
+- **On ANY UI/UX change** (code in `apps/web/**`, `theme.ts`, `components/`, `lib/data/`), always update the relevant canonical file in `ehb-info/15-ui-system/` in the SAME task. See `15-ui-system/UIUX-AUTO-SAVE-PROTOCOL.md`.
+- Read `15-ui-system/HOME-PAGE-DESIGN.md` before any home page modification.
 
 ### Don't
 
@@ -71,6 +73,9 @@
 - Never break the `ThemeTokens` type contract in `apps/web/lib/dmo/theme.ts`
 - Never ship "basic" UI — always auto-upgrade (see Do rule above)
 - Never use `localStorage` / `sessionStorage` in React artifacts
+- **Never change UI/UX code without updating its canonical spec** in `ehb-info/15-ui-system/`. No code without doc.
+- Never duplicate UI specs outside `ehb-info/15-ui-system/`.
+- Never change LOCKED tokens (home page sections, STL gradients, plastic coating, theme switcher) without founder approval.
 
 ## 6. STL Formula (Protected — 58 Gold-Master Tests)
 

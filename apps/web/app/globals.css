@@ -182,3 +182,12 @@ html[data-theme='diamond'] {
 
 /* Hover highlights */
 [data-theme='iosClassic'] .hover\:border-purple-light:hover { border-color: var(--ehb-a2) !important; }
+
+/* Horizontal scroll rows — hide scrollbars (was styled-jsx on home; App Router server components) */
+.ehb-no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.ehb-no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
