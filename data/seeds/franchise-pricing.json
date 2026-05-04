@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-21",
+  "generatedAt": "2026-05-03",
   "source": "ehb-info/departments/Franchise.md v2.0",
   "subFranchises": [
     { "code": "L1", "type": "sub", "name": "Basic",        "usd": 5000,  "ehbgc": 5000,  "commissionCapPerDayUsd": 200,   "targetMarket": "Mini zones, 1–2K users",   "series": "Foundation" },
